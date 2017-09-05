@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TP Alpha</title>
+</head>
+<body>
+<script type="text/javascript" src="lib/iota.js" ></script>
+<script type="text/javascript" src="lib/curl.js" ></script>
+<script type="text/javascript" src="lib/utils/asciiToTrytes.js" ></script>
+<script src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
+<script type="text/javascript">
+    oy_init();
+    window.WORK_QUEUE = {};
+    processWork(null);
+    function processWork(current_work) {
+        //console.log("Current work is "+current_work);
+        //console.log("Processing work with queue length of "+Object.keys(window.WORK_QUEUE).length);
+        if (current_work===null) {
+            if (Object.keys(window.WORK_QUEUE).length>0) {
+                console.log(window.WORK_QUEUE);
+                for (var i in window.WORK_QUEUE) {
+                    current_work = i;
+                    break;
+                }
+                console.log("Doing work: "+current_work);
+                window.WORK_QUEUE[current_work]();
+            }
+        }
+        else if (typeof window.WORK_QUEUE[current_work]==='undefined') {
+            current_work = null;
+            console.log("Current work has been set to null");
+        }
+        setTimeout(function(){processWork(current_work)}, 4000);
+    }
+    function addWork(work_id, work) {
+        console.log("Added work: "+work_id);
+        window.WORK_QUEUE[work_id] = work;
+    }
+    function finishWork(work_id) {
+        console.log("Deleted work: "+work_id);
+        delete window.WORK_QUEUE[work_id];
+    }
+    if (window.location.hash) {
+        var hash = window.location.hash.substring(1).split("@");
+        var peer = new Peer(hash[0], {key: 'lwjd5qra8257b9'});
+        console.log(hash[1]);
+    }
+    else {
+        var peer = new Peer({key: 'lwjd5qra8257b9'});
+        peer.on('open', function(id) {
+            console.log('New peer ID: ' + id);
+        });
+    }
+    window.TP_PEER_SELF = hash[0];
+    if (hash[1].length>0) {
+        oy_session_spark(peer, hash[1], 1);
+        //oy_session_spark(peer, hash[1], 2);
+    }
+    console.log("Receiving...");
+    peer.on('connection', function(conn) {
+        conn.on('open', function() {
+            // Receive messages
+            conn.on('data', function (data) {
+                oy_log('Received data from '+conn.peer);
+                oy_session_parse(data, conn.peer);
+            });
+        });
+    });
+    /*
+    */
+    function oy_log(oy_content, oy_error) {
+        oy_error = oy_error || false;
+        if (window.TP_DEBUG===false) return false;
+        if (oy_error===true) console.error(oy_content);
+        else console.log(oy_content);
+        return true;
+    }
+    /*
+
+    */
+    function oy_json_parse(oy_json_input) {
+        try {
+            var oy_json_parse = JSON.parse(oy_json_input);
+            if (oy_json_parse && typeof oy_json_parse === "object") {
+                return oy_json_parse;
+            }
+        }
+        catch (e) {}
+        return false;
+    }
+
+    /*
+
+    */
+    function oy_need_check() {
+
+    }
+
+    function oy_gen_id() {
+        return Math.random().toString(36).slice(2);
+    }
+    /*
+
+    */
+    function oy_session_spark(peer, oy_peer_fuel, oy_type) {
+        //TODO needs to check if a session already exists with peer_fuel
+
+        var oy_session = {};
+        oy_session.id = oy_gen_id();
+        oy_session.stage = 1;
+        oy_session.expire = oy_time_now() + window.TP_SESSION_EXPIRE;
+        oy_session.type = oy_type;
+        oy_session = oy_session_store(oy_session, window.TP_PEER_SELF, oy_peer_fuel);
+        oy_log("Sending session spark packet...");
+        var conn = peer.connect(oy_peer_fuel);
+        conn.on('open', function() {
+            conn.send(JSON.stringify(oy_session));
+        });
+    }
+    function oy_session_respond(oy_session, oy_peer_alt) {
+        oy_log("Sending session response packet...");
+        var oy_session_send = {};
+        if (oy_session.stage===1) {
+            oy_session_send.stage = 1;
+            oy_session_send.id = oy_session.id;
+            oy_session_send.expire = oy_session.expire;
+            oy_session_send.type = oy_session.type;
+        }
+        else if (oy_session.stage===2) {
+            oy_session_send.stage = 2;
+            oy_session_send.id = oy_session.id;
+            oy_session_send.expire = oy_session.expire;
+            oy_session_send.type = oy_session.type;
+            oy_session_send.pow_task = oy_session.pow_task;
+        }
+        else if (oy_session.stage===3) {
+            oy_session_send.stage = 3;
+            oy_session_send.id = oy_session.id;
+            oy_session_send.expire = oy_session.expire;
+            oy_session_send.type = oy_session.type;
+            oy_session_send.pow_result = oy_session.pow_result;
+        }
+        else if (oy_session.stage===4) {
+            oy_session_send.stage = 4;
+            oy_session_send.id = oy_session.id;
+            oy_session_send.expire = oy_session.expire;
+            oy_session_send.type = oy_session.type;
+            oy_session_send.cargo = oy_session.cargo;
+        }
+        var conn = peer.connect(oy_peer_alt);
+        conn.on('open', function() {
+            conn.send(JSON.stringify(oy_session_send));
+        });
+    }
+    function oy_session_verify(oy_session_new, oy_peer_alt) {
+        if (oy_session_new.expire-oy_time_now>window.TP_SESSION_EXPIRE) {
+            oy_log("Disagreement on maximum session expiration time", true);
+            return false;
+        }
+        if (oy_session_new.expire>=oy_time_now) {
+            oy_log("Session expired", true);
+            return false;
+        }
+        var oy_session_get = localStorage.getItem('session_'+oy_session_new.id);
+        if (oy_session_get===null) {
+            if (oy_session_new.stage===1) {
+                oy_log("Session verified as new");
+                return true;
+            }
+            else {
+                oy_log("Session in advanced stage not found", true);
+                return false;
+            }
+        }
+
+        //check if peer spark ids match
+        var oy_session_prev = JSON.parse(oy_session_get);
+        if (oy_session_new.stage===3&&oy_session_prev.peer_spark!==oy_peer_alt) {
+            oy_log("Peer spark id doesn't match -> "+oy_session_prev.peer_spark+" != "+oy_peer_alt, true);
+            return false;
+        }
+        else if ((oy_session_new.stage===2||oy_session_new.stage===4)&&oy_session_prev.peer_fuel!==oy_peer_alt) {
+            oy_log("Peer spark id doesn't match -> "+oy_session_prev.peer_fuel+" != "+oy_peer_alt, true);
+            return false;
+        }
+
+        //if the old stage plus one doesn't equal the current stage,
+        //then there is a disagreement about which stage the session is at
+        if ((oy_session_prev.stage+1)!==oy_session_new.stage) {
+            oy_log("Disagreement over session stage -> prev:"+oy_session_prev.stage+" new:"+oy_session_new.stage, true);
+            return false;
+        }
+
+        //validate session expiration
+        if (oy_session_prev.expire!==oy_session_new.expire) {
+            oy_log("Disagreement on previously established expiration time", true);
+            return false;
+        }
+        return oy_session_prev;
+    }
+
+    function oy_session_parse(oy_data, oy_peer_alt) {
+        oy_log("Initialized session parse");
+
+        //parse the json data from the initialized session
+        var oy_session_new = oy_json_parse(oy_data);
+        if (oy_session_new===false) return false;
+
+        oy_log("Received session:"+oy_data);
+        //verify the session
+        var oy_session_prev = oy_session_verify(oy_session_new, oy_peer_alt);
+        if (oy_session_prev===false) {
+            oy_log("Session failed verification", true);
+            oy_log("Annulling session", true);
+            return false;
+        }
+        if (oy_session_new.stage===1) {
+            oy_session_new.stage = 2;
+            oy_process_stage(oy_session_new.stage, oy_session_new, oy_session_prev, oy_peer_alt, 0);
+        }
+        else if (oy_session_new.stage===2) {
+            oy_session_new.stage = 3;
+            oy_process_stage(oy_session_new.stage, oy_session_new, oy_session_prev, oy_peer_alt, 0);
+        }
+        else if (oy_session_new.stage===3) {
+            oy_session_new.stage = 4;
+            oy_process_stage(oy_session_new.stage, oy_session_new, oy_session_prev, oy_peer_alt, 0);
+        }
+    }
+    function oy_session_store(oy_session, oy_peer_spark, oy_peer_fuel) {
+        oy_session.peer_spark = oy_peer_spark;
+        oy_session.peer_fuel = oy_peer_fuel;
+        var oy_session_get = localStorage.getItem('session_'+oy_session.id);
+        var oy_session_prev;
+        if (oy_session_get!==null) oy_session_prev = JSON.parse(oy_session_get);
+        else oy_session_prev = oy_session;
+        if (oy_session.peer_spark!==oy_session_prev.peer_spark||oy_session.peer_fuel!==oy_session_prev.peer_fuel) {
+            oy_log("Peer ids do not match", true);
+            oy_log("Annulling storage operation", true);
+            return false;
+        }
+        for (var i in oy_session) {
+            if (oy_session.hasOwnProperty(i)) {
+                oy_session_prev[i] = oy_session[i];
+            }
+        }
+        localStorage.setItem('session_'+oy_session.id, JSON.stringify(oy_session_prev));
+        return oy_session_prev;
+    }
+    function oy_provider_data(oy_provider, oy_data) {
+        console.log(oy_provider);
+        console.log(oy_data);
+    }
+    function oy_provider_gen() {
+        return "http://iota.bitfinex.com:80";
+    }
+    function oy_cargo_get(oy_type) {
+        //can have advanced backend for determining which results to return
+        return "precious_cargo";
+        //return false;
+    }
+    function status_callback(var_a, var_b) {
+        //alert(var_a+":"+var_b);
+        console.log(var_a+":"+var_b);
+    }
+    function oy_process_stage(oy_stage, oy_session_new, oy_session_prev, oy_peer_alt, oy_instance_track) {
+        if (oy_stage===2) {
+            if (oy_instance_track===window.TP_POW_REQ) {
+                oy_session_respond(oy_session_store(oy_session_new, oy_peer_alt, window.TP_PEER_SELF), oy_peer_alt);
+                return true;
+            }
+            var oy_cargo = oy_cargo_get(oy_session_new.type);
+            if (oy_cargo_get===false) {
+                oy_session_new.stage = 0;
+            }
+            else {
+                oy_session_new.cargo = oy_cargo;
+                if (oy_instance_track===0) {
+                    oy_session_new.pow_task = [];
+                    oy_session_new.pow_test = [];
+                }
+                var oy_pow_hold = oy_pow_gen(oy_instance_track);
+                oy_session_new.pow_task[oy_instance_track] = [oy_pow_hold[0]];
+                oy_session_new.pow_test[oy_instance_track] = [oy_pow_hold[1], oy_pow_hold[2]];
+                if (oy_session_new.pow_task===false) {
+                    oy_session_new.stage = 0;
+                }
+                else {
+                    oy_session_new.stage = 2;
+                }
+            }
+            if (oy_session_new.stage===2) {
+                window.iota = new IOTA({provider:oy_provider_gen()});
+                window.iota.api.getTransactionsToApprove(4, function(error, toApprove) {
+                    if (error) {
+                        return callback(error);
+                    }
+                    oy_session_new.pow_task[oy_instance_track][1] = toApprove.trunkTransaction;
+                    oy_session_new.pow_task[oy_instance_track][2] = toApprove.branchTransaction;
+                    console.log("trunk:" + toApprove.trunkTransaction);
+                    console.log("branch:" + toApprove.branchTransaction);
+                    oy_process_stage(oy_session_new.stage, oy_session_new, oy_session_prev, oy_peer_alt, oy_instance_track+1);
+                });
+            }
+            else {
+                oy_session_new = oy_session_store(oy_session_new, oy_peer_alt, window.TP_PEER_SELF);
+                oy_session_respond(oy_session_new, oy_peer_alt);
+            }
+        }
+        if (oy_stage===3) {
+            if (oy_session_new.pow_task[oy_instance_track].length!==3) {
+                oy_log("Incorrect PoW definition given", true);
+                oy_log("Annulling session", true);
+                return false;
+            }
+            var oy_tangle_provider = oy_provider_gen();
+            window.iota = new IOTA({provider:oy_tangle_provider});
+            window.iota.api.replayBundle(oy_session_new.pow_task[oy_instance_track][0], function (oy_error, oy_success) {
+                if (oy_error) {
+                    oy_log("IOTA ERROR", true);
+                    return false;
+                }
+                oy_log(oy_success);
+                if (oy_instance_track===0) {
+                    oy_session_new.pow_result = [];
+                }
+                for (var i in oy_success) {
+                    oy_log("PoW completed for "+oy_success[i].hash);
+                    oy_log("Provider "+oy_tangle_provider+" was used");
+                    if (oy_success[i].currentIndex===(oy_success.length-1)) oy_session_new.pow_result[oy_instance_track] = [oy_success[i].hash, oy_tangle_provider];
+                }
+                if (typeof oy_session_new.pow_task[oy_instance_track+1]!=='undefined'&&oy_session_new.pow_task[oy_instance_track+1].length===3) {
+                    oy_log("Running next iteration of current session");
+                    oy_process_stage(oy_session_new.stage, oy_session_new, oy_session_prev, oy_peer_alt, oy_instance_track+1);
+                }
+                else {
+                    oy_log("Process stage session completed");
+                    oy_session_respond(oy_session_store(oy_session_new, window.TP_PEER_SELF, oy_peer_alt), oy_peer_alt);
+                }
+            }, status_callback, oy_session_new.pow_task[oy_instance_track][1], oy_session_new.pow_task[oy_instance_track][2]);
+        }
+        else if (oy_stage===4) {
+            if (typeof oy_session_new.pow_result==='undefined'||oy_session_new.pow_result.length!==oy_session_prev.pow_task.length) {
+                oy_log("No PoW result provided", true);
+                oy_log("Annulling session", true);
+                return false;
+            }
+            if (oy_instance_track<oy_session_new.pow_result.length) {
+                if (oy_instance_track===0) oy_session_new.pow_pass = 0;
+                console.log("CHERRY");
+                console.log(oy_session_new.pow_result);
+                if (oy_session_new.pow_result[oy_instance_track][0].length===81) {
+                    window.iota = new IOTA({provider:oy_provider_gen(oy_session_new.pow_result[oy_instance_track][1])});
+                    window.iota.api.getTransactionsObjects([oy_session_new.pow_result[oy_instance_track][0]], function (oy_error, oy_success) {
+                        oy_log("LEMON:");
+                        oy_log(oy_success);
+                        for (var i in oy_success) {
+                            if (oy_success[i].hash===oy_session_new.pow_result[oy_instance_track][0]) {
+                                oy_log("currentIndex: "+oy_success[i].currentIndex);
+                                oy_log("Hash: "+oy_success[i].hash+"<!->"+oy_session_prev.pow_task[oy_instance_track][0]);
+                                oy_log("Bundle: "+oy_success[i].bundle+"<->"+oy_session_prev.pow_test[oy_instance_track][0]);
+                                oy_log("timestamp: "+oy_success[i].timestamp+"<->"+oy_session_prev.pow_test[oy_instance_track][1]);
+                                oy_log("Trunk: "+oy_success[i].trunkTransaction+"<->"+oy_session_prev.pow_task[oy_instance_track][1]);
+                                oy_log("Branch: "+oy_success[i].branchTransaction+"<->"+oy_session_prev.pow_task[oy_instance_track][2]);
+                                if (oy_success[i].hash!==oy_session_prev.pow_task[oy_instance_track][0]&&oy_success[i].bundle===oy_session_prev.pow_test[oy_instance_track][0]&&oy_success[i].timestamp===oy_session_prev.pow_test[oy_instance_track][1]&&oy_success[i].trunkTransaction===oy_session_prev.pow_task[oy_instance_track][1]&&oy_success[i].branchTransaction===oy_session_prev.pow_task[oy_instance_track][2]) {
+                                    oy_session_new.pow_pass++;//
+                                    oy_log("PoW pass count incremented");
+                                }
+                            }
+                        }
+                        oy_process_stage(oy_session_new.stage, oy_session_new, oy_session_prev, oy_peer_alt, oy_instance_track+1);
+                    });
+                }
+            }
+            else if (oy_session_new.pow_pass!==oy_session_prev.pow_task.length) {
+                oy_log("PoW result was performed incorrectly", true);
+                oy_log("Annulling session", true);
+                return false;
+            }
+            else {
+                oy_session_respond(oy_session_store(oy_session_new, oy_peer_alt, window.TP_PEER_SELF), oy_peer_alt);
+            }
+        }
+    }
+    function oy_pow_test(oy_pow_task) {
+        //return true;
+        var oy_tangle_provider = oy_provider_gen();
+        window.iota = new IOTA({provider:oy_tangle_provider});
+        for (var i in oy_pow_task) {
+            if (oy_pow_task[i].length===81) {
+                window.iota.api.getTransactionsObjects([oy_pow_task[i]], function (oy_error, oy_success) {
+                    oy_log("LEMON:");
+                    oy_log(oy_success);
+                });
+            }
+        }
+    }
+    function oy_pow_gen(oy_nonce) {
+        if (oy_nonce===0) return ["HUIUHILBBNOIWVOTAMK9NPQNJORXINEXJGSJPLHLNGERJBAWZDMTKMO9UDVJVHVISANYZPYHRHBA99999", "LEIQLBIEBK9HVFQSSCR9SRQJAWWGTRZFZIMNAI9VGUINOZATSKAVVUGIYPACJNJTCMBJTD9IDWIKPAWTF", 1501083051];
+        if (oy_nonce===1) return ["OAOZMUAW9EPSKOYTBFWCQAAYLPLMGWTAAJPMLJZHBLONEBOFYEFPDRUAMJARBBQOPAJVXLLK9BUF99999", "MSTXMA9CYBZJKDCEBANHRRLHVIAFXNFBESJUSGHMDHXCATBLTIZZVDNXLYABDTTCXTOQ9GCIHIGDIFW9H", 1501095028];
+    }
+    function oy_pow_task(oy_count, oy_pow_return) {
+        if (oy_count<=0) return false;
+        oy_pow_return = oy_pow_return || [];
+        oy_pow_return[oy_count] = [oy_pow_gen(oy_count)];
+        window.iota = new IOTA({provider:oy_provider_gen()});
+        window.iota.api.getTransactionsToApprove(4, function(error, toApprove) {
+            if (error) {
+                return callback(error);
+            }
+            oy_pow_return[oy_count][1] = toApprove.trunkTransaction;
+            oy_pow_return[oy_count][2] = toApprove.branchTransaction;
+            console.log("trunk:" + toApprove.trunkTransaction);
+            console.log("branch:" + toApprove.branchTransaction);
+        });
+        console.log("CHERRY");
+        console.log(oy_pow_return);
+        //return true;
+        return oy_pow_return;
+    }
+    function oy_time_now() {
+        return window.TP_TIME_REF;
+    }
+    function oy_init() {
+        localStorage.clear();//clear all localstorage for testing purposes
+        window.TP_POW_REQ = 2;
+        window.TP_TIME_REF = 1500922275;
+        window.TP_TIME_OFFSET = 0;
+        window.TP_PASS_SESSION = {};
+        window.TP_PASS_PEER_ALT = {};
+        //hardcoded variables
+        window.TP_DEBUG = true;
+        window.TP_SESSION_EXPIRE = 64800;//sessions must conclude within this span of time
+        window.TP_PROVIDER_HOLD = ["http://iota.bitfinex.com:80"];
+    }
+</script>
+Tangle Pearl Alpha
+</body>
+</html>

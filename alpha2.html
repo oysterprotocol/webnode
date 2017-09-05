@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TP Alpha2</title>
+</head>
+<body>
+<script type="text/javascript" src="lib/iota.js" ></script>
+<script type="text/javascript" src="lib/curl.js" ></script>
+<script type="text/javascript" src="lib/utils/asciiToTrytes.js" ></script>
+<script type="text/javascript" src="aes.js"></script>
+<script type="text/javascript" src="sha256.js"></script>
+<script type="text/javascript" src="sha512.js"></script>
+<script type="text/javascript" src="enc-base64-min.js"></script>
+<script type="text/javascript">
+    function status_callback(var_a, var_b) {
+        //alert(var_a+":"+var_b);
+        console.log(var_a+":"+var_b);
+    }
+    function callback(error, success) {
+        if (error) {
+            console.error(error);
+        } else {
+            console.log(success);
+        }
+    }
+    window.WORK_QUEUE = {};
+    function processWork(current_work) {
+        //console.log("Current work is "+current_work);
+        //console.log("Processing work with queue length of "+Object.keys(window.WORK_QUEUE).length);
+        if (current_work===null) {
+            if (Object.keys(window.WORK_QUEUE).length>0) {
+                console.log(window.WORK_QUEUE);
+                for (var i in window.WORK_QUEUE) {
+                    current_work = i;
+                    break;
+                }
+                console.log("Doing work: "+current_work);
+                window.WORK_QUEUE[current_work]();//
+            }
+        }
+        else if (typeof window.WORK_QUEUE[current_work]==='undefined') {
+            current_work = null;
+            console.log("Current work has been set to null");
+        }
+        setTimeout(function(){processWork(current_work)}, 4000);
+    }
+    function addWork(work_id, work) {
+        console.log("Added work: "+work_id);
+        window.WORK_QUEUE[work_id] = work;
+    }
+    function finishWork(work_id) {
+        console.log("Deleted work: "+work_id);
+        delete window.WORK_QUEUE[work_id];
+    }
+    var oy_file_key = "KEY12345PEARL12345";
+    function oy_log(oy_content, oy_error) {
+        oy_error = oy_error || false;
+        if (window.TP_DEBUG===false) return false;
+        if (oy_error===true) console.error(oy_content);
+        else console.log(oy_content);
+        return true;
+    }
+    function oy_tangle_provider_gen() {
+        return "http://iota.bitfinex.com:80";
+    }
+    function oy_encrypt(oy_raw, oy_key) {
+        var oy_crypt = CryptoJS.AES.encrypt(oy_raw, oy_key, {mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7});
+        return oy_crypt.toString().substr(10);
+    }
+    function oy_decrypt(oy_crypt, oy_key) {
+        var oy_raw = CryptoJS.AES.decrypt("U2FsdGVkX1"+oy_crypt, oy_key, {mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7});
+        return oy_raw.toString(CryptoJS.enc.Utf8);
+    }
+    function oy_tangle_push(oy_seed, oy_payload) {
+        window.iota = new IOTA({provider:oy_tangle_provider_gen()});
+        var oy_transfer = [{address:"CJQAXYKEJMO99ZXWWDLHIXPOKCDQY9TVXHINORAXZSDNU9RYYWBHRYDEDTVZ9TNV9EUEIHGST9TKZJMTH", value:0, message:oy_payload}];
+        window.iota.api.sendTransferWrapper(oy_seed, oy_transfer, [], callback, status_callback);
+    }
+    function oy_tangle_parse(oy_key, oy_seed, oy_part_raw) {
+        var oy_crypt_hold = toTrytes(oy_encrypt(oy_part_raw, oy_key)).match(/.{1,2187}/g);
+        //console.log("Raw: "+oy_part_raw);
+        //console.log("Crypt: "+oy_encrypt(oy_part_raw, oy_key));
+        //console.log("Trytes: "+toTrytes(oy_encrypt(oy_part_raw, oy_key)));
+        //console.log(oy_crypt_hold[0]);
+        for (var i in oy_crypt_hold) {
+            console.log("Seed: "+toTrytes(oy_seed).substr(0, 81));
+            console.log(oy_crypt_hold[i].length);
+            oy_tangle_push(toTrytes(oy_seed).substr(0, 81), oy_crypt_hold[i]);
+            oy_seed = CryptoJS.SHA256(oy_seed).toString(CryptoJS.enc.Hex)
+        }
+        return oy_seed;
+    }
+    function oy_pearl_seed(oy_round, oy_build) {
+        oy_round = oy_round || 3;
+        oy_build = oy_build || "";
+        if (oy_round>1) {
+            oy_build += CryptoJS.SHA256(Math.random().toString()).toString(CryptoJS.enc.Hex);
+            return oy_pearl_seed(oy_round-1, oy_build);
+        }
+        return oy_build;
+    }
+    function oy_loop() {
+        var oy_key = "KEY12345PEARL12345";
+        var oy_part_raw = toTrytes(oy_encrypt(oy_pearl_seed(), oy_key));
+        console.log(oy_part_raw.length);
+        if (oy_part_raw.length!==412) alert("CLASH");
+        else setTimeout(oy_loop, 1);
+    }
+    //oy_loop();
+    //oy_tangle_push(oy_file_key, oy_part_raw);
+
+    function oy_file_read(oy_key, oy_seed, oy_start, oy_stop, oy_limit) {
+        var oy_part_size = 4096;
+        var oy_file_select = document.getElementById('files').files;
+        if (!oy_file_select.length) {
+            oy_log("No file was selected", true);
+            return false;
+        }
+        oy_file_select = oy_file_select[0];
+        oy_start = oy_start || 0;
+        oy_stop = oy_stop || oy_part_size;
+        oy_limit = oy_limit || oy_file_select.size-1;
+        if (oy_stop>oy_limit) oy_stop = oy_limit;
+        oy_log("Start: "+oy_start+" Stop: "+oy_stop);
+
+        var oy_reader = new FileReader();
+        oy_reader.onloadend = function(oy_event) {
+            if (oy_event.target.readyState===FileReader.DONE) {
+                oy_seed = oy_tangle_parse(oy_key, oy_seed, oy_event.target.result);
+                oy_start += oy_part_size;
+                oy_stop += oy_part_size;
+                if (oy_start<oy_limit) {
+                    if (oy_stop>oy_limit) oy_stop = oy_limit;
+                    //logic for inserting pearl
+                    oy_file_read(oy_key, oy_seed, oy_start, oy_stop, oy_limit);
+                }
+            }
+        }
+        oy_reader.readAsBinaryString(oy_file_select.slice(oy_start, oy_stop + 1));
+    }
+    function oy_file_init() {
+        oy_file_read(oy_file_key, CryptoJS.SHA256(oy_file_key).toString(CryptoJS.enc.Hex));
+    }
+    /*
+    var oy_file_crypt = toTrytes(oy_encrypt(oy_file_raw, oy_file_key));
+
+    var decryptedData = oy_decrypt(fromTrytes(oy_file_crypt), oy_file_key);
+    if (oy_file_raw===decryptedData) {
+        console.log("MATCH");
+    }
+    else {
+        console.log("CORRUPT");
+    }
+    console.log(decryptedData);
+    */
+</script>
+<img id="bob" src="data:image/gif;base64,xxxxxxxxxxxxx...">
+<input type="file" id="files" name="file" onchange="oy_file_init()" />
+</body>
+</html>
