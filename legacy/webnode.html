@@ -5,7 +5,7 @@
     <title>TP Alpha</title>
 </head>
 <body>
-<script type="text/javascript" src="lib/iota.js" ></script>
+<script type="text/javascript" src="lib/iota.js?4" ></script>
 <script type="text/javascript" src="lib/curl.js" ></script>
 <script type="text/javascript" src="lib/utils/asciiToTrytes.js" ></script>
 <script src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
@@ -33,6 +33,9 @@
         }
         setTimeout(function(){processWork(current_work)}, 4000);
     }
+    function callback(error) {
+        console.log("ERROR:"+error)
+    }
     function addWork(work_id, work) {
         console.log("Added work: "+work_id);
         window.WORK_QUEUE[work_id] = work;
@@ -41,22 +44,26 @@
         console.log("Deleted work: "+work_id);
         delete window.WORK_QUEUE[work_id];
     }
+    var peer;
+    peer = new Peer({key: 'lwjd5qra8257b9'});
+    peer.on('open', function(id) {
+        console.log('New peer ID: ' + id);
+        document.getElementById('oy_self').value = id;
+        window.TP_PEER_SELF = id;
+    });
+    /*
     if (window.location.hash) {
         var hash = window.location.hash.substring(1).split("@");
-        var peer = new Peer(hash[0], {key: 'lwjd5qra8257b9'});
+        peer = new Peer(hash[0], {key: 'lwjd5qra8257b9'});
         console.log(hash[1]);
     }
     else {
-        var peer = new Peer({key: 'lwjd5qra8257b9'});
+        peer = new Peer({key: 'lwjd5qra8257b9'});
         peer.on('open', function(id) {
             console.log('New peer ID: ' + id);
         });
     }
-    window.TP_PEER_SELF = hash[0];
-    if (hash[1].length>0) {
-        oy_session_spark(peer, hash[1], 1);
-        //oy_session_spark(peer, hash[1], 2);
-    }
+    */
     console.log("Receiving...");
     peer.on('connection', function(conn) {
         conn.on('open', function() {
@@ -253,7 +260,7 @@
         console.log(oy_data);
     }
     function oy_provider_gen() {
-        return "http://iota.bitfinex.com:80";
+        return "http://node.lukaseder.de:14265";
     }
     function oy_cargo_get(oy_type) {
         //can have advanced backend for determining which results to return
@@ -314,11 +321,13 @@
                 oy_log("Annulling session", true);
                 return false;
             }
+            oy_log("Replaying Bundle: "+oy_session_new.pow_task[oy_instance_track][0]);
             var oy_tangle_provider = oy_provider_gen();
             window.iota = new IOTA({provider:oy_tangle_provider});
             window.iota.api.replayBundle(oy_session_new.pow_task[oy_instance_track][0], function (oy_error, oy_success) {
                 if (oy_error) {
                     oy_log("IOTA ERROR", true);
+                    oy_log(oy_error);
                     return false;
                 }
                 oy_log(oy_success);
@@ -397,8 +406,8 @@
         }
     }
     function oy_pow_gen(oy_nonce) {
-        if (oy_nonce===0) return ["HUIUHILBBNOIWVOTAMK9NPQNJORXINEXJGSJPLHLNGERJBAWZDMTKMO9UDVJVHVISANYZPYHRHBA99999", "LEIQLBIEBK9HVFQSSCR9SRQJAWWGTRZFZIMNAI9VGUINOZATSKAVVUGIYPACJNJTCMBJTD9IDWIKPAWTF", 1501083051];
-        if (oy_nonce===1) return ["OAOZMUAW9EPSKOYTBFWCQAAYLPLMGWTAAJPMLJZHBLONEBOFYEFPDRUAMJARBBQOPAJVXLLK9BUF99999", "MSTXMA9CYBZJKDCEBANHRRLHVIAFXNFBESJUSGHMDHXCATBLTIZZVDNXLYABDTTCXTOQ9GCIHIGDIFW9H", 1501095028];
+        if (oy_nonce===0) return ["IOLPTM9IEKVZLPAQKXNSPGP9GMZNMJHIGXSMGCOPTFCFXUDDEVJLEATWFSLOVPUYAJOHXPDYIMUDA9999", "ZEXAIRYAT9JYWTTV9CEEOKM9WZXWMXGGRXPHRPOPWFVGOPUSCJFTIIANTAOF999VJRDUDBJE9SWXOJ9SX", 1501083051];
+        if (oy_nonce===1) return ["KUTLZIRTSKYUTIWBLFLMDPVADN9INXW9XYGYGFXNZUZPBPHF9RLSGMCKBMXYSNC9SSHWAXFMPDDF99999", "DGULXOQWSSUJWKYCQVDGJSVYLFZA9OGYHZCHTRJNSXTUIKN9PLXYPUWLLWFXIFLOUGEDVEXZXGYUVEIY9", 1501095028];
     }
     function oy_pow_task(oy_count, oy_pow_return) {
         if (oy_count<=0) return false;
@@ -432,9 +441,11 @@
         //hardcoded variables
         window.TP_DEBUG = true;
         window.TP_SESSION_EXPIRE = 64800;//sessions must conclude within this span of time
-        window.TP_PROVIDER_HOLD = ["http://iota.bitfinex.com:80"];
+        window.TP_PROVIDER_HOLD = ["http://node.lukaseder.de:14265"];
     }
 </script>
-Tangle Pearl Alpha
+Oyster Proof of Concept<br>
+Self ID: <input id="oy_self" type="text" disabled="disabled" /><br>
+Node ID: <input id="oy_node" type="text" /><input type="button" onclick="oy_session_spark(peer, document.getElementById('oy_node').value, 1);" />
 </body>
 </html>

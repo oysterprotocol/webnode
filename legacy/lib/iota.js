@@ -1618,6 +1618,9 @@ api.prototype.getBundle = function(transaction, callback) {
 
         if (!Utils.isBundle(bundle)) {
 
+            console.log("ORANGE");
+            console.log(bundle);
+
             return callback(new Error("Invalid Bundle provided"))
 
         } else {
@@ -2987,7 +2990,7 @@ function IOTA(settings) {
 IOTA.prototype.setSettings = function(settings) {
     // IF NO SETTINGS, SET DEFAULT TO localhost:14265
     settings = settings || {};
-    this.version = require('../web_node/package.json').version;
+    this.version = require('../package.json').version;
     this.host = settings.host ? settings.host : "http://localhost";
     this.port = settings.port ? settings.port : 14265;
     this.provider = settings.provider || this.host.replace(/\/$/, '') + ":" + this.port;
@@ -4590,28 +4593,28 @@ var validateSignatures = function(signedBundle, inputAddress) {
 *   @returns {bool} valid
 **/
 var isBundle = function(bundle) {
-
+    console.log("BUND1");
     // If not correct bundle
     if (!inputValidator.isArrayOfTxObjects(bundle)) return false;
 
     var totalSum = 0, lastIndex, bundleHash = bundle[0].bundle;
-
+    console.log("BUND2");
     // Prepare to absorb txs and get bundleHash
     var bundleFromTxs = [];
 
     var curl = new Curl();
     curl.initialize();
-
+    console.log("BUND3");
     // Prepare for signature validation
     var signaturesToValidate = [];
 
     bundle.forEach(function(bundleTx, index) {
-
+        console.log("BUND4");
         totalSum += bundleTx.value;
 
         // currentIndex has to be equal to the index in the array
         if (bundleTx.currentIndex !== index) return false;
-
+        console.log("BUND5");
         // Get the transaction trytes
         var thisTxTrytes = transactionTrytes(bundleTx);
 
@@ -4640,19 +4643,24 @@ var isBundle = function(bundle) {
             signaturesToValidate.push(newSignatureToValidate);
         }
     });
-
+    console.log("BUND6");
     // Check for total sum, if not equal 0 return error
     if (totalSum !== 0) return false;
+    console.log("BUND7");
 
     // get the bundle hash from the bundle transactions
     curl.squeeze(bundleFromTxs);
     var bundleFromTxs = Converter.trytes(bundleFromTxs);
 
+    console.log(bundleFromTxs);
+    console.log(bundleHash);
     // Check if bundle hash is the same as returned by tx object
     if (bundleFromTxs !== bundleHash) return false;
+    console.log("BUND8");
 
     // Last tx in the bundle should have currentIndex === lastIndex
     if (bundle[bundle.length - 1].currentIndex !== bundle[bundle.length - 1].lastIndex) return false;
+    console.log("BUND9");
 
     // Validate the signatures
     for (var i = 0; i < signaturesToValidate.length; i++) {
