@@ -46,7 +46,11 @@ class App extends Component {
       });
 
     //listening to other nodes, for now they will just say hi.
-    this.state.peer.on('connection', receiveMessage);
+    this.state.peer.on('connection', function(conn){
+          console.log('Connection Established with: ', conn);
+
+          conn.on('data', receiveMessage);
+    });
   }
 
   iterate(){
@@ -78,7 +82,7 @@ class App extends Component {
 }
 
 function receiveMessage(data){
-    console.log('Received', data)
+  console.log(data);
 }
 
 
