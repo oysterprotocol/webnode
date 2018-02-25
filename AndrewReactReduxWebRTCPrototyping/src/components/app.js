@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import WebnodeList from '../containers/webnode-list';
 
-export default class App extends Component {
+class App extends Component {
 
   //I am just playing around, so I can work with Ladislav and learn react/redux
   //this componenet has a local state while our directories and other things are defined via redux
@@ -54,9 +55,9 @@ export default class App extends Component {
       console.log("iterating");
 
       //say hi
-      var connection = this.state.peer.connect('test2');
+      var connection = this.state.peer.connect(this.props.selected_webnode);
       connection.on('open',function(){
-        connnection.send("Hi!");
+        connection.send("Hi!");
       });
 
       this.iterate();
@@ -68,6 +69,9 @@ export default class App extends Component {
     return (
       <div>
         <WebnodeList />
+        <p>
+          {this.props.selected_webnode}
+        </p>
       </div>
     );
   }
@@ -81,3 +85,11 @@ function receiveMessage(data){
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function mapStateToProps(state){
+  return{
+    selected_webnode: state.selected_webnode
+  };
+}
+
+export default connect(mapStateToProps)(App);
