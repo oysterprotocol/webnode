@@ -2,8 +2,9 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { sayHiViaWebRTC } from '../actions/index';
+import { changeSelectedWebnode } from '../actions/index';
 import { bindActionCreators } from 'redux';
+import SelectedWebnode from './selected-node';
 
 class WebnodeList extends Component{
 
@@ -12,7 +13,7 @@ class WebnodeList extends Component{
         return(
             <li
 
-            onClick={()=> this.props.sayHiViaWebRTC(webnode)}
+            onClick={()=> this.props.changeSelectedWebnode(webnode.address)}
             key={webnode.address} className="list-group-item">{webnode.address}</li>
         );
       });
@@ -23,7 +24,8 @@ class WebnodeList extends Component{
           <ul className="list-group col-sm-4">
             {this.renderList()}
           </ul>
-          blah blah {this.props.nodeinfo}
+          blah blah
+          <SelectedWebnode />
         </div>
 
     )
@@ -38,7 +40,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({ sayHiViaWebRTC: sayHiViaWebRTC}, dispatch)
+    return bindActionCreators({ changeSelectedWebnode: changeSelectedWebnode}, dispatch)
 }
 
 
