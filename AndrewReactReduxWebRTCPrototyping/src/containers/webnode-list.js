@@ -24,7 +24,7 @@ class WebnodeList extends Component{
           <ul className="list-group col-sm-4">
             {this.renderList()}
           </ul>
-          blah blah
+          Sending 'hi' to: {this.props.selected_webnode}
           <SelectedWebnode />
         </div>
 
@@ -35,7 +35,8 @@ class WebnodeList extends Component{
 function mapStateToProps(state){
   return{
     webnodes: state.webnode_addresses,
-    peerid: state.nodeinfo
+    peerid: state.nodeinfo,
+    selected_webnode: state.selected_webnode
   };
 }
 
