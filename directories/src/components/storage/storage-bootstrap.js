@@ -14,7 +14,8 @@ class StorageBootstrap extends Component {
       storageGenesisHashAddFn,
       storageExchangesAddFn,
       storagePeerIdChangeFn,
-      peerId
+      peerId,
+      peer
     } = props;
 
     console.log('DEMO 0');
@@ -55,9 +56,22 @@ class StorageBootstrap extends Component {
     console.log('diffrent list -> ');
     console.log(mergeStorage);
 
-    console.log('DEMO 4');
-    
-    console.log('peerID -> ' + peerId);
+    console.log('DEMO 3');
+    peer.on('open', function(id) {
+      console.log('Peer ID -> ' + id);
+    });
+
+    peer.on('error', function(id) {
+      console.log('Peer ID -> ' + id);
+    });
+
+    peer.on('connection', function(conn) {
+      conn.on('data', function(data) {
+        const { request_type, need_type } = data;
+        console.log('Received data ->  RequestType -> ' + request_type + ' | need_type -> ' + need_type);
+        storageExchangesAddFn(request_type, need_type);
+      });
+    });
   }
 
   _jsonToObjectFn(jsonObject) {
@@ -183,22 +197,11 @@ class StorageBootstrap extends Component {
   }
 
   render(props) {
-    const { peer } = this.props;
-    peer.on('open', function(id) {
-      console.log('Peer ID -> ' + id);
-    })
-
-    peer.on('connection', function(conn) {
-      conn.on('data', function(data){
-        console.log('Received data -> ' + data.request_type);
-      });
-    });
-
     return (
       <div className="App">
           <form onSubmit={this.onSubmit.bind(this)}>
             <div>
-              <label>Peer id {peer.id}</label>
+              <label>Peer id</label>
               <input type="text" ref="peerId" />
               <label>Message</label>
               <input type="text" ref="message" />
@@ -222,7 +225,7 @@ StorageBootstrap.propTypes = {
 
 StorageBootstrap.defaultProps = {
     peerId: 'not initialized',
-    connectedPeerIds: [],
+    connectedPeers: [],
 };
 
 export default StorageBootstrap;
