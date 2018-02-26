@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import WebnodeList from '../containers/webnode-list';
 
+
 class App extends Component {
 
   //I am just playing around, so I can work with Ladislav and learn react/redux
@@ -50,23 +51,33 @@ class App extends Component {
     this.props.changeOwnPeerId(this.local_state.peer.id);
   }
 
-  iterate(){
+  iterate = () => {
     sleep(20000).then(() => {
 
       console.log("iterating");
+      console.log(this.props);
 
-      //say hi
       var connection = this.local_state.peer.connect(this.props.selected_webnode);
 
-      console.log(this.id);
       connection.on('open',function(){
-        connection.send({ request: "START_TRANSACTION", data: "HELLO WEBNODE WORLD", returnAddress: this.state });
+
+        //state no longer in scope.  Not sure how to get it from redux.
+        console.log(this.props);
+        connection.send({ request: "START_TRANSACTION", data: "HELLO WEBNODE WORLD", returnAddress: this.props.own_peer_id });
       });
 
       this.iterate();
     });
 
   }
+
+  handleSendRequest = () => {
+    console.log(this.local_state);
+    this.props.changeOwnPeerId(this.local_state.peer.id);
+    console.log(this.props);
+    console.log('boom');
+  }
+
 
   render() {
     return (
@@ -123,7 +134,7 @@ function sleep(ms) {
 function mapStateToProps(state){
   return{
     selected_webnode: state.selected_webnode,
-    own_peer_id: state.own_peer_id
+    own_peer_id: state.nodeinfo
   };
 }
 
