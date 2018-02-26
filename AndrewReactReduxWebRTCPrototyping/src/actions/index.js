@@ -13,3 +13,10 @@ export function changeOwnPeerId(peerid){
     payload: peerid
   };
 }
+
+export function addTransaction(txid, need_wanted){
+  return{
+    type: 'ADD_TRANSACTION',
+    payload: { id: txid, need: need_wanted }
+  };
+}

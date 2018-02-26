@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { changeOwnPeerId } from '../actions/index';
+import { changeOwnPeerId, addTransaction } from '../actions/index';
 import { bindActionCreators } from 'redux';
 
 import WebnodeList from '../containers/webnode-list';
@@ -41,6 +41,8 @@ class App extends Component {
     });
   }
 
+//I pulled the handler out like this because it is one way of accesising the local state and props.
+//it is bound above
   handlePeerInitiation = () => {
     console.log(this.local_state);
     this.props.changeOwnPeerId(this.local_state.peer.id);
@@ -93,6 +95,7 @@ function receiveMessage(data, local_peer){
     console.log("we have a transaction to start");
 
     //put new item transaction table, get the transaction id.
+    
 
     //get the items
     //IF WE HAVE TO EXPLICITLY SEND BACK A MESSAGE IT WILL LOOK SOMETHING LIKE:
@@ -100,6 +103,10 @@ function receiveMessage(data, local_peer){
     var temp_peer = new Peer(newid, {key: 'lwjd5qra8257b9'});
 
     var connection = temp_peer.connect(data.returnAddress);
+
+    //add a row to transaction table
+    //call Redux
+
 
     connection.on('open',function(){
       connection.send({ request: "START_TRANSACTION_RESPONSE", data: "HELLO WEBNODE WORLD BACK"});
@@ -133,7 +140,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({ changeOwnPeerId: changeOwnPeerId }, dispatch)
+    return bindActionCreators({ changeOwnPeerId: changeOwnPeerId, addTransaction: addTransaction }, dispatch)
 }
 
 
