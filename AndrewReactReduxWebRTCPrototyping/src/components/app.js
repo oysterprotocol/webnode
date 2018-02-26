@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { changeOwnPeerId } from '../actions/index';
+import { bindActionCreators } from 'redux';
 
 import WebnodeList from '../containers/webnode-list';
 
@@ -7,10 +9,8 @@ class App extends Component {
 
   //I am just playing around, so I can work with Ladislav and learn react/redux
   //this componenet has a local state while our directories and other things are defined via redux
-    state = {
-        nodeinfo: '4lm8oxkap02ro1or',
-        peer: null,
-        counter: 0
+    local_state = {
+        peer: null
       };
 
 
@@ -18,17 +18,11 @@ class App extends Component {
   //I was thinking of doing this every 30 seconds.
   componentDidMount() {
       var exit = false;
-
       //
       this.createPeer();
 
-
-
       this.iterate();
-      //we can loop in here and 'engage in exchanges'
-    //  while(!exit){
 
-    //  }
     }
 
   createPeer(){
@@ -38,19 +32,22 @@ class App extends Component {
     //var newid = "test1";
 
     //key is an api key, move to config
-    this.state.peer = new Peer(newid, {key: 'lwjd5qra8257b9'});
+    this.local_state.peer = new Peer(newid, {key: 'lwjd5qra8257b9'});
 
     //getting our peer id (this is where we would add it to the redux table)
-    this.state.peer.on('open', function(id) {
-      console.log('My peer ID is: ' + id);
-      });
+    this.local_state.peer.on('open', this.handlePeerInitiation.bind(this));
 
     //listening to other nodes, for now they will just say hi.
-    this.state.peer.on('connection', function(conn){
-          console.log('Connection Established with: ', conn);
+    this.local_state.peer.on('connection', function(conn){
+          console.log('Connection Established with: ', conn.peer);
 
           conn.on('data', receiveMessage);
     });
+  }
+
+  handlePeerInitiation = () => {
+    console.log(this.local_state);
+    this.props.changeOwnPeerId(this.local_state.peer.id);
   }
 
   iterate(){
@@ -59,9 +56,11 @@ class App extends Component {
       console.log("iterating");
 
       //say hi
-      var connection = this.state.peer.connect(this.props.selected_webnode);
+      var connection = this.local_state.peer.connect(this.props.selected_webnode);
+
+      console.log(this.id);
       connection.on('open',function(){
-        connection.send("Hi!");
+        connection.send({ request: "START_TRANSACTION", data: "HELLO WEBNODE WORLD", returnAddress: this.state });
       });
 
       this.iterate();
@@ -81,7 +80,38 @@ class App extends Component {
   }
 }
 
-function receiveMessage(data){
+
+function receiveMessage(data, local_peer){
+
+  //getr request type
+  if(data.request == "START_TRANSACTION"){
+    console.log("we have a transaction to start");
+
+    //put new item transaction table, get the transaction id.
+
+    //get the items
+    //IF WE HAVE TO EXPLICITLY SEND BACK A MESSAGE IT WILL LOOK SOMETHING LIKE:
+    var newid = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 8);
+    var temp_peer = new Peer(newid, {key: 'lwjd5qra8257b9'});
+
+    var connection = temp_peer.connect(data.returnAddress);
+
+    connection.on('open',function(){
+      connection.send({ request: "START_TRANSACTION_RESPONSE", data: "HELLO WEBNODE WORLD BACK"});
+    })
+    //hACK TO GET IT TO work
+
+
+    //send a message to the sending node, or return
+  }
+  else if(data.request == "START_TRANSACTION_RESPONSE"){
+    console.log("oh look they got my request and are now offering a list blahblah");
+  }
+  //switch
+
+  //case start transaction
+  //case select item
+
   console.log(data);
 }
 
@@ -92,8 +122,14 @@ function sleep(ms) {
 
 function mapStateToProps(state){
   return{
-    selected_webnode: state.selected_webnode
+    selected_webnode: state.selected_webnode,
+    own_peer_id: state.own_peer_id
   };
 }
 
-export default connect(mapStateToProps)(App);
+function mapDispatchToProps(dispatch){
+    return bindActionCreators({ changeOwnPeerId: changeOwnPeerId }, dispatch)
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -6,3 +6,10 @@ export function changeSelectedWebnode(webnode){
     payload: webnode
   };
 }
+
+export function changeOwnPeerId(peerid){
+  return{
+    type: 'CHANGE_OWN_PEERID',
+    payload: peerid
+  };
+}
