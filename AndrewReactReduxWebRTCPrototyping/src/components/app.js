@@ -14,14 +14,9 @@ class App extends Component {
         peer: null
       };
 
-
-  //this is for learning 'loops'.  it is based on a timer
-  //I was thinking of doing this every 30 seconds.
+  //on load
   componentDidMount() {
-      var exit = false;
-      //
       this.createPeer();
-
       this.iterate();
 
     }
@@ -59,25 +54,24 @@ class App extends Component {
 
       var connection = this.local_state.peer.connect(this.props.selected_webnode);
 
-      connection.on('open',function(){
-
+      // connection.on('open', function(conn) {
+      //
+      //   //state no longer in scope.  Not sure how to get it from redux.
+      //   console.log(this.props);
+      //   connection.send({ request: "START_TRANSACTION", data: "HELLO WEBNODE WORLD", returnAddress: this.props.own_peer_id });
+      // });
+      connection.on('open', function(conn) {
+        console.log('opening connection to send start transaction message');
+        console.log(connection);
         //state no longer in scope.  Not sure how to get it from redux.
         console.log(this.props);
-        connection.send({ request: "START_TRANSACTION", data: "HELLO WEBNODE WORLD", returnAddress: this.props.own_peer_id });
+        connection.send({ request: "START_TRANSACTION", data: "HELLO WEBNODE WORLD", returnAddress:  connection.provider.id});
       });
 
       this.iterate();
     });
 
   }
-
-  handleSendRequest = () => {
-    console.log(this.local_state);
-    this.props.changeOwnPeerId(this.local_state.peer.id);
-    console.log(this.props);
-    console.log('boom');
-  }
-
 
   render() {
     return (
