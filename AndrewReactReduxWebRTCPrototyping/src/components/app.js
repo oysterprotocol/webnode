@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { changeOwnPeerId, addTransaction } from '../actions/index';
+import { storageWebNodeAdd } from '../actions/storage-actions'
 import { bindActionCreators } from 'redux';
 
 import WebnodeList from '../containers/webnode-list';
@@ -35,8 +36,6 @@ class App extends Component {
 
     //listening to other nodes, for now they will just say hi.
     this.local_state.peer.on('connection', function(conn){
-          console.log('Connection Established with: ', conn.peer);
-
           conn.on('data', receiveMessage);
     });
   }
@@ -54,26 +53,54 @@ class App extends Component {
       console.log("iterating");
       console.log(this.props);
 
-      var connection = this.local_state.peer.connect(this.props.selected_webnode);
+
+      this.props.storageWebNodeAdd("abc");
+      console.log(this.props);
+
+      //test add
+
+
+    //var connection = this.local_state.peer.connect(this.props.selected_webnode);
+
+//select random addfress
+
+
+//if the address is webnode wn webnode
+      //startTransactionWithWebnode()
+
+//if addfress is broker
+    //  startTransactionWithBroker()
 
       // connection.on('open', function(conn) {
-      //
-      //   //state no longer in scope.  Not sure how to get it from redux.
-      //   console.log(this.props);
-      //   connection.send({ request: "START_TRANSACTION", data: "HELLO WEBNODE WORLD", returnAddress: this.props.own_peer_id });
+      //   console.log('opening connection to send start transaction message');
+      //   connection.send({ request: "START_TRANSACTION", data: "HELLO WEBNODE WORLD", returnAddress:  connection.provider.id});
       // });
-      connection.on('open', function(conn) {
-        console.log('opening connection to send start transaction message');
-        console.log(connection);
-        //state no longer in scope.  Not sure how to get it from redux.
-        console.log(this.props);
-        connection.send({ request: "START_TRANSACTION", data: "HELLO WEBNODE WORLD", returnAddress:  connection.provider.id});
-      });
 
       this.iterate();
     });
 
   }
+
+///
+  startTransactionWithWebnode(){
+    var connection = this.local_state.peer.connect(this.props.selected_webnode);
+
+    connection.on('open', function(conn) {
+      console.log('opening connection to send start transaction message');
+      connection.send({ request: "START_TRANSACTION", data: "HELLO WEBNODE WORLD", returnAddress:  connection.provider.id});
+    });
+
+    //this.iterate();
+  }
+
+  // st(){
+  //
+  //   call 1
+  //   get reutnr
+  //   do stuff
+  //   call 2
+  //   etc...
+  // }
 
   render() {
     return (
@@ -88,17 +115,24 @@ class App extends Component {
 }
 
 
-function receiveMessage(data, local_peer){
+function receiveMessage(data){
 
-  //getr request type
+  //TODO:  MOVE INTO SWTCH STATEMENT
+  // switch(data.request){
+  //
+  // }
+
+
   if(data.request == "START_TRANSACTION"){
     console.log("we have a transaction to start");
 
     //put new item transaction table, get the transaction id.
-    
+
 
     //get the items
-    //IF WE HAVE TO EXPLICITLY SEND BACK A MESSAGE IT WILL LOOK SOMETHING LIKE:
+
+
+    //EXPLICITLY SEND BACK A MESSAGE:
     var newid = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 8);
     var temp_peer = new Peer(newid, {key: 'lwjd5qra8257b9'});
 
@@ -113,16 +147,12 @@ function receiveMessage(data, local_peer){
     })
     //hACK TO GET IT TO work
 
-
-    //send a message to the sending node, or return
   }
   else if(data.request == "START_TRANSACTION_RESPONSE"){
     console.log("oh look they got my request and are now offering a list blahblah");
+    //store transaction id, etc
   }
-  //switch
 
-  //case start transaction
-  //case select item
 
   console.log(data);
 }
@@ -135,12 +165,13 @@ function sleep(ms) {
 function mapStateToProps(state){
   return{
     selected_webnode: state.selected_webnode,
-    own_peer_id: state.nodeinfo
+    own_peer_id: state.nodeinfo,
+    storage: state.storage
   };
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({ changeOwnPeerId: changeOwnPeerId, addTransaction: addTransaction }, dispatch)
+    return bindActionCreators({ changeOwnPeerId: changeOwnPeerId, addTransaction: addTransaction, storageWebNodeAdd: storageWebNodeAdd }, dispatch)
 }
 
 
