@@ -13,8 +13,7 @@ class StorageBootstrap extends Component {
       storageWebNodeAddFn,
       storageGenesisHashAddFn,
       storageExchangesAddFn,
-      storagePeerIdChangeFn,
-      peerId
+      storagePeerIdChangeFn
     } = props;
 
     console.log('DEMO 0');
@@ -54,10 +53,6 @@ class StorageBootstrap extends Component {
     const mergeStorage = this._compareListFn(prepareList, listHash);
     console.log('diffrent list -> ');
     console.log(mergeStorage);
-
-    console.log('DEMO 4');
-    
-    console.log('peerID -> ' + peerId);
   }
 
   _jsonToObjectFn(jsonObject) {
@@ -171,34 +166,22 @@ class StorageBootstrap extends Component {
   onSubmit(e) {
     e.preventDefault();
 
-    const { peer } = this.props;
+    const { onSendMessage } = this.props;
     const { peerId, message } = this.refs;
 
-    const conn = peer.connect(peerId.value);
-    const val = message.value;
+    const peerValue = peerId.value;
+    const value = message.value;
 
-    conn.on('open', function(){
-      conn.send({'request_type': val, 'need_type': val});
-    });
+    console.log('DEMO 4');
+    onSendMessage(value + 'DEMO 4', peerValue);
   }
 
   render(props) {
-    const { peer } = this.props;
-    peer.on('open', function(id) {
-      console.log('Peer ID -> ' + id);
-    })
-
-    peer.on('connection', function(conn) {
-      conn.on('data', function(data){
-        console.log('Received data -> ' + data.request_type);
-      });
-    });
-
     return (
       <div className="App">
           <form onSubmit={this.onSubmit.bind(this)}>
             <div>
-              <label>Peer id {peer.id}</label>
+              <label>Peer id</label>
               <input type="text" ref="peerId" />
               <label>Message</label>
               <input type="text" ref="message" />
@@ -211,18 +194,16 @@ class StorageBootstrap extends Component {
 }
 
 StorageBootstrap.propTypes = {
-    peerId: PropTypes.string,
-    storage: PropTypes.object.isRequired,
-    storageBrokerNodeAddFn: PropTypes.func.isRequired, 
-    storageWebNodeAddFn: PropTypes.func.isRequired,
-    storageGenesisHashAddFn: PropTypes.func.isRequired,
-    storageExchangesAddFn: PropTypes.func.isRequired,
-    storagePeerIdChangeFn: PropTypes.func.isRequired
+  storage: PropTypes.object.isRequired,
+  storageBrokerNodeAddFn: PropTypes.func.isRequired, 
+  storageWebNodeAddFn: PropTypes.func.isRequired,
+  storageGenesisHashAddFn: PropTypes.func.isRequired,
+  storageExchangesAddFn: PropTypes.func.isRequired,
+  storagePeerIdChangeFn: PropTypes.func.isRequired,
+  onSendMessage: PropTypes.func.isRequired,
 };
 
 StorageBootstrap.defaultProps = {
-    peerId: 'not initialized',
-    connectedPeerIds: [],
 };
 
 export default StorageBootstrap;
