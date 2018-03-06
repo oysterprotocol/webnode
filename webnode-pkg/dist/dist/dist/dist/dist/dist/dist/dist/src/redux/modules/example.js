@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -15,7 +15,7 @@ var _extends = Object.assign || function (target) {
   }return target;
 };
 
-var _config = require("../../../config");
+var _config = require('../../../config');
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -24,7 +24,7 @@ function _interopRequireDefault(obj) {
 }
 
 var EXAMPLE_ACTIONS = exports.EXAMPLE_ACTIONS = Object.freeze({
-  INCREMENT: _config2.default.APP_NAME + "/example/increment"
+  INCREMENT: _config2.default.APP_NAME + '/example/increment'
 });
 
 var exampleActions = exports.exampleActions = Object.freeze({

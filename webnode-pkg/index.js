@@ -1,6 +1,10 @@
 import _ from "lodash";
 import redux from "./src/redux";
 
-console.log("heyyyyyyyy: ", redux);
+exports.myFunction = () => {
+  console.log("when loaded as an npm module and called");
+};
 
-exports.run = () => {};
+if (!module.parent) {
+  console.log("when loaded as a script");
+}

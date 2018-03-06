@@ -10,6 +10,10 @@ var _redux2 = _interopRequireDefault(_redux);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log("heyyyyyyyy: ", _redux2.default);
+exports.myFunction = function () {
+  console.log("when loaded as an npm module and called");
+};
 
-exports.run = function () {};
+if (!module.parent) {
+  console.log("when loaded as a script");
+}

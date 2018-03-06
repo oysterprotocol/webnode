@@ -1,6 +1,6 @@
 "use strict";
 
-var _redux = require("src/redux");
+var _redux = require("./src/redux");
 
 var _redux2 = _interopRequireDefault(_redux);
 
