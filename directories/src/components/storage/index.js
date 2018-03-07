@@ -8,6 +8,8 @@ import StorageBootstrap from 'components/storage/storage-bootstrap';
 
 import { requestPeerReceive, requestPeerSend } from '../../redux/actions/peer-actions';
 
+import { requestPrepareTranfers } from '../../redux/actions/iota-actions';
+
 import {
   fetchItemsRequest,
   givePeerId,
@@ -27,6 +29,7 @@ class Storage extends Component {
   static propTypes = {
     requestPeerReceive: PropTypes.func.isRequired,
     requestPeerSend: PropTypes.func.isRequired,
+    requestPrepareTranfers: PropTypes.func.isRequired,
   }
 
   state = {
@@ -35,11 +38,22 @@ class Storage extends Component {
 
   componentWillMount() {
     const peer = peerInit();
-    const { givePeerId, startTransaction, selectNeed } = this.props;
+    const { givePeerId, startTransaction, selectNeed, requestPrepareTranfers } = this.props;
     this.setState({ peer });
     givePeerId({ peerid: peer.id });
     startTransaction({ need_requested: 'hi!Api' });
     selectNeed({ txid: 'hi!Api', item_selected: 'hash' });
+
+    //IOTA
+    const data = {
+      'seed': 'ffBDOTCPZXAVYLUGZXRSBFXJFHFUBVWOKOOLADSBBBEJAITUSVOMCHOHBM9LAFHFZLVEGTDWYGGJ9UZ9999',
+      'address': 'SSEWOZSDXOVIURQRBTBDLQXWIXOLEUXHYBGAVASVPZ9HBTYJJEWBR9PDTGMXZGKPTGSUDW9QLFPJHTIEQZNXDGNRJE',
+      'value': 0,
+      'message': 'SOMECOOLMESSAGE',
+      'tag': 'SOMECOOLTAG'
+    };
+
+    requestPrepareTranfers(data);
   }
 
   componentDidMount() {
@@ -96,5 +110,6 @@ export default connect(mapStateToProps, {
   fetchItemsRequest,
   givePeerId,
   startTransaction,
-  selectNeed
+  selectNeed,
+  requestPrepareTranfers
 })(Storage);

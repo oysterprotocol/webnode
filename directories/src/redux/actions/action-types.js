@@ -16,3 +16,6 @@ export const API_FETCH_ITEMS = 'directories/api/fetch/items/request';
 export const API_START_TRANSACTION = 'directories/api/start/transaction';
 export const API_GIVE_PEER_ID = 'directories/api/give/peer/id';
 export const API_SELECT_NEED = 'directories/api/select/need';
+
+export const IOTA_PREPARE_TRANSFERS = 'directories/iota/prepare/transfers';
+export const IOTA_PREPARE_TRANSFERS_SUCCESS = 'directories/iota/prepare/transfers/success';
