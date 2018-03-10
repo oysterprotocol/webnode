@@ -10,7 +10,14 @@ import {requestPeerReceive, requestPeerSend} from '../../redux/actions/peer-acti
 
 import {requestPrepareTransfers} from '../../redux/actions/iota-actions';
 import {fulfillPrepareTransfers} from '../../redux/actions/iota-actions';
-import {requestPoW} from '../../redux/actions/iota-actions';
+import {requestPoW} from '../../redux/actions/pow-actions';
+import {fulfillPoW} from '../../redux/actions/pow-actions';
+
+import {transactionObject} from 'iota.lib.js/lib/utils/utils.js';
+
+import {broadcastToHooks} from "../../services/broadcast";
+
+import _ from 'lodash';
 
 import {
     fetchItemsRequest,
@@ -34,15 +41,24 @@ class Storage extends Component {
         requestPrepareTransfers: PropTypes.func.isRequired,
         fulfillPrepareTransfers: PropTypes.func.isRequired,
         requestPoW: PropTypes.func.isRequired,
+        fulfillPoW: PropTypes.func.isRequired,
     };
 
     state = {
-        peer: null
+        peer: null,
     };
 
     componentWillMount() {
         const peer = peerInit();
-        const {givePeerId, startTransaction, selectNeed, requestPrepareTransfers, fulfillPrepareTransfers, requestPoW} = this.props;
+        const {
+            givePeerId,
+            startTransaction,
+            selectNeed,
+            requestPrepareTransfers,
+            fulfillPrepareTransfers,
+            requestPoW,
+            fulfillPoW
+        } = this.props;
         this.setState({peer});
         givePeerId({peerid: peer.id});
         startTransaction({need_requested: 'hi!Api'});
@@ -51,35 +67,41 @@ class Storage extends Component {
         //IOTA
         const data = {
             'seed': 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-            'address': 'SSEWOZSDXOVIURQRBTBDLQXWIXOLEUXHYBGAVASVPZ9HBTYJJEWBR9PDTGMXZGKPTGSUDW9QLFPJHTIEQ',
+            'address': 'OYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEB',
             'value': 0,
             'message': 'SOMECOOLMESSAGE',
-            'tag': 'SOMECOOLTAG'
+            'tag': 'OYSTERWEBNODEWORKING'
         };
 
-        console.log('------------------------------');
-        console.log('------------------------------');
-        console.log('------------------------------');
-        console.log('------------------------------');
-        console.log('------------------------------');
-        console.log('------------------------------');
-        console.log('------------------------------');
+        const dummyTrunk = '9KCCKUWJUCCXGAEQTHKYUFDU9OOMEAVKCJZBBVUTVPOMJNVGHBC9UJOJTAOARFKWGI9EPMCJKFVX99999';
+        const dummyBranch = '9ETBMNMZUXKXNGEGGHLLMQSIK9TBZEDVQUAIARPDFDWQWJFNECPHPVUIFAPWJQ9MDOCUFICJCDXSA9999';
+        const mwm = 14;
 
-        var result = requestPrepareTransfers(data);
-        var result2 = fulfillPrepareTransfers();
+        requestPrepareTransfers(data);
 
-        console.log('RESULT IS');
-        console.log(result);
-        console.log('RESULT2 IS');
-        console.log(result2);
+        const powParams = {
+            trunkTransaction: dummyTrunk,
+            branchTransaction: dummyBranch,
+            mwm: mwm,
+            trytes: [this.props.iota.iotaTransactionReceive[0].prepareTransfers[0]],
+            callback: function (error, result) {
 
-        console.log('------------------------------');
-        console.log('------------------------------');
-        console.log('------------------------------');
-        console.log('------------------------------');
-        console.log('------------------------------');
-        console.log('------------------------------');
-        console.log('------------------------------');
+                let transaction = transactionObject(result[0]);
+                let Transaction = {};
+
+                fulfillPoW(transaction);
+
+                _.forEach(transaction, function(value, key) {
+                   Transaction[_.startCase(key)] = value;
+                });
+
+                let hardcodedHooks = ['54.208.39.116'];
+
+                broadcastToHooks({trytes: [Transaction]}, hardcodedHooks);
+            }
+        };
+
+        requestPoW(powParams);
     }
 
     componentDidMount() {
@@ -93,7 +115,6 @@ class Storage extends Component {
 
     render() {
         const {peer} = this.state;
-        console.log(peer);
         const {
             storage,
             storageBrokerNodeAdd,
@@ -102,8 +123,6 @@ class Storage extends Component {
             storageExchangesAdd,
             storagePeerIdChange
         } = this.props;
-
-        console.log(this.props);
 
         return (
             <StorageBootstrap
@@ -122,7 +141,10 @@ class Storage extends Component {
 
 const mapStateToProps = state => ({
     storage: state.storage,
-    items: state.items
+    items: state.items,
+    iota: state.iota,
+    pow: state.pow
+
 });
 
 export default connect(mapStateToProps, {
@@ -139,5 +161,6 @@ export default connect(mapStateToProps, {
     selectNeed,
     requestPrepareTransfers,
     fulfillPrepareTransfers,
-    requestPoW
+    requestPoW,
+    fulfillPoW
 })(Storage);

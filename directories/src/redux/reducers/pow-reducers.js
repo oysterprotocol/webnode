@@ -1,21 +1,21 @@
 import {
-    IOTA_PREPARE_TRANSFERS_SUCCESS,
+    IOTA_POW_SUCCESS,
 } from '../actions/action-types';
 
 const initState = {
-    iotaTransactionReceive: [],
+    powResults: [],
 };
 
 export default (state = initState, action) => {
 
     switch (action.type) {
-        case IOTA_PREPARE_TRANSFERS_SUCCESS:
+        case IOTA_POW_SUCCESS:
             // return {
             //     ...state,
-            //     iotaTransactionReceive: [...state.iotaTransactionReceive, action.payload]
+            //     powResults: [...state.powResults, action.payload]
             // };
             return {
-                iotaTransactionReceive: [action.payload]
+                powResults: [action.payload]
             };
 
         default:
