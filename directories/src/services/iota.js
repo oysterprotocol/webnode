@@ -73,7 +73,12 @@ export const attachToTangleCurl = (data) => {
 
         function getBundleTrytes(thisTrytes, callback) {
             let txObject = iota.utils.transactionObject(thisTrytes);
-            txObject.tag = txObject.obsoleteTag;
+
+            /*Commenting this out.  We potentially want to be able to search
+            using tags, at least until mainnet comes out.*/
+
+            //txObject.tag = txObject.obsoleteTag;
+
             txObject.attachmentTimestamp = Date.now();
             txObject.attachmentTimestampLowerBound = 0;
             txObject.attachmentTimestampUpperBound = MAX_TIMESTAMP_VALUE;

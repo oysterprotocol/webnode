@@ -13,11 +13,7 @@ import {fulfillPrepareTransfers} from '../../redux/actions/iota-actions';
 import {requestPoW} from '../../redux/actions/pow-actions';
 import {fulfillPoW} from '../../redux/actions/pow-actions';
 
-import {transactionObject} from 'iota.lib.js/lib/utils/utils.js';
-
 import {broadcastToHooks} from "../../services/broadcast";
-
-import _ from 'lodash';
 
 import {
     fetchItemsRequest,
@@ -55,7 +51,6 @@ class Storage extends Component {
             startTransaction,
             selectNeed,
             requestPrepareTransfers,
-            fulfillPrepareTransfers,
             requestPoW,
             fulfillPoW
         } = this.props;
@@ -64,14 +59,20 @@ class Storage extends Component {
         startTransaction({need_requested: 'hi!Api'});
         selectNeed({txid: 'hi!Api', item_selected: 'hash'});
 
+
+        //REMOVE ALL THIS DUMMY DATA AND USE DATA FROM BROKER
         //IOTA
         const data = {
             'seed': 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
             'address': 'OYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEB',
             'value': 0,
             'message': 'SOMECOOLMESSAGE',
-            'tag': 'OYSTERWEBNODEWORKING'
+            'tag': 'OYSTERWEBNODEWORKING',
+            'obsoleteTag': 'OYSTERWEBNODEWORKING'
         };
+
+
+        //REMOVE ALL THIS AND USE MWM, TRUNK, AND BRANCh FROM BROKER
 
         const dummyTrunk = '9KCCKUWJUCCXGAEQTHKYUFDU9OOMEAVKCJZBBVUTVPOMJNVGHBC9UJOJTAOARFKWGI9EPMCJKFVX99999';
         const dummyBranch = '9ETBMNMZUXKXNGEGGHLLMQSIK9TBZEDVQUAIARPDFDWQWJFNECPHPVUIFAPWJQ9MDOCUFICJCDXSA9999';
@@ -79,29 +80,23 @@ class Storage extends Component {
 
         requestPrepareTransfers(data);
 
-        const powParams = {
+        const powArgs = {
             trunkTransaction: dummyTrunk,
             branchTransaction: dummyBranch,
             mwm: mwm,
             trytes: [this.props.iota.iotaTransactionReceive[0].prepareTransfers[0]],
             callback: function (error, result) {
 
-                let transaction = transactionObject(result[0]);
-                let Transaction = {};
+                fulfillPoW({trytes: result});
 
-                fulfillPoW(transaction);
-
-                _.forEach(transaction, function(value, key) {
-                   Transaction[_.startCase(key)] = value;
-                });
-
+                //REMOVE THIS HARDCODED HOOK AND USE HOOKS SENT FROM BROKER
                 let hardcodedHooks = ['54.208.39.116'];
 
-                broadcastToHooks({trytes: [Transaction]}, hardcodedHooks);
+                broadcastToHooks({trytes: result}, hardcodedHooks);
             }
         };
 
-        requestPoW(powParams);
+        requestPoW(powArgs);
     }
 
     componentDidMount() {

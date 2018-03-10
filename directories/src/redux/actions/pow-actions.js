@@ -10,5 +10,5 @@ export const requestPoW = (data) => ({
 
 export const fulfillPoW = (payload) => ({
     type: IOTA_POW_SUCCESS,
-    payload: {transactionObject: payload}
+    payload
 });
