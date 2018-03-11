@@ -1,7 +1,6 @@
+import "rxjs";
 import { combineEpics } from "redux-observable";
+import peerEpics from "./peer-epics";
+import iotaEpics from "./iota-epics";
 
-import peerEpic from "redux/epics/peer-epic";
-
-
-export default combineEpics(
-);
+export default combineEpics(peerEpics, iotaEpics);

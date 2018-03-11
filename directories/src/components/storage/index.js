@@ -1,44 +1,154 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import { selectPeerId, selectConnectedPeerIds } from '../../utils/selectors';
-import peerActions from '../../redux/actions/peer-actions';
-import storageActions from '../../redux/actions/storage-actions';
+import { peerInit } from "../../redux/api/";
 
-import StorageBootstrap from 'components/storage/storage-bootstrap';
+import StorageBootstrap from "components/storage/storage-bootstrap";
+
+import {
+  requestPeerReceive,
+  requestPeerSend
+} from "../../redux/actions/peer-actions";
+
+import {
+  requestPrepareTranfers,
+  requestAttachToTangle
+} from "../../redux/actions/iota-actions";
+
+import {
+  fetchItemsRequest,
+  givePeerId,
+  startTransaction,
+  selectItem,
+  confirmWork
+} from "../../redux/actions/items-actions";
+
+import {
+  storageBrokerNodeAdd,
+  storageWebNodeAdd,
+  storageGenesisHashAdd,
+  storageExchangesAdd,
+  storagePeerIdChange
+} from "../../redux/actions/storage-actions";
+
+class Storage extends Component {
+  static propTypes = {
+    requestPeerReceive: PropTypes.func.isRequired,
+    requestPeerSend: PropTypes.func.isRequired,
+    requestPrepareTranfers: PropTypes.func.isRequired
+  };
+
+  state = {
+    peer: null
+  };
+
+  componentWillMount() {
+    const peer = peerInit();
+    const {
+      givePeerId,
+      startTransaction,
+      selectItem,
+      confirmWork,
+      requestPrepareTranfers,
+      requestAttachToTangle
+    } = this.props;
+    this.setState({ peer });
+    givePeerId({ peerid: peer.id });
+    startTransaction({ need_requested: "hi!Api" });
+    selectItem({ txid: "hi!Api", itemIndex: "hash" });
+    confirmWork({ txid: "hi!Api", selectItem: "hash" });
+
+    //IOTA
+    // prepareTranfers
+    const dataPrepareTransfers = {
+      address:
+        "RCZA9BWARCABABXA9BCBCBPCPCTCBBPCSCVAUCWAVAXAPCPCUARCRCRCUASC9BZAZARCBBRCPCVARCZAR",
+      seed:
+        "RCZA9BWARCABABXA9BCBCBPCPCTCBBPCSCVAUCWAVAXAPCPCUARCRCRCUASC9BZAZARCBBRCPCVARCZAR",
+      value: 0,
+      message:
+        "DCWAPBGDSCQBECZCGCVACBLDMBYBUCADBDABWCUBLBACYABDSBECCBWCVA9DBDCCRBFCPCUAWATBUBRBBBLDFDHDZAQCQCPCKBZCZBXACCGDBBABOB9CACYBYCXAND9BPAYBCDMBYBLDPCECWCIDKBBDPAXASB9CGDABCDGDBCKDGBGB",
+      tag: "EIGHT"
+    };
+
+    requestPrepareTranfers(dataPrepareTransfers);
+
+    const trytes = [
+      "CCUCPBGDHCTAMBICQCSCXBKBAC9BUBSCZCDCQCFCGDUCGDMDJDQBTAMBWCIDUCFDWALDZCXANBTBEDHDXABDPBPBRBTBOBCDMBCBICWAWCICQBYBACICBBPBTBKBABXCXBGDGCNBUBECIDQCZCSBGCXBWBMBCCYB9DDDZCHCICCBTCUCECHCXCOB9DGC9BNDYBUBNDPAMBCDQBCDBBXCYBPBMBSBPBQCSCACZBEDEDDCBD9CADVBYCVBZCYCCDVCYBCDRB9BBCWBECADDCNDTCWAZATBXBHCYBUAHDFCBBCDSCYAHDJDSCOB9DQCPCCBUBPCUARCQCGCZBICMDACJDUAHD9BUC9CHDXBYCHCPAFD9CUBUAHCICMBYCND9BGCNBIDBCIDSBCBFDNBMBBBQB9CNDVARCKBQCNBZBDDYBLB9DSBCCXARCLDDDCBOBOB9CBBUCABUCGCHCIDYCECHC9COBBCEDGDRBABYA9DXBABMBFCKDWBWAKDKDVAVBTATAABADWAZCUBSCMDRBEDZB9CVCVC9DNDXABCNDWBXBPAACXCLDOBGCWBYAXACCXAMDECTCBBYACDDCBBNBTAICNDIDTCHCNBNDWAIDDDSBSCPC9DFCCBZCYCLDXBUAPAIDADICVCIDADUCYBKDBCSBXCTCVAECVAICCBGCVBBDTBYCWBFDYAGDUCDCPCQBJD9DEDCBMDUBGDNBNB9DCCXCTAWCVAPA9CXCCBQBRCRCMBECLBTBQBLBACRCTB9DBC9BPBOBIDBBYAEDIDHDSBJD9BBCYATCKBBCIDADQBDDXAYAMD9BYCPAXBADQBVBVBSBWAZC9DKDECTCHDNBFCJDWBBCNDICZATAHDUBNDABWCID9BGCRBMDWCCC9BADXCWAZABC9DUBECUAECUCIDUCNBQBMDUCUCQBTBACPAKDEDDDTAPAFCKBWAKBTAVBRBTBUABCABGCCBNBDDZATAMDWBWABDUANBQCWCXBYAWBPC9CQBVAACLBCCWAHD9DSCPBXBNDBBVC9DUBLBCDVBMBDCWBUAACDDNBHCUAHDDDIDBDBCVCWAGCRBHDEDBDWBGB99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999WATCTCZACBABCBQCRCTCRCPCZAQCVAYAXAABUAXACBSCUCVASCUCXASCYAVAUCUCQCXAPCYAXAABBBRCZ999999999999999999999999999HFDISLAVTEST999999999999999DRG9YYD99999999999999999999FYEIJDOWZBEVGCPIYXZRRIZJTKOCZFQMIFKUDNKLABZFLZCJCYOHKZXAUJGYCTBPAYHUATVEEQJOHHJTW999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999LADISLAVTEST999999999999999999999999999999999999999999999999999999999999999999999"
+    ];
+
+    // attachToTangle
+    const dataAttachToTangle = {
+      trunkTransaction:
+        "EGCR9VGZCOTVMKUZCOULKKDQTYFAOJYUMHIKWBZCMADRUGOBIRTNDCOMGRCRMCUCPXJNGSVVUKVE99999",
+      branchTransaction:
+        "RRKBLOOWRRBHDX9OAHWARDBVFIPZTS9AWMOXBFXVSOJGGRTEMOPWHUND9SGDGMEKKDJZEEGTHHHBA9999",
+      minWeight: 18,
+      trytes: trytes
+    };
+
+    requestAttachToTangle(dataAttachToTangle);
+  }
+
+  componentDidMount() {
+    this.props.requestPeerReceive(this.state.peer);
+  }
+
+  sendMessage = (message, receiver) => {
+    const { peer } = this.state;
+    this.props.requestPeerSend(peer, receiver, message);
+  };
+
+  render() {
+    const { peer } = this.state;
+    console.log(peer);
+    const {
+      storage,
+      storageBrokerNodeAdd,
+      storageWebNodeAdd,
+      storageGenesisHashAdd,
+      storageExchangesAdd,
+      storagePeerIdChange
+    } = this.props;
+
+    console.log(this.props);
+
+    return (
+      <StorageBootstrap
+        storage={storage}
+        storageBrokerNodeAddFn={storageBrokerNodeAdd}
+        storageWebNodeAddFn={storageWebNodeAdd}
+        storageGenesisHashAddFn={storageGenesisHashAdd}
+        storageExchangesAddFn={storageExchangesAdd}
+        storagePeerIdChangeFn={storagePeerIdChange}
+        onSendMessage={(message, receiver) =>
+          this.sendMessage(message, receiver)
+        }
+        peer={peer}
+      />
+    );
+  }
+}
 
 const mapStateToProps = state => ({
-	storage: state.storage,
-  peerId: selectPeerId(state),
-  connectedPeerIds: selectConnectedPeerIds(state)
+  storage: state.storage,
+  items: state.items
 });
 
-const mapDispatchToProps = dispatch => ({
-  storageBrokerNodeAddFn: item =>
-    dispatch(storageActions.storageBrokerNodeAddAction(item)),
-  storageWebNodeAddFn: item =>
-    dispatch(storageActions.storageWebNodeAddAction(item)),
-  storageGenesisHashAddFn: item =>
-    dispatch(storageActions.storageGenesisHashAddAction(item)),
-  storageExchangesAddFn: (transaction_id, need_requested) =>
-    dispatch(storageActions.storageExchangesAddAction(transaction_id, need_requested)),
-  storagePeerIdChangeFn: item =>
-    dispatch(storageActions.storagePeerIdChangeAction(item)),
-  peerInitFn: () =>
-    dispatch(peerActions.peerInitAction()),
-  peerConnectToFn: item =>
-    dispatch(peerActions.peerConnectToAction(item)),
-});
-
-const Storage = ({ storage, storageBrokerNodeAddFn, storageWebNodeAddFn, storageGenesisHashAddFn, storageExchangesAddFn, storagePeerIdChangeFn, peer }) => (
-  <StorageBootstrap storage={storage} 
-  	storageBrokerNodeAddFn={storageBrokerNodeAddFn}
-  	storageWebNodeAddFn={storageWebNodeAddFn}
-  	storageGenesisHashAddFn={storageGenesisHashAddFn}
-    storageExchangesAddFn={storageExchangesAddFn}
-    storagePeerIdChangeFn={storagePeerIdChangeFn}
-    peer={peer}
-  />
-);
-
-export default connect(mapStateToProps, mapDispatchToProps)(Storage);
+export default connect(mapStateToProps, {
+  requestPeerReceive,
+  requestPeerSend,
+  storageBrokerNodeAdd,
+  storageWebNodeAdd,
+  storageGenesisHashAdd,
+  storageExchangesAdd,
+  storagePeerIdChange,
+  fetchItemsRequest,
+  givePeerId,
+  startTransaction,
+  selectItem,
+  confirmWork,
+  requestPrepareTranfers,
+  requestAttachToTangle
+})(Storage);
