@@ -1,22 +1,27 @@
 import {
-  IOTA_PREPARE_TRANSFERS_SUCCESS
-} from '../actions/action-types';
+  IOTA_PREPARE_TRANSFERS_SUCCESS,
+  IOTA_ATTACH_TO_TANGLE_SUCCESS
+} from "../actions/action-types";
 
 const initState = {
-  iotaTransactionReceive: []
+  iotaPrepareTransfers: [],
+  iotaAttachToTangle: []
 };
 
 export default (state = initState, action) => {
- 
-  switch(action.type) {
-
+  switch (action.type) {
     case IOTA_PREPARE_TRANSFERS_SUCCESS:
       return {
         ...state,
-        iotaTransactionReceive: [...state.iotaTransactionReceive, action.payload]
-      }
-    
+        iotaPrepareTransfers: [...state.iotaPrepareTransfers, action.payload]
+      };
+    case IOTA_ATTACH_TO_TANGLE_SUCCESS:
+      return {
+        ...state,
+        iotaAttachToTangle: [...state.iotaAttachToTangle, action.payload]
+      };
+
     default:
       return state;
   }
-}
+};

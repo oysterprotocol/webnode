@@ -1,37 +1,42 @@
 import {
   API_GIVE_PEER_ID,
   API_START_TRANSACTION,
-  API_SELECT_NEED
-} from '../actions/action-types';
+  API_SELECT_ITEM
+} from "../actions/action-types";
 
-import {
-  API_REQUEST_ERROR
-} from '../../config/';
+import { API_REQUEST_ERROR } from "../../config/";
 
 const initState = {
-  transaction: { txId: '', items: [] },
-  item: {}
+  transaction: { txId: "" },
+  selectItem: { message: "", address: "" }
 };
 
 export default (state = initState, action) => {
-
   const payload = action.payload;
-  if(payload && payload.error === API_REQUEST_ERROR) {
-     action.type = API_REQUEST_ERROR; 
+  if (payload && payload.error === API_REQUEST_ERROR) {
+    action.type = API_REQUEST_ERROR;
   }
- 
-  switch(action.type) {
 
+  switch (action.type) {
     case API_START_TRANSACTION:
-      return { ...state, transaction: { txId: payload.data.txtid, items: payload.data.items } }
+      return {
+        ...state,
+        transaction: { txId: payload.data.txtid }
+      };
 
-    case API_SELECT_NEED:
-      return { ...state, item: action.payload.data.item };
+    case API_SELECT_ITEM:
+      return {
+        ...state,
+        selectItem: {
+          message: action.payload.data.message,
+          address: action.payload.data.address
+        }
+      };
 
     case API_GIVE_PEER_ID:
       return state;
-    
+
     default:
       return state;
   }
-}
+};

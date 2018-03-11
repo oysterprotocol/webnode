@@ -1,59 +1,94 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import { peerInit } from '../../redux/api/';
+import { peerInit } from "../../redux/api/";
 
-import StorageBootstrap from 'components/storage/storage-bootstrap';
+import StorageBootstrap from "components/storage/storage-bootstrap";
 
-import { requestPeerReceive, requestPeerSend } from '../../redux/actions/peer-actions';
+import {
+  requestPeerReceive,
+  requestPeerSend
+} from "../../redux/actions/peer-actions";
 
-import { requestPrepareTranfers } from '../../redux/actions/iota-actions';
+import {
+  requestPrepareTranfers,
+  requestAttachToTangle
+} from "../../redux/actions/iota-actions";
 
 import {
   fetchItemsRequest,
   givePeerId,
   startTransaction,
-  selectNeed
-} from '../../redux/actions/items-actions';
+  selectItem,
+  confirmWork
+} from "../../redux/actions/items-actions";
 
-import { 
+import {
   storageBrokerNodeAdd,
   storageWebNodeAdd,
   storageGenesisHashAdd,
   storageExchangesAdd,
   storagePeerIdChange
-} from '../../redux/actions/storage-actions';
+} from "../../redux/actions/storage-actions";
 
 class Storage extends Component {
   static propTypes = {
     requestPeerReceive: PropTypes.func.isRequired,
     requestPeerSend: PropTypes.func.isRequired,
-    requestPrepareTranfers: PropTypes.func.isRequired,
-  }
+    requestPrepareTranfers: PropTypes.func.isRequired
+  };
 
   state = {
     peer: null
-  }
+  };
 
   componentWillMount() {
     const peer = peerInit();
-    const { givePeerId, startTransaction, selectNeed, requestPrepareTranfers } = this.props;
+    const {
+      givePeerId,
+      startTransaction,
+      selectItem,
+      confirmWork,
+      requestPrepareTranfers,
+      requestAttachToTangle
+    } = this.props;
     this.setState({ peer });
     givePeerId({ peerid: peer.id });
-    startTransaction({ need_requested: 'hi!Api' });
-    selectNeed({ txid: 'hi!Api', item_selected: 'hash' });
+    startTransaction({ need_requested: "hi!Api" });
+    selectItem({ txid: "hi!Api", itemIndex: "hash" });
+    confirmWork({ txid: "hi!Api", selectItem: "hash" });
 
     //IOTA
-    const data = {
-      'seed': 'seed',
-      'address': 'SSEWOZSDXOVIURQRBTBDLQXWIXOLEUXHYBGAVASVPZ9HBTYJJEWBR9PDTGMXZGKPTGSUDW9QLFPJHTIEQZNXDGNRJE',
-      'value': 0,
-      'message': 'SOMECOOLMESSAGE',
-      'tag': 'SOMECOOLTAG'
+    // prepareTranfers
+    const dataPrepareTransfers = {
+      address:
+        "RCZA9BWARCABABXA9BCBCBPCPCTCBBPCSCVAUCWAVAXAPCPCUARCRCRCUASC9BZAZARCBBRCPCVARCZAR",
+      seed:
+        "RCZA9BWARCABABXA9BCBCBPCPCTCBBPCSCVAUCWAVAXAPCPCUARCRCRCUASC9BZAZARCBBRCPCVARCZAR",
+      value: 0,
+      message:
+        "DCWAPBGDSCQBECZCGCVACBLDMBYBUCADBDABWCUBLBACYABDSBECCBWCVA9DBDCCRBFCPCUAWATBUBRBBBLDFDHDZAQCQCPCKBZCZBXACCGDBBABOB9CACYBYCXAND9BPAYBCDMBYBLDPCECWCIDKBBDPAXASB9CGDABCDGDBCKDGBGB",
+      tag: "EIGHT"
     };
 
-    requestPrepareTranfers(data);
+    requestPrepareTranfers(dataPrepareTransfers);
+
+    const trytes = [
+      "CCUCPBGDHCTAMBICQCSCXBKBAC9BUBSCZCDCQCFCGDUCGDMDJDQBTAMBWCIDUCFDWALDZCXANBTBEDHDXABDPBPBRBTBOBCDMBCBICWAWCICQBYBACICBBPBTBKBABXCXBGDGCNBUBECIDQCZCSBGCXBWBMBCCYB9DDDZCHCICCBTCUCECHCXCOB9DGC9BNDYBUBNDPAMBCDQBCDBBXCYBPBMBSBPBQCSCACZBEDEDDCBD9CADVBYCVBZCYCCDVCYBCDRB9BBCWBECADDCNDTCWAZATBXBHCYBUAHDFCBBCDSCYAHDJDSCOB9DQCPCCBUBPCUARCQCGCZBICMDACJDUAHD9BUC9CHDXBYCHCPAFD9CUBUAHCICMBYCND9BGCNBIDBCIDSBCBFDNBMBBBQB9CNDVARCKBQCNBZBDDYBLB9DSBCCXARCLDDDCBOBOB9CBBUCABUCGCHCIDYCECHC9COBBCEDGDRBABYA9DXBABMBFCKDWBWAKDKDVAVBTATAABADWAZCUBSCMDRBEDZB9CVCVC9DNDXABCNDWBXBPAACXCLDOBGCWBYAXACCXAMDECTCBBYACDDCBBNBTAICNDIDTCHCNBNDWAIDDDSBSCPC9DFCCBZCYCLDXBUAPAIDADICVCIDADUCYBKDBCSBXCTCVAECVAICCBGCVBBDTBYCWBFDYAGDUCDCPCQBJD9DEDCBMDUBGDNBNB9DCCXCTAWCVAPA9CXCCBQBRCRCMBECLBTBQBLBACRCTB9DBC9BPBOBIDBBYAEDIDHDSBJD9BBCYATCKBBCIDADQBDDXAYAMD9BYCPAXBADQBVBVBSBWAZC9DKDECTCHDNBFCJDWBBCNDICZATAHDUBNDABWCID9BGCRBMDWCCC9BADXCWAZABC9DUBECUAECUCIDUCNBQBMDUCUCQBTBACPAKDEDDDTAPAFCKBWAKBTAVBRBTBUABCABGCCBNBDDZATAMDWBWABDUANBQCWCXBYAWBPC9CQBVAACLBCCWAHD9DSCPBXBNDBBVC9DUBLBCDVBMBDCWBUAACDDNBHCUAHDDDIDBDBCVCWAGCRBHDEDBDWBGB99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999WATCTCZACBABCBQCRCTCRCPCZAQCVAYAXAABUAXACBSCUCVASCUCXASCYAVAUCUCQCXAPCYAXAABBBRCZ999999999999999999999999999HFDISLAVTEST999999999999999DRG9YYD99999999999999999999FYEIJDOWZBEVGCPIYXZRRIZJTKOCZFQMIFKUDNKLABZFLZCJCYOHKZXAUJGYCTBPAYHUATVEEQJOHHJTW999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999LADISLAVTEST999999999999999999999999999999999999999999999999999999999999999999999"
+    ];
+
+    // attachToTangle
+    const dataAttachToTangle = {
+      trunkTransaction:
+        "EGCR9VGZCOTVMKUZCOULKKDQTYFAOJYUMHIKWBZCMADRUGOBIRTNDCOMGRCRMCUCPXJNGSVVUKVE99999",
+      branchTransaction:
+        "RRKBLOOWRRBHDX9OAHWARDBVFIPZTS9AWMOXBFXVSOJGGRTEMOPWHUND9SGDGMEKKDJZEEGTHHHBA9999",
+      minWeight: 18,
+      trytes: trytes
+    };
+
+    requestAttachToTangle(dataAttachToTangle);
   }
 
   componentDidMount() {
@@ -63,34 +98,36 @@ class Storage extends Component {
   sendMessage = (message, receiver) => {
     const { peer } = this.state;
     this.props.requestPeerSend(peer, receiver, message);
-  }
+  };
 
   render() {
     const { peer } = this.state;
     console.log(peer);
-    const { 
-      storage, 
+    const {
+      storage,
       storageBrokerNodeAdd,
       storageWebNodeAdd,
-      storageGenesisHashAdd, 
+      storageGenesisHashAdd,
       storageExchangesAdd,
       storagePeerIdChange
-    } = this.props
-    
+    } = this.props;
+
     console.log(this.props);
-    
+
     return (
-      <StorageBootstrap 
-        storage={storage} 
+      <StorageBootstrap
+        storage={storage}
         storageBrokerNodeAddFn={storageBrokerNodeAdd}
         storageWebNodeAddFn={storageWebNodeAdd}
         storageGenesisHashAddFn={storageGenesisHashAdd}
         storageExchangesAddFn={storageExchangesAdd}
         storagePeerIdChangeFn={storagePeerIdChange}
-        onSendMessage={ (message, receiver) => this.sendMessage(message, receiver) }
+        onSendMessage={(message, receiver) =>
+          this.sendMessage(message, receiver)
+        }
         peer={peer}
       />
-    )
+    );
   }
 }
 
@@ -99,8 +136,8 @@ const mapStateToProps = state => ({
   items: state.items
 });
 
-export default connect(mapStateToProps, { 
-  requestPeerReceive, 
+export default connect(mapStateToProps, {
+  requestPeerReceive,
   requestPeerSend,
   storageBrokerNodeAdd,
   storageWebNodeAdd,
@@ -110,6 +147,8 @@ export default connect(mapStateToProps, {
   fetchItemsRequest,
   givePeerId,
   startTransaction,
-  selectNeed,
-  requestPrepareTranfers
+  selectItem,
+  confirmWork,
+  requestPrepareTranfers,
+  requestAttachToTangle
 })(Storage);

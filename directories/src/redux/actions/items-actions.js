@@ -2,17 +2,19 @@ import {
   API_FETCH_ITEMS,
   API_GIVE_PEER_ID,
   API_START_TRANSACTION,
-  API_SELECT_NEED
-} from './action-types';
+  API_SELECT_ITEM,
+  API_CONFIRM_WORK
+} from "./action-types";
 
-import { 
+import {
   requestFetchItems,
   requestGivePeerId,
   requestStartTransaction,
-  requestSelectNeed 
-} from '../services';
+  requestSelectItem,
+  requestConfirmWork
+} from "../services";
 
-export const fetchItemsRequest = (needle = '') => {
+export const fetchItemsRequest = (needle = "") => {
   const request = requestFetchItems(needle);
   return {
     type: API_FETCH_ITEMS,
@@ -20,7 +22,9 @@ export const fetchItemsRequest = (needle = '') => {
   };
 };
 
-export const givePeerId = (data = '') => {
+export const givePeerId = (data = "") => {
+  console.log("API DATA");
+  console.log(data);
   const request = requestGivePeerId(data);
   return {
     type: API_GIVE_PEER_ID,
@@ -28,7 +32,7 @@ export const givePeerId = (data = '') => {
   };
 };
 
-export const startTransaction = (data = '') => {
+export const startTransaction = (data = "") => {
   const request = requestStartTransaction(data);
   return {
     type: API_START_TRANSACTION,
@@ -36,10 +40,18 @@ export const startTransaction = (data = '') => {
   };
 };
 
-export const selectNeed = (data = '') => {
-  const request = requestSelectNeed(data);
+export const selectItem = (data = "") => {
+  const request = requestSelectItem(data);
   return {
-    type: API_SELECT_NEED,
+    type: API_SELECT_ITEM,
+    payload: request
+  };
+};
+
+export const confirmWork = (data = "") => {
+  const request = requestConfirmWork(data);
+  return {
+    type: API_CONFIRM_WORK,
     payload: request
   };
 };

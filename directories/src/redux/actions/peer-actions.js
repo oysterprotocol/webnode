@@ -1,18 +1,18 @@
 import {
   PEER_RECEIVE_REQUEST,
-  PEER_RECIEVE_SUCCESS,
+  PEER_RECEIVE_SUCCESS,
   PEER_SEND_REQUEST,
   PEER_SEND_SUCCESS
-} from './action-types';
+} from "./action-types";
 
 export const requestPeerReceive = peer => ({
   type: PEER_RECEIVE_REQUEST,
-  peer
+  payload: peer
 });
 
-export const fullfillPeerReceive = payload => ({
-  type: PEER_RECIEVE_SUCCESS,
-  payload
+export const fullfillPeerReceive = data => ({
+  type: PEER_RECEIVE_SUCCESS,
+  payload: data
 });
 
 export const requestPeerSend = (peer, receiver, message) => ({
@@ -25,7 +25,7 @@ export const requestPeerSend = (peer, receiver, message) => ({
   }
 });
 
-export const fullfillPeerSend = payload => ({
+export const fullfillPeerSend = data => ({
   type: PEER_SEND_SUCCESS,
-  payload
+  payload: data
 });
