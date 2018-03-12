@@ -96,6 +96,7 @@ class Storage extends Component {
 
                 fulfillPoW({trytes: result});
 
+                //REMOVE THIS HARDCODED HOOKNODE AND USE NODES SENT FROM THE BROKER
                 let hardcodedHooks = ['54.208.39.116'];
 
                 broadcastToHooks({trytes: result}, hardcodedHooks);
