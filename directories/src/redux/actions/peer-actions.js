@@ -3,7 +3,7 @@ import {
   PEER_RECIEVE_SUCCESS,
   PEER_SEND_REQUEST,
   PEER_SEND_SUCCESS
-} from './action-types';
+} from "./action-types";
 
 export const requestPeerReceive = peer => ({
   type: PEER_RECEIVE_REQUEST,
