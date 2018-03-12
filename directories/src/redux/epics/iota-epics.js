@@ -4,7 +4,6 @@ import {IOTA_PREPARE_TRANSFERS} from '../actions/action-types';
 import {fulfillPrepareTransfers} from '../actions/iota-actions';
 import {prepareTransfers} from '../../services/iota';
 
-
 const prepareTransfersEpics = (action$, store) => {
     return action$.ofType(IOTA_PREPARE_TRANSFERS).mergeMap(action => {
         const {data} = action.payload;

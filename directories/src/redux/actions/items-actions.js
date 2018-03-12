@@ -36,7 +36,7 @@ export const startTransaction = (data = '') => {
   };
 };
 
-export const selectNeed = (data = '') => {
+export const selectItem = (data = '') => {
   const request = requestSelectNeed(data);
   return {
     type: API_SELECT_NEED,

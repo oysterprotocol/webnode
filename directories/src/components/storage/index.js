@@ -19,7 +19,7 @@ import {
     fetchItemsRequest,
     givePeerId,
     startTransaction,
-    selectNeed
+    selectItem
 } from '../../redux/actions/items-actions';
 
 import {
@@ -49,15 +49,19 @@ class Storage extends Component {
         const {
             givePeerId,
             startTransaction,
-            selectNeed,
+            selectItem,
             requestPrepareTransfers,
             requestPoW,
-            fulfillPoW
+            fulfillPoW,
         } = this.props;
         this.setState({peer});
         givePeerId({peerid: peer.id});
         startTransaction({need_requested: 'hi!Api'});
-        selectNeed({txid: 'hi!Api', item_selected: 'hash'});
+        selectItem({txid: 'hi!Api', itemIndex: 0});
+
+        console.log(this.props);
+
+        debugger;
 
 
         //REMOVE ALL THIS DUMMY DATA AND USE DATA FROM BROKER
@@ -68,9 +72,7 @@ class Storage extends Component {
             'value': 0,
             'message': 'SOMECOOLMESSAGE',
             'tag': 'OYSTERWEBNODEWORKING',
-            'obsoleteTag': 'OYSTERWEBNODEWORKING'
         };
-
 
         //REMOVE ALL THIS AND USE MWM, TRUNK, AND BRANCh FROM BROKER
 
@@ -80,7 +82,7 @@ class Storage extends Component {
 
         requestPrepareTransfers(data);
 
-        const powArgs = {
+        requestPoW({
             trunkTransaction: dummyTrunk,
             branchTransaction: dummyBranch,
             mwm: mwm,
@@ -89,14 +91,11 @@ class Storage extends Component {
 
                 fulfillPoW({trytes: result});
 
-                //REMOVE THIS HARDCODED HOOK AND USE HOOKS SENT FROM BROKER
                 let hardcodedHooks = ['54.208.39.116'];
 
                 broadcastToHooks({trytes: result}, hardcodedHooks);
             }
-        };
-
-        requestPoW(powArgs);
+        });
     }
 
     componentDidMount() {
@@ -153,7 +152,7 @@ export default connect(mapStateToProps, {
     fetchItemsRequest,
     givePeerId,
     startTransaction,
-    selectNeed,
+    selectItem,
     requestPrepareTransfers,
     fulfillPrepareTransfers,
     requestPoW,

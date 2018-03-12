@@ -15,7 +15,7 @@ export const fetchGetApi = (url, needle = '', headers = API_HEADERS) => {
     	console.log('GET ' + error);
     	return {error: API_REQUEST_ERROR};
 	});
-}
+};
 
 export const fetchPostApi = (url, data = {}, headers = API_HEADERS) => {
 	return axios({
@@ -27,4 +27,4 @@ export const fetchPostApi = (url, data = {}, headers = API_HEADERS) => {
     	console.log('POST ' + error);
     	return {error: API_REQUEST_ERROR};
 	});
-}
+};
