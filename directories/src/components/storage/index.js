@@ -59,9 +59,14 @@ class Storage extends Component {
         startTransaction({need_requested: 'hi!Api'});
         selectItem({txid: 'hi!Api', itemIndex: 0});
 
-        console.log(this.props);
 
-        debugger;
+        // ^ The above call has not modified the state tree by the time
+        // we are ready to use the address, message, hooknodes, trunk, and branch
+        // which should be at state.item
+
+        // don't know enough about redux to know the best patterns to use to
+        // wait until this data is available.
+
 
 
         //REMOVE ALL THIS DUMMY DATA AND USE DATA FROM BROKER
