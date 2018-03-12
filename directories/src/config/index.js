@@ -4,6 +4,8 @@ export const API_ROOT_URL =
     : "http://159.65.224.105:3000";
 export const API_HEADERS = [("Content-type": "application/json")];
 export const API_REQUEST_ERROR = "API_REQUEST_ERROR";
+export const API_BROADCAST_TRANSACTION_BEGIN = "http://";
+export const API_BROADCAST_TRANSACTION_END = ":3000/broadcast/";
 
 export const API_URL_ITEMS = "posts";
 export const API_URL_PEER_ID = "givePeerId";

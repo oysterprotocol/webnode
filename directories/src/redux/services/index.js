@@ -3,5 +3,6 @@ export {
   requestGivePeerId,
   requestStartTransaction,
   requestSelectItem,
-  requestConfirmWork
+  requestConfirmWork,
+  requestBroadcastToHooks
 } from "./api-services";
