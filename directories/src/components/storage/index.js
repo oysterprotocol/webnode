@@ -12,19 +12,18 @@ import {
 } from "../../redux/actions/peer-actions";
 
 import {
-  requestPrepareTransfers,
-  fulfillPrepareTransfers
+  requestPrepareTranfers,
+  requestAttachToTangle
 } from "../../redux/actions/iota-actions";
-import { requestPoW, fulfillPoW } from "../../redux/actions/pow-actions";
-
-import { broadcastToHooks } from "../../services/broadcast";
 
 import {
   initWork,
   givePeerId,
   startTransaction,
-  selectItem
-} from "../../redux/actions/items-actions";
+  selectItem,
+  confirmWork,
+  broadcastToHooks
+} from "../../redux/actions/api-actions";
 
 import {
   storageBrokerNodeAdd,
@@ -38,48 +37,37 @@ class Storage extends Component {
   static propTypes = {
     requestPeerReceive: PropTypes.func.isRequired,
     requestPeerSend: PropTypes.func.isRequired,
-    requestPrepareTransfers: PropTypes.func.isRequired,
-    fulfillPrepareTransfers: PropTypes.func.isRequired,
-    requestPoW: PropTypes.func.isRequired,
-    fulfillPoW: PropTypes.func.isRequired
+    requestPrepareTranfers: PropTypes.func.isRequired
   };
 
   state = {
     peer: null
   };
 
-  componentDidMount() {
-    const { initWork } = this.props;
-    initWork();
-  }
-
-  dud() {
+  componentWillMount() {
     const peer = peerInit();
     const {
+      storage,
+      iota,
+      api,
       givePeerId,
       startTransaction,
       selectItem,
-      requestPrepareTransfers,
-      requestPoW,
-      fulfillPoW
+      confirmWork,
+      requestPrepareTranfers,
+      requestAttachToTangle,
+      broadcastToHooks
     } = this.props;
     this.setState({ peer });
     givePeerId({ peerid: peer.id });
     startTransaction({ need_requested: "hi!Api" });
-    selectItem({ txid: "hi!Api", itemIndex: 0 });
-
-    // ^ The above call has not modified the state tree by the time
-    // we are ready to use the address, message, hooknodes, trunk, and branch
-    // which should be at state.item
-
-    // don't know enough about redux to know the best patterns to use to
-    // wait until this data is available.
+    selectItem({ txid: "hi!Api", itemIndex: "hash" });
+    confirmWork({ txid: "hi!Api", selectItem: "hash" });
 
     //REMOVE ALL THIS DUMMY DATA AND USE DATA FROM BROKER
-    //IOTA
-    const data = {
+    const dataPrepareTransfers = {
       seed:
-        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "MGNSUMNZWVKZXRPYZHGTVWGMOODMQLLYHFKLMUNRUZNSL9JQBGELVCNCOSHKRJUYHVHOAQSCMYLODVEVE",
       address:
         "OYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEB",
       value: 0,
@@ -87,35 +75,31 @@ class Storage extends Component {
       tag: "OYSTERWEBNODEWORKING"
     };
 
-    //REMOVE ALL THIS AND USE MWM, TRUNK, AND BRANCh FROM BROKER
+    requestPrepareTranfers(dataPrepareTransfers);
 
-    const dummyTrunk =
-      "9KCCKUWJUCCXGAEQTHKYUFDU9OOMEAVKCJZBBVUTVPOMJNVGHBC9UJOJTAOARFKWGI9EPMCJKFVX99999";
-    const dummyBranch =
-      "9ETBMNMZUXKXNGEGGHLLMQSIK9TBZEDVQUAIARPDFDWQWJFNECPHPVUIFAPWJQ9MDOCUFICJCDXSA9999";
-    const mwm = 14;
+    //REMOVE ALL THIS AND USE MWM, TRUNK, AND BRANCH FROM BROKER
+    const trytes = iota.iotaPrepareTransfers[0].data.prepareTransfers[0];
+    //
+    const dataAttachToTangle = {
+      trunkTransaction:
+        "9KCCKUWJUCCXGAEQTHKYUFDU9OOMEAVKCJZBBVUTVPOMJNVGHBC9UJOJTAOARFKWGI9EPMCJKFVX99999",
+      branchTransaction:
+        "9ETBMNMZUXKXNGEGGHLLMQSIK9TBZEDVQUAIARPDFDWQWJFNECPHPVUIFAPWJQ9MDOCUFICJCDXSA9999",
+      minWeight: 14,
+      trytes: trytes
+    };
 
-    requestPrepareTransfers(data);
+    requestAttachToTangle(dataAttachToTangle);
 
-    requestPoW({
-      trunkTransaction: dummyTrunk,
-      branchTransaction: dummyBranch,
-      mwm: mwm,
-      trytes: [this.props.iota.iotaTransactionReceive[0].prepareTransfers[0]],
-      callback: function(error, result) {
-        fulfillPoW({ trytes: result });
-
-        //REMOVE THIS HARDCODED HOOKNODE AND USE NODES SENT FROM THE BROKER
-        let hardcodedHooks = ["54.208.39.116"];
-
-        broadcastToHooks({ trytes: result }, hardcodedHooks);
-      }
-    });
+    //REMOVE THIS HARDCODED HOOKNODE AND USE NODES SENT FROM THE BROKER
+    const hardcodedHooks = ["54.208.39.116"];
+    broadcastToHooks({ trytes: iota.iotaAttachToTangle[0] }, hardcodedHooks);
   }
 
-  // componentDidMount() {
-  // this.props.requestPeerReceive(this.state.peer);
-  // }
+  componentDidMount() {
+    const { initWork } = this.props;
+    initWork();
+  }
 
   sendMessage = (message, receiver) => {
     const { peer } = this.state;
@@ -124,6 +108,7 @@ class Storage extends Component {
 
   render() {
     const { peer } = this.state;
+    console.log(peer);
     const {
       storage,
       storageBrokerNodeAdd,
@@ -132,6 +117,8 @@ class Storage extends Component {
       storageExchangesAdd,
       storagePeerIdChange
     } = this.props;
+
+    console.log(this.props);
 
     return (
       <StorageBootstrap
@@ -152,25 +139,24 @@ class Storage extends Component {
 
 const mapStateToProps = state => ({
   storage: state.storage,
-  items: state.items,
-  iota: state.iota,
-  pow: state.pow
+  api: state.api,
+  iota: state.iota
 });
 
 export default connect(mapStateToProps, {
-  fulfillPoW,
-  fulfillPrepareTransfers,
-  givePeerId,
-  initWork,
   requestPeerReceive,
   requestPeerSend,
-  requestPoW,
-  requestPrepareTransfers,
-  selectItem,
-  startTransaction,
   storageBrokerNodeAdd,
-  storageExchangesAdd,
+  storageWebNodeAdd,
   storageGenesisHashAdd,
+  storageExchangesAdd,
   storagePeerIdChange,
-  storageWebNodeAdd
+  initWork,
+  givePeerId,
+  startTransaction,
+  selectItem,
+  confirmWork,
+  requestPrepareTranfers,
+  requestAttachToTangle,
+  broadcastToHooks
 })(Storage);

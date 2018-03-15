@@ -1,2 +1,2 @@
-export { default as peerReceive, peerInit } from './peer';
-export { fetchPostApi } from './api';
+export { default as peerReceive, peerInit } from "./peer";
+export { fetchPostApi, broadcastTransaction } from "./api";

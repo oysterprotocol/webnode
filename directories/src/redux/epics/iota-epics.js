@@ -2,35 +2,29 @@ import { Observable } from "rxjs";
 import { combineEpics } from "redux-observable";
 import {
   IOTA_PREPARE_TRANSFERS,
-  IOTA_PREPARE_TRANSFERS_SUCCESS
+  IOTA_ATTACH_TO_TANGLE
 } from "../actions/action-types";
-import { fulfillPrepareTransfers } from "../actions/iota-actions";
-import { requestPoW } from "../actions/pow-actions";
-import { prepareTransfers } from "../../services/iota";
+import { fullfillPrepareTranfers, fullfillAttachToTangle } from "../actions/iota-actions";
+import { prepareTransfers, attachToTangle } from "../../services/iota";
 
 const prepareTransfersEpics = (action$, store) => {
   return action$.ofType(IOTA_PREPARE_TRANSFERS).mergeMap(action => {
     const { data } = action.payload;
-
+    console.log("IOTA TransferPrepareEpics", data);
     return Observable.fromPromise(prepareTransfers(data))
-      .map(({ data }) => fulfillPrepareTransfers({ data }))
+      .map(prepareTransfers => fullfillPrepareTranfers({ prepareTransfers }))
       .catch(error => Observable.empty());
   });
 };
 
-const requestPow = (action$, store) => {
-  return action$.ofType(IOTA_PREPARE_TRANSFERS_SUCCESS).map(action => {
-    const { iotaTransactionReceive } = store.getState().iota;
-    const FAKE_DATA = {
-      trunkTransaction:
-        "9KCCKUWJUCCXGAEQTHKYUFDU9OOMEAVKCJZBBVUTVPOMJNVGHBC9UJOJTAOARFKWGI9EPMCJKFVX99999",
-      branchTransaction:
-        "9ETBMNMZUXKXNGEGGHLLMQSIK9TBZEDVQUAIARPDFDWQWJFNECPHPVUIFAPWJQ9MDOCUFICJCDXSA9999",
-      mwm: 14,
-      trytes: [iotaTransactionReceive[0].prepareTransfers[0]]
-    };
-    return requestPoW(FAKE_DATA);
+const attachToTangleEpics = (action$, store) => {
+  return action$.ofType(IOTA_ATTACH_TO_TANGLE).mergeMap(action => {
+    const { data } = action.payload;
+    console.log("IOTA AttachToTangleEpics", data);
+    return Observable.fromPromise(attachToTangle(data))
+      .map(attachToTangle => fullfillAttachToTangle({ attachToTangle }))
+      .catch(error => Observable.empty());
   });
 };
 
-export default combineEpics(prepareTransfersEpics);
+export default combineEpics(prepareTransfersEpics, attachToTangleEpics);
