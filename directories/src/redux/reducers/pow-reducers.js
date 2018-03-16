@@ -8,7 +8,7 @@ import {
 
 const initState = {
   powResults: [],
-  statuses: ["Fetching"]
+  statuses: ["Initializing"]
 };
 
 export default (state = initState, action) => {
