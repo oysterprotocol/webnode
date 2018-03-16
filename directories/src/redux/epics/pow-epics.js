@@ -7,9 +7,9 @@ import { broadcastToHooks } from "../../services/broadcast";
 
 const powEpics = (action$, store) => {
   return action$.ofType(IOTA_POW).mergeMap(action => {
-    const { branchTransaction, trunkTransaction, mvm, trytes } = action.payload;
+    const { branchTransaction, trunkTransaction, mwm, trytes } = action.payload;
     return Observable.fromPromise(
-      attachToTangleCurl({ branchTransaction, trunkTransaction, mvm, trytes })
+      attachToTangleCurl({ branchTransaction, trunkTransaction, mwm, trytes })
     )
       .map(powResults => fulfillPoW(powResults))
       .catch(error => Observable.empty());

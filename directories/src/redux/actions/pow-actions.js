@@ -3,11 +3,11 @@ import { IOTA_POW, IOTA_POW_SUCCESS, IOTA_COMPLETE } from "./action-types";
 export const requestPoW = ({
   trunkTransaction,
   branchTransaction,
-  mvm,
+  mwm,
   trytes
 }) => ({
   type: IOTA_POW,
-  payload: { trunkTransaction, branchTransaction, mvm, trytes }
+  payload: { trunkTransaction, branchTransaction, mwm, trytes }
 });
 
 export const fulfillPoW = payload => ({

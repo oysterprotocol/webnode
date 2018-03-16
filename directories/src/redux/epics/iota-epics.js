@@ -44,7 +44,7 @@ const requestPow = (action$, store) => {
     const pow = {
       trunkTransaction,
       branchTransaction,
-      mvm: 14,
+      mwm: 14,
       trytes: arrayOfTrytes
     };
     return requestPoW(pow);

@@ -126,8 +126,8 @@ export const attachToTangleCurl = data => {
       minWeightMagnitude,
       trytes,
       (error, powResults) => {
-        if (callback) {
-          return callback(error, powResults);
+        if (error) {
+          return reject(error);
         } else {
           resolve(powResults);
         }
