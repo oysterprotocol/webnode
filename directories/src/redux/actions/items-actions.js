@@ -1,6 +1,7 @@
 import {
   API_INIT_WORK,
   API_GIVE_PEER_ID,
+  API_GIVE_PEER_ID_SUCCESS,
   API_START_TRANSACTION,
   API_SELECT_NEED
 } from "./action-types";
@@ -19,6 +20,10 @@ export const initWork = () => ({
 export const givePeerId = peerId => ({
   type: API_GIVE_PEER_ID,
   payload: peerId
+});
+
+export const givePeerIdSuccess = () => ({
+  type: API_GIVE_PEER_ID_SUCCESS
 });
 
 export const startTransaction = data => ({

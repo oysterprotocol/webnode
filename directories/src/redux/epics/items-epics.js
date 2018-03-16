@@ -3,11 +3,13 @@ import { combineEpics } from "redux-observable";
 import {
   API_INIT_WORK,
   API_GIVE_PEER_ID,
+  API_GIVE_PEER_ID_SUCCESS,
   API_START_TRANSACTION,
   API_SELECT_NEED
 } from "../actions/action-types";
 import {
   givePeerId,
+  givePeerIdSuccess,
   startTransaction,
   selectItem
 } from "../actions/items-actions";
@@ -33,13 +35,13 @@ const sendPeerId = (action$, store) => {
     const peerId = action.payload;
     const params = { peerid: peerId };
     return Observable.fromPromise(requestGivePeerId(params))
-      .map(({ data }) => startTransaction(data))
+      .map(givePeerIdSuccess)
       .catch(error => Observable.empty());
   });
 };
 
 const start = (action$, store) => {
-  return action$.ofType(API_START_TRANSACTION).mergeMap(action => {
+  return action$.ofType(API_GIVE_PEER_ID_SUCCESS).mergeMap(action => {
     const params = { need_requested: "hi!Api" };
     return Observable.fromPromise(requestStartTransaction(params))
       .map(({ data }) => selectItem(data))
