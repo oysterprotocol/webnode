@@ -4,7 +4,7 @@ import {
   IOTA_PREPARE_TRANSFERS,
   IOTA_PREPARE_TRANSFERS_SUCCESS
 } from "../actions/action-types";
-import { fulfillPrepareTransfers } from "../actions/iota-actions";
+import { requestPrepareTransfersSuccess } from "../actions/iota-actions";
 import { requestPoW } from "../actions/pow-actions";
 import { prepareTransfers } from "../../services/iota";
 
@@ -15,13 +15,14 @@ const prepareTransfersEpic = (action$, store) => {
     return Observable.fromPromise(
       prepareTransfers({ address, message, value, tag, seed })
     )
-      .map(({ data }) => fulfillPrepareTransfers({ data }))
+      .map(arrayOfTrytes => requestPrepareTransfersSuccess(arrayOfTrytes))
       .catch(error => Observable.empty());
   });
 };
 
 const requestPow = (action$, store) => {
   return action$.ofType(IOTA_PREPARE_TRANSFERS_SUCCESS).map(action => {
+    const arrayOfTrytes = action.payload;
     const { iotaTransactionReceive } = store.getState().iota;
     const FAKE_DATA = {
       trunkTransaction:
@@ -29,7 +30,7 @@ const requestPow = (action$, store) => {
       branchTransaction:
         "9ETBMNMZUXKXNGEGGHLLMQSIK9TBZEDVQUAIARPDFDWQWJFNECPHPVUIFAPWJQ9MDOCUFICJCDXSA9999",
       mwm: 14,
-      trytes: [iotaTransactionReceive[0].prepareTransfers[0]]
+      trytes: arrayOfTrytes
     };
     return requestPoW(FAKE_DATA);
   });

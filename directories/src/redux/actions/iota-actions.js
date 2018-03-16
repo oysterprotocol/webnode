@@ -14,7 +14,7 @@ export const requestPrepareTransfers = ({
   payload: { address, message, tag, value, seed }
 });
 
-export const fulfillPrepareTransfers = payload => ({
+export const requestPrepareTransfersSuccess = arrayOfTrytes => ({
   type: IOTA_PREPARE_TRANSFERS_SUCCESS,
-  payload
+  payload: arrayOfTrytes
 });

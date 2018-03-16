@@ -13,7 +13,7 @@ import {
 
 import {
   requestPrepareTransfers,
-  fulfillPrepareTransfers
+  requestPrepareTransfersSuccess
 } from "../../redux/actions/iota-actions";
 import { requestPoW, fulfillPoW } from "../../redux/actions/pow-actions";
 
@@ -39,7 +39,7 @@ class Storage extends Component {
     requestPeerReceive: PropTypes.func.isRequired,
     requestPeerSend: PropTypes.func.isRequired,
     requestPrepareTransfers: PropTypes.func.isRequired,
-    fulfillPrepareTransfers: PropTypes.func.isRequired,
+    requestPrepareTransfersSuccess: PropTypes.func.isRequired,
     requestPoW: PropTypes.func.isRequired,
     fulfillPoW: PropTypes.func.isRequired
   };
@@ -146,7 +146,7 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, {
   fulfillPoW,
-  fulfillPrepareTransfers,
+  requestPrepareTransfersSuccess,
   givePeerId,
   initWork,
   requestPeerReceive,
