@@ -10,29 +10,44 @@ import { prepareTransfers } from "../../services/iota";
 
 const prepareTransfersEpic = (action$, store) => {
   return action$.ofType(IOTA_PREPARE_TRANSFERS).mergeMap(action => {
-    const { address, message, value, tag, seed } = action.payload;
+    const {
+      address,
+      message,
+      value,
+      tag,
+      seed,
+      branchTransaction,
+      trunkTransaction
+    } = action.payload;
 
     return Observable.fromPromise(
       prepareTransfers({ address, message, value, tag, seed })
     )
-      .map(arrayOfTrytes => requestPrepareTransfersSuccess(arrayOfTrytes))
+      .map(arrayOfTrytes =>
+        requestPrepareTransfersSuccess({
+          arrayOfTrytes,
+          branchTransaction,
+          trunkTransaction
+        })
+      )
       .catch(error => Observable.empty());
   });
 };
 
 const requestPow = (action$, store) => {
   return action$.ofType(IOTA_PREPARE_TRANSFERS_SUCCESS).map(action => {
-    const arrayOfTrytes = action.payload;
-    const { iotaTransactionReceive } = store.getState().iota;
-    const FAKE_DATA = {
-      trunkTransaction:
-        "9KCCKUWJUCCXGAEQTHKYUFDU9OOMEAVKCJZBBVUTVPOMJNVGHBC9UJOJTAOARFKWGI9EPMCJKFVX99999",
-      branchTransaction:
-        "9ETBMNMZUXKXNGEGGHLLMQSIK9TBZEDVQUAIARPDFDWQWJFNECPHPVUIFAPWJQ9MDOCUFICJCDXSA9999",
-      mwm: 14,
+    const {
+      arrayOfTrytes,
+      branchTransaction,
+      trunkTransaction
+    } = action.payload;
+    const pow = {
+      trunkTransaction,
+      branchTransaction,
+      mvm: 14,
       trytes: arrayOfTrytes
     };
-    return requestPoW(FAKE_DATA);
+    return requestPoW(pow);
   });
 };
 
