@@ -3,9 +3,15 @@ import {
   IOTA_PREPARE_TRANSFERS_SUCCESS
 } from "./action-types";
 
-export const requestPrepareTransfers = data => ({
+export const requestPrepareTransfers = ({
+  address,
+  message,
+  tag,
+  value,
+  seed
+}) => ({
   type: IOTA_PREPARE_TRANSFERS,
-  payload: { data }
+  payload: { address, message, tag, value, seed }
 });
 
 export const fulfillPrepareTransfers = payload => ({

@@ -10,9 +10,11 @@ import { prepareTransfers } from "../../services/iota";
 
 const prepareTransfersEpic = (action$, store) => {
   return action$.ofType(IOTA_PREPARE_TRANSFERS).mergeMap(action => {
-    const { data } = action.payload;
+    const { address, message, value, tag, seed } = action.payload;
 
-    return Observable.fromPromise(prepareTransfers(data))
+    return Observable.fromPromise(
+      prepareTransfers({ address, message, value, tag, seed })
+    )
       .map(({ data }) => fulfillPrepareTransfers({ data }))
       .catch(error => Observable.empty());
   });
