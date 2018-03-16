@@ -1,13 +1,25 @@
 import { IOTA_POW, IOTA_POW_SUCCESS, IOTA_COMPLETE } from "./action-types";
 
-export const requestPoW = data => ({
+export const requestPoW = ({
+  branchTransaction,
+  broadcastingNodes,
+  mwm,
+  trunkTransaction,
+  trytes
+}) => ({
   type: IOTA_POW,
-  payload: { data }
+  payload: {
+    branchTransaction,
+    broadcastingNodes,
+    mwm,
+    trunkTransaction,
+    trytes
+  }
 });
 
-export const fulfillPoW = payload => ({
+export const requestPoWSuccess = ({ arrayOfTrytes, broadcastingNodes }) => ({
   type: IOTA_POW_SUCCESS,
-  payload
+  payload: { arrayOfTrytes, broadcastingNodes }
 });
 
 export const powComplete = () => ({

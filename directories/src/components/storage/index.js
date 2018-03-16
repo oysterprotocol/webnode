@@ -13,9 +13,9 @@ import {
 
 import {
   requestPrepareTransfers,
-  fulfillPrepareTransfers
+  requestPrepareTransfersSuccess
 } from "../../redux/actions/iota-actions";
-import { requestPoW, fulfillPoW } from "../../redux/actions/pow-actions";
+import { requestPoW, requestPoWSuccess } from "../../redux/actions/pow-actions";
 
 import { broadcastToHooks } from "../../services/broadcast";
 
@@ -39,9 +39,9 @@ class Storage extends Component {
     requestPeerReceive: PropTypes.func.isRequired,
     requestPeerSend: PropTypes.func.isRequired,
     requestPrepareTransfers: PropTypes.func.isRequired,
-    fulfillPrepareTransfers: PropTypes.func.isRequired,
+    requestPrepareTransfersSuccess: PropTypes.func.isRequired,
     requestPoW: PropTypes.func.isRequired,
-    fulfillPoW: PropTypes.func.isRequired
+    requestPoWSuccess: PropTypes.func.isRequired
   };
 
   state = {
@@ -61,7 +61,7 @@ class Storage extends Component {
       selectItem,
       requestPrepareTransfers,
       requestPoW,
-      fulfillPoW
+      requestPoWSuccess
     } = this.props;
     this.setState({ peer });
     givePeerId({ peerid: peer.id });
@@ -103,7 +103,7 @@ class Storage extends Component {
       mwm: mwm,
       trytes: [this.props.iota.iotaTransactionReceive[0].prepareTransfers[0]],
       callback: function(error, result) {
-        fulfillPoW({ trytes: result });
+        requestPoWSuccess({ trytes: result });
 
         //REMOVE THIS HARDCODED HOOKNODE AND USE NODES SENT FROM THE BROKER
         let hardcodedHooks = ["54.208.39.116"];
@@ -133,20 +133,7 @@ class Storage extends Component {
       storagePeerIdChange
     } = this.props;
 
-    return (
-      <StorageBootstrap
-        storage={storage}
-        storageBrokerNodeAddFn={storageBrokerNodeAdd}
-        storageWebNodeAddFn={storageWebNodeAdd}
-        storageGenesisHashAddFn={storageGenesisHashAdd}
-        storageExchangesAddFn={storageExchangesAdd}
-        storagePeerIdChangeFn={storagePeerIdChange}
-        onSendMessage={(message, receiver) =>
-          this.sendMessage(message, receiver)
-        }
-        peer={peer}
-      />
-    );
+    return <div>hey</div>;
   }
 }
 
@@ -158,8 +145,8 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  fulfillPoW,
-  fulfillPrepareTransfers,
+  requestPoWSuccess,
+  requestPrepareTransfersSuccess,
   givePeerId,
   initWork,
   requestPeerReceive,
