@@ -18,7 +18,7 @@ export const API_GIVE_PEER_ID_SUCCESS = "directories/api/give/peer/id_success";
 export const API_START_TRANSACTION = "directories/api/start/transaction";
 export const API_START_TRANSACTION_SUCCESS =
   "directories/api/start/transaction_success";
-export const API_SELECT_NEED = "directories/api/select/need";
+export const API_SELECT_ITEM = "directories/api/select/need";
 
 export const IOTA_PREPARE_TRANSFERS = "directories/iota/prepare/transfers";
 export const IOTA_PREPARE_TRANSFERS_SUCCESS =

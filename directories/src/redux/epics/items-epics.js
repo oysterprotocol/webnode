@@ -5,12 +5,13 @@ import {
   API_GIVE_PEER_ID,
   API_GIVE_PEER_ID_SUCCESS,
   API_START_TRANSACTION,
-  API_SELECT_NEED
+  API_START_TRANSACTION_SUCCESS
 } from "../actions/action-types";
 import {
   givePeerId,
   givePeerIdSuccess,
   startTransaction,
+  startTransactionSuccess,
   selectItem
 } from "../actions/items-actions";
 import { requestPrepareTransfers } from "../actions/iota-actions";
@@ -44,14 +45,17 @@ const start = (action$, store) => {
   return action$.ofType(API_GIVE_PEER_ID_SUCCESS).mergeMap(action => {
     const params = { need_requested: "hi!Api" };
     return Observable.fromPromise(requestStartTransaction(params))
-      .map(({ data }) => selectItem(data))
+      .map(({ data: { txid, items } }) =>
+        startTransactionSuccess({ txid, items })
+      )
       .catch(error => Observable.empty());
   });
 };
 
 const select = (action$, store) => {
-  return action$.ofType(API_SELECT_NEED).mergeMap(action => {
-    const params = { txid: "hi!Api", itemIndex: 0 };
+  return action$.ofType(API_START_TRANSACTION_SUCCESS).mergeMap(action => {
+    const { txid, items } = action.payload;
+    const params = { txid, itemIndex: 0 };
 
     // TODO: remove and use actual data from response
     const FAKE_DATA = {
