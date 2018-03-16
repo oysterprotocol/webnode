@@ -4,7 +4,8 @@ import {
   API_START_TRANSACTION,
   API_SELECT_ITEM,
   API_BROADCAST_TO_HOOKS,
-  API_CONFIRM_WORK
+  API_CONFIRM_WORK,
+  API_BROADCAST_TO_HOOKS_SUCCESS
 } from "./action-types";
 
 export const initWork = () => ({
@@ -32,6 +33,14 @@ export const broadcastToHooks = (trytes, nodes) => {
     payload: { trytes, nodes }
   };
 };
+
+export const fullfillBroadcastToHooks = (data) => {
+  return {
+    type: API_BROADCAST_TO_HOOKS_SUCCESS,
+    payload: { data }
+  };
+};
+
 
 export const confirmWork = (data = "") => {
   return {

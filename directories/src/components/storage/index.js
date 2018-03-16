@@ -13,7 +13,8 @@ import {
 
 import {
   requestPrepareTranfers,
-  requestAttachToTangle
+  requestAttachToTangle,
+  fullfillAttachToTangle
 } from "../../redux/actions/iota-actions";
 
 import {
@@ -32,6 +33,8 @@ import {
   storageExchangesAdd,
   storagePeerIdChange
 } from "../../redux/actions/storage-actions";
+
+import { requestBroadcastToHooks } from '../../redux/services';
 
 class Storage extends Component {
   static propTypes = {
@@ -56,7 +59,9 @@ class Storage extends Component {
       confirmWork,
       requestPrepareTranfers,
       requestAttachToTangle,
-      broadcastToHooks
+      broadcastToHooks,
+      fullfillAttachToTangle
+
     } = this.props;
     this.setState({ peer });
     givePeerId({ peerid: peer.id });
@@ -67,7 +72,7 @@ class Storage extends Component {
     //REMOVE ALL THIS DUMMY DATA AND USE DATA FROM BROKER
     const dataPrepareTransfers = {
       seed:
-        "MGNSUMNZWVKZXRPYZHGTVWGMOODMQLLYHFKLMUNRUZNSL9JQBGELVCNCOSHKRJUYHVHOAQSCMYLODVEVE",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
       address:
         "OYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEB",
       value: 0,
@@ -78,22 +83,23 @@ class Storage extends Component {
     requestPrepareTranfers(dataPrepareTransfers);
 
     //REMOVE ALL THIS AND USE MWM, TRUNK, AND BRANCH FROM BROKER
-    const trytes = iota.iotaPrepareTransfers[0].data.prepareTransfers[0];
-    //
-    const dataAttachToTangle = {
+    const trytes = iota.iotaPrepareTransfers;
+    
+    requestAttachToTangle({
       trunkTransaction:
         "9KCCKUWJUCCXGAEQTHKYUFDU9OOMEAVKCJZBBVUTVPOMJNVGHBC9UJOJTAOARFKWGI9EPMCJKFVX99999",
       branchTransaction:
         "9ETBMNMZUXKXNGEGGHLLMQSIK9TBZEDVQUAIARPDFDWQWJFNECPHPVUIFAPWJQ9MDOCUFICJCDXSA9999",
-      minWeight: 14,
-      trytes: trytes
-    };
+      mwm: 14,
+      trytes: trytes,
+        callback: (error, result) => {
+          fullfillAttachToTangle({trytes: result});
+        }
+    });
 
-    requestAttachToTangle(dataAttachToTangle);
-
-    //REMOVE THIS HARDCODED HOOKNODE AND USE NODES SENT FROM THE BROKER
-    const hardcodedHooks = ["54.208.39.116"];
-    broadcastToHooks({ trytes: iota.iotaAttachToTangle[0] }, hardcodedHooks);
+    let hardcodedHooks = ['54.208.39.116'];
+    console.log('iota war', iota.iotaAttachToTangle.trytes);
+    requestBroadcastToHooks({trytes: iota.iotaAttachToTangle.trytes}, hardcodedHooks);
   }
 
   componentDidMount() {
@@ -153,10 +159,11 @@ export default connect(mapStateToProps, {
   storagePeerIdChange,
   initWork,
   givePeerId,
+  broadcastToHooks,
   startTransaction,
   selectItem,
   confirmWork,
   requestPrepareTranfers,
   requestAttachToTangle,
-  broadcastToHooks
+  fullfillAttachToTangle
 })(Storage);

@@ -20,7 +20,7 @@ export const requestAttachToTangle = data => ({
   payload: { data }
 });
 
-export const fullfillAttachToTangle = data => ({
+export const fullfillAttachToTangle = payload => ({
   type: IOTA_ATTACH_TO_TANGLE_SUCCESS,
-  payload: { data }
+  payload
 });

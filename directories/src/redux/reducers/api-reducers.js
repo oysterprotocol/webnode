@@ -2,21 +2,23 @@ import {
   API_GIVE_PEER_ID,
   API_START_TRANSACTION,
   API_SELECT_ITEM,
-  API_BROADCAST_TO_HOOKS
+  API_BROADCAST_TO_HOOKS,
+  API_BROADCAST_TO_HOOKS_SUCCESS
 } from "../actions/action-types";
 
 const initState = {
   transaction: { txId: "" },
   selectItem: { message: "", address: "" },
-  broadcastToHooks: {}
+  broadcastToHooks: {},
+  fullfullBroadcastToHooks: {}
 };
 
 export default (state = initState, action) => {
   let payload = null;
-  if(action.payload) {
+  if (action.payload) {
     payload = action.payload;
   }
-  if(payload !== null) {
+  if (payload !== null) {
     switch (action.type) {
       case API_START_TRANSACTION:
         return {
@@ -36,7 +38,13 @@ export default (state = initState, action) => {
       case API_BROADCAST_TO_HOOKS:
         return {
           ...state,
-          broadcastToHooks: [...state.broadcastToHooks, action.payload]
+          broadcastToHooks: action.payload
+        };
+
+      case API_BROADCAST_TO_HOOKS_SUCCESS:
+        return {
+          ...state,
+          fullfullBroadcastToHooks: action.payload
         };
 
       case API_GIVE_PEER_ID:
@@ -48,4 +56,3 @@ export default (state = initState, action) => {
   }
   return state;
 };
-

@@ -4,8 +4,8 @@ import {
 } from "../actions/action-types";
 
 const initState = {
-  iotaPrepareTransfers: [],
-  iotaAttachToTangle: []
+  iotaPrepareTransfers: {},
+  iotaAttachToTangle: {}
 };
 
 export default (state = initState, action) => {
@@ -13,12 +13,12 @@ export default (state = initState, action) => {
     case IOTA_PREPARE_TRANSFERS_SUCCESS:
       return {
         ...state,
-        iotaPrepareTransfers: [...state.iotaPrepareTransfers, action.payload]
+        iotaPrepareTransfers: action.payload.data.prepareTransfers
       };
     case IOTA_ATTACH_TO_TANGLE_SUCCESS:
       return {
         ...state,
-        iotaAttachToTangle: [...state.iotaAttachToTangle, action.payload]
+        iotaAttachToTangle: action.payload
       };
 
     default:

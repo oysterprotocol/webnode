@@ -13,6 +13,7 @@ import {
   startTransaction,
   selectItem,
   broadcastToHooks,
+  fullfillBroadcastToHooks
   confirmWork
 } from "../actions/api-actions";
 import { requestPrepareTransfers } from "../actions/iota-actions";
@@ -76,18 +77,18 @@ const select = (action$, store) => {
 
 const broadcastToHooks = (action$, store) => {
 return action$.ofType(API_BROADCAST_TO_HOOKS).mergeMap(action => {
-    const params = { trytes: "trytes", nodes: 'nodes' };
-
-    return Observable.fromPromise(broadcastToHooks(params.trytes, params.nodes);)
-      .map(({ data }) => requestBroadcastToHooks(params.trytes, params.nodes))
+    console.log('broadcast-trytes', action.payload.trytes);
+    console.log('broadcast-nodes',action.payload.nodes);
+    return Observable.fromPromise(requestBroadcastToHooks(action.payload.trytes, action.payload.nodes);)
+      .map(({ data }) => fullfillBroadcastToHooks(data))
       .catch(error => Observable.empty());
   });
 };
 
 const confirmWork = (action$, store) => {
 return action$.ofType(API_CONFIRM_WORK).mergeMap(action => {
-    return Observable.fromPromise(confirmWork(data);)
-      .map(({ data }) => requestConfirmWork(data))
+    return Observable.fromPromise(requestConfirmWork(data);)
+      .map(({ data }) => confirmWork(data))
       .catch(error => Observable.empty());
   });
 };
