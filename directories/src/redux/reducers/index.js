@@ -1,9 +1,8 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
-import storage from 'redux/reducers/storage-reducers';
-import peer from 'redux/reducers/peer-reducers';
-import items from 'redux/reducers/items-reducers';
-import iota from 'redux/reducers/iota-reducers';
-import pow from 'redux/reducers/pow-reducers';
+import storage from "redux/reducers/storage-reducers";
+import peer from "redux/reducers/peer-reducers";
+import api from "redux/reducers/api-reducers";
+import iota from "redux/reducers/iota-reducers";
 
-export default combineReducers({ storage, peer, items, iota, pow });
+export default combineReducers({ storage, peer, api, iota });
