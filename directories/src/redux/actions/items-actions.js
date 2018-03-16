@@ -11,7 +11,7 @@ import {
   requestFetchItems,
   requestGivePeerId,
   requestStartTransaction,
-  requestSelectNeed
+  requestSelectItem
 } from "../services";
 
 export const initWork = () => ({

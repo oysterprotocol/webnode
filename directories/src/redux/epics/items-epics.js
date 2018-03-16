@@ -21,7 +21,7 @@ import {
   requestFetchItems,
   requestGivePeerId,
   requestStartTransaction,
-  requestSelectNeed
+  requestSelectItem
 } from "../services";
 
 const initWork = (action$, store) => {
@@ -57,19 +57,15 @@ const select = (action$, store) => {
     const { txid, items } = action.payload;
     const params = { txid, itemIndex: 0 };
 
-    // TODO: remove and use actual data from response
-    const FAKE_DATA = {
-      seed:
-        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-      address:
-        "OYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEBNODEWORKSOYSTERWEB",
-      value: 0,
-      message: "SOMECOOLMESSAGE",
-      tag: "OYSTERWEBNODEWORKING"
-    };
-
-    return Observable.fromPromise(requestSelectNeed(params))
-      .map(({ data }) => requestPrepareTransfers(FAKE_DATA))
+    return Observable.fromPromise(requestSelectItem(params))
+      .map(({ address, message }) => {
+        requestPrepareTransfers({
+          address: address,
+          message: message,
+          tag: "EDMUNDANDREBELWUZHERE",
+          value: 0
+        });
+      })
       .catch(error => Observable.empty());
   });
 };

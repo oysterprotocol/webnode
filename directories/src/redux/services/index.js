@@ -2,5 +2,5 @@ export {
   requestFetchItems,
   requestGivePeerId,
   requestStartTransaction,
-  requestSelectNeed
+  requestSelectItem
 } from "./api-services";
