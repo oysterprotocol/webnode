@@ -133,20 +133,7 @@ class Storage extends Component {
       storagePeerIdChange
     } = this.props;
 
-    return (
-      <StorageBootstrap
-        storage={storage}
-        storageBrokerNodeAddFn={storageBrokerNodeAdd}
-        storageWebNodeAddFn={storageWebNodeAdd}
-        storageGenesisHashAddFn={storageGenesisHashAdd}
-        storageExchangesAddFn={storageExchangesAdd}
-        storagePeerIdChangeFn={storagePeerIdChange}
-        onSendMessage={(message, receiver) =>
-          this.sendMessage(message, receiver)
-        }
-        peer={peer}
-      />
-    );
+    return <div>hey</div>;
   }
 }
 
