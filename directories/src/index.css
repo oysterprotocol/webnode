@@ -1,0 +1,16 @@
+body {
+  background: #0267ea;
+  padding: 20px;
+  font-family: "Montserrat", sans-serif;
+}
+
+p {
+  color: white;
+  margin: 2px 0 2px 25px;
+  font-size: 25px;
+}
+
+.container {
+  display: flex;
+  align-items: flex-start;
+}
