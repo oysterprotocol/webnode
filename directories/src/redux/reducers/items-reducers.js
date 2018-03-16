@@ -13,17 +13,18 @@ const initState = {
 
 export default (state = initState, action) => {
   let payload = null;
-  if(action.payload) {
+  if (action.payload) {
     payload = action.payload;
   }
-  if(payload !== null) {
+
+  if (payload !== null) {
     switch (action.type) {
       case API_START_TRANSACTION:
         return {
-           ...state,
+          ...state,
           transaction: { txId: payload.data.txtid, items: payload.data.items }
         };
-        
+
       case API_SELECT_NEED:
         return { ...state, item: payload.data.data };
 
@@ -31,6 +32,6 @@ export default (state = initState, action) => {
         return state;
     }
   }
-  console.log('here');
+  console.log("here");
   return state;
 };
