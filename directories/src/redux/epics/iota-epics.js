@@ -16,6 +16,7 @@ const prepareTransfersEpic = (action$, store) => {
       value,
       tag,
       seed,
+      broadcastingNodes,
       branchTransaction,
       trunkTransaction
     } = action.payload;
@@ -26,6 +27,7 @@ const prepareTransfersEpic = (action$, store) => {
       .map(arrayOfTrytes =>
         requestPrepareTransfersSuccess({
           arrayOfTrytes,
+          broadcastingNodes,
           branchTransaction,
           trunkTransaction
         })
@@ -38,12 +40,14 @@ const requestPow = (action$, store) => {
   return action$.ofType(IOTA_PREPARE_TRANSFERS_SUCCESS).map(action => {
     const {
       arrayOfTrytes,
+      broadcastingNodes,
       branchTransaction,
       trunkTransaction
     } = action.payload;
     const pow = {
       trunkTransaction,
       branchTransaction,
+      broadcastingNodes,
       mwm: 14,
       trytes: arrayOfTrytes
     };

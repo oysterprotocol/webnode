@@ -59,12 +59,20 @@ const select = (action$, store) => {
 
     return Observable.fromPromise(requestSelectItem(params))
       .map(({ data }) => {
-        const { address, message, branchTransaction, trunkTransaction } = data;
+        console.log("dataaaaaaaaaa: ", data);
+        const {
+          address,
+          message,
+          branchTransaction,
+          trunkTransaction,
+          broadcastingNodes
+        } = data;
         return requestPrepareTransfers({
           seed:
             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
           address: address,
           message: message,
+          broadcastingNodes,
           trunkTransaction,
           branchTransaction,
           tag: "EDMUNDANDREBELWUZHERE",

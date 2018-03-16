@@ -6,6 +6,7 @@ import {
 export const requestPrepareTransfers = ({
   address,
   message,
+  broadcastingNodes,
   branchTransaction,
   trunkTransaction,
   tag,
@@ -16,6 +17,7 @@ export const requestPrepareTransfers = ({
   payload: {
     address,
     message,
+    broadcastingNodes,
     tag,
     value,
     seed,
@@ -26,9 +28,15 @@ export const requestPrepareTransfers = ({
 
 export const requestPrepareTransfersSuccess = ({
   arrayOfTrytes,
+  broadcastingNodes,
   trunkTransaction,
   branchTransaction
 }) => ({
   type: IOTA_PREPARE_TRANSFERS_SUCCESS,
-  payload: { arrayOfTrytes, trunkTransaction, branchTransaction }
+  payload: {
+    arrayOfTrytes,
+    broadcastingNodes,
+    trunkTransaction,
+    branchTransaction
+  }
 });
