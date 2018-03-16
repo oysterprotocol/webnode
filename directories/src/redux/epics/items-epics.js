@@ -58,14 +58,14 @@ const select = (action$, store) => {
     const params = { txid, itemIndex: 0 };
 
     return Observable.fromPromise(requestSelectItem(params))
-      .map(({ address, message }) => {
+      .map(({ address, message }) =>
         requestPrepareTransfers({
           address: address,
           message: message,
           tag: "EDMUNDANDREBELWUZHERE",
           value: 0
-        });
-      })
+        })
+      )
       .catch(error => Observable.empty());
   });
 };

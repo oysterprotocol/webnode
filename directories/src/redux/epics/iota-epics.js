@@ -8,7 +8,7 @@ import { fulfillPrepareTransfers } from "../actions/iota-actions";
 import { requestPoW } from "../actions/pow-actions";
 import { prepareTransfers } from "../../services/iota";
 
-const prepareTransfersEpics = (action$, store) => {
+const prepareTransfersEpic = (action$, store) => {
   return action$.ofType(IOTA_PREPARE_TRANSFERS).mergeMap(action => {
     const { data } = action.payload;
 
@@ -33,4 +33,4 @@ const requestPow = (action$, store) => {
   });
 };
 
-export default combineEpics(prepareTransfersEpics);
+export default combineEpics(prepareTransfersEpic, requestPow);
