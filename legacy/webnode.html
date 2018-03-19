@@ -127,34 +127,33 @@
     }
     function oy_session_respond(oy_session, oy_peer_alt) {
         oy_log("Sending session response packet...");
-        var oy_session_send = {};
-        if (oy_session.stage===1) {
-            oy_session_send.stage = 1;
-            oy_session_send.id = oy_session.id;
-            oy_session_send.expire = oy_session.expire;
-            oy_session_send.type = oy_session.type;
+
+        //Setup object with univerisal properties
+        var oy_session_send = {
+            id: oy_session.id,
+            stage: oy_session.stage,
+            expire: oy_session.expire,
+            type: oy_session.type
         }
-        else if (oy_session.stage===2) {
-            oy_session_send.stage = 2;
-            oy_session_send.id = oy_session.id;
-            oy_session_send.expire = oy_session.expire;
-            oy_session_send.type = oy_session.type;
-            oy_session_send.pow_task = oy_session.pow_task;
+
+        //Append stage specific
+        switch(oy_session.stage) {
+            case 1:
+                break;
+            case 2:
+                oy_session_send.pow_task = oy_session.pow_task;
+                break;
+            case 3:
+                oy_session_send.pow_result = oy_session.pow_result;
+                break;
+            case 4:
+                oy_session_send.cargo = oy_session.cargo;
+                break;
+            default:
+                break;
         }
-        else if (oy_session.stage===3) {
-            oy_session_send.stage = 3;
-            oy_session_send.id = oy_session.id;
-            oy_session_send.expire = oy_session.expire;
-            oy_session_send.type = oy_session.type;
-            oy_session_send.pow_result = oy_session.pow_result;
-        }
-        else if (oy_session.stage===4) {
-            oy_session_send.stage = 4;
-            oy_session_send.id = oy_session.id;
-            oy_session_send.expire = oy_session.expire;
-            oy_session_send.type = oy_session.type;
-            oy_session_send.cargo = oy_session.cargo;
-        }
+
+        //Connect to peer and post session object
         var conn = peer.connect(oy_peer_alt);
         conn.on('open', function() {
             conn.send(JSON.stringify(oy_session_send));
