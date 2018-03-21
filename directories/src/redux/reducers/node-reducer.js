@@ -27,7 +27,7 @@ export default (state = initState, action) => {
 
     case NODE_RESET:
       const { id, lastResetAt } = action.payload;
-      return { ...state, id, lastResetAt };
+      return { ...state, id, lastResetAt, brokerNodes: [], webNodes: [] };
 
     default:
       return { ...state };
