@@ -1,3 +1,5 @@
+export const APP_START = "directories/peer/app/start";
+
 export const PEER_RECEIVE_REQUEST = "directories/peer/receive/request";
 export const PEER_RECIEVE_SUCCESS = "directories//peer/receive/success";
 export const PEER_RECIEVE_FAILURE = "directories/peer/receive/failure";

@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { initWork } from "../../redux/actions/items-actions";
+import { startApp } from "../../redux/actions/app-actions";
 
 import LOGO from "../../assets/images/logo.svg";
 
 class Storage extends Component {
   componentDidMount() {
-    const { initWork } = this.props;
-    initWork();
+    const { startApp } = this.props;
+    startApp();
   }
 
   render() {
@@ -27,5 +27,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-  initWork
+  startApp
 })(Storage);
