@@ -14,7 +14,6 @@ export const STORAGE_GENESISHASH_ADD = "directories/storage/genesishash/add";
 export const STORAGE_EXCHANGES_ADD = "directories/storage/exchanges/add";
 export const STORAGE_PEERID_CHANGE = "directories/storage/peerid/change";
 
-export const API_INIT_WORK = "directories/api/fetch/items/init_work";
 export const API_GIVE_PEER_ID = "directories/api/give/peer/id";
 export const API_GIVE_PEER_ID_SUCCESS = "directories/api/give/peer/id_success";
 export const API_START_TRANSACTION = "directories/api/start/transaction";

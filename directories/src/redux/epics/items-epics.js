@@ -1,7 +1,6 @@
 import { Observable } from "rxjs";
 import { combineEpics } from "redux-observable";
 import {
-  API_INIT_WORK,
   API_GIVE_PEER_ID,
   API_GIVE_PEER_ID_SUCCESS,
   API_START_TRANSACTION,
@@ -23,13 +22,6 @@ import {
   requestStartTransaction,
   requestSelectItem
 } from "../services";
-
-const initWork = (action$, store) => {
-  return action$.ofType(API_INIT_WORK).map(action => {
-    const peer = peerInit();
-    return givePeerId(peer.id);
-  });
-};
 
 const sendPeerId = (action$, store) => {
   return action$.ofType(API_GIVE_PEER_ID).mergeMap(action => {
@@ -83,4 +75,4 @@ const select = (action$, store) => {
   });
 };
 
-export default combineEpics(initWork, sendPeerId, start, select);
+export default combineEpics(sendPeerId, start, select);
