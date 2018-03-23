@@ -1,10 +1,10 @@
 import _ from "lodash";
 
-export const NODE_REQUEST_BROKER_NODES =
-  "directories/node/request_broker_nodes";
-export const NODE_ADD_BROKER_NODE = "directories/node/add_broker_node";
-export const NODE_ADD_WEB_NODE = "directories/node/add_web_node";
-export const NODE_RESET = "directories/node/reset";
+import {
+  NODE_ADD_BROKER_NODE,
+  NODE_ADD_WEB_NODE,
+  NODE_RESET
+} from "../actions/node-actions";
 
 const initState = {
   brokerNodes: [],
@@ -24,7 +24,7 @@ export default (state = initState, action) => {
     case NODE_ADD_BROKER_NODE:
       return {
         ...state,
-        brokerNodes: _.uniq([...state.brokerNodes, ...action.payload])
+        brokerNodes: _.uniq([...state.brokerNodes, action.payload])
       };
 
     case NODE_RESET:

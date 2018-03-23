@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { startApp } from "../../redux/actions/app-actions";
+import appActions from "../../redux/actions/app-actions";
 
 import LOGO from "../../assets/images/logo.svg";
 
 class Storage extends Component {
   componentDidMount() {
-    const { startApp } = this.props;
-    startApp();
+    const { startAppFn } = this.props;
+    startAppFn();
   }
 
   render() {
@@ -26,6 +26,8 @@ const mapStateToProps = state => ({
   statuses: state.pow.statuses
 });
 
-export default connect(mapStateToProps, {
-  startApp
-})(Storage);
+const mapDispatchToProps = dispatch => ({
+  startAppFn: () => dispatch(appActions.startApp())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Storage);

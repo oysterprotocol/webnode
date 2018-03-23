@@ -1,5 +1,13 @@
-import { APP_START } from "./action-types";
+export const APP_START = "directories/app/start";
 
-export const startApp = () => ({
-  type: APP_START
+const ACTIONS = Object.freeze({
+  // actions
+  APP_START,
+
+  // actionCreators
+  startApp: () => ({
+    type: APP_START
+  })
 });
+
+export default ACTIONS;

@@ -2,13 +2,13 @@ import { Observable } from "rxjs";
 import { combineEpics } from "redux-observable";
 import moment from "moment";
 
-import { APP_START } from "../actions/action-types";
-import { resetNode } from "../actions/node-actions";
+import appActions from "../actions/app-actions";
+import nodeActions from "../actions/node-actions";
 import { peerInit } from "../api";
 
 const startAppEpic = (action$, store) => {
   return action$
-    .ofType(APP_START)
+    .ofType(appActions.APP_START)
     .filter(() => {
       const { node } = store.getState();
       return (
@@ -22,7 +22,7 @@ const startAppEpic = (action$, store) => {
     .map(() => {
       const peer = peerInit();
       const today = new Date();
-      return resetNode({ id: peer.id, lastResetAt: today });
+      return nodeActions.resetNode({ id: peer.id, lastResetAt: today });
     });
 };
 
