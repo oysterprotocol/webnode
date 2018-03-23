@@ -5,15 +5,21 @@ import moment from "moment";
 import nodeActions from "../actions/node-actions";
 import brokerNode from "../services/broker-node";
 
-const resetNodeEpic = (action$, store) => {
+import { MIN_BROKER_NODES } from "../../config/";
+
+const findMoreWorkEpic = (action$, store) => {
   return action$
-    .ofType(nodeActions.NODE_RESET)
+    .ofType(nodeActions.NODE_RESET, nodeActions.NODE_ADD_BROKER_NODE)
     .map(nodeActions.determineRequest);
 };
 
 const determineRequestEpic = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_DETERMINE_REQUEST)
+    .filter(() => {
+      const { node } = store.getState();
+      return node.brokerNodes.length <= MIN_BROKER_NODES;
+    })
     .map(nodeActions.requestBrokerNodes);
 };
 
@@ -32,7 +38,7 @@ const requestBrokerEpic = (action$, store) => {
 };
 
 export default combineEpics(
-  resetNodeEpic,
+  findMoreWorkEpic,
   determineRequestEpic,
   requestBrokerEpic
 );

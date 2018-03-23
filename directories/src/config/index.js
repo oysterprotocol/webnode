@@ -26,3 +26,5 @@ export const DEFAULT_CONSTANT = Object.freeze({
   EXCHANGES_TRANSACTION_ID: "",
   EXCHANGES_NEED_REQUESTED: ""
 });
+
+export const MIN_BROKER_NODES = 5;
