@@ -1,5 +1,4 @@
 import {
-  API_INIT_WORK,
   API_GIVE_PEER_ID,
   API_GIVE_PEER_ID_SUCCESS,
   API_START_TRANSACTION,
@@ -13,10 +12,6 @@ import {
   requestStartTransaction,
   requestSelectItem
 } from "../services";
-
-export const initWork = () => ({
-  type: API_INIT_WORK
-});
 
 export const givePeerId = peerId => ({
   type: API_GIVE_PEER_ID,
