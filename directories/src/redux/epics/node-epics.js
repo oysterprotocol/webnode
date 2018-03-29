@@ -6,6 +6,9 @@ import nodeActions from "../actions/node-actions";
 import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
 
+// TODO remove this when we get the Go API done
+import { requestPoWSuccess, powComplete } from "../actions/pow-actions";
+
 import { MIN_BROKER_NODES } from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {
@@ -70,12 +73,21 @@ const requestBrokerEpic = (action$, store) => {
           ).mergeMap(trytesArray => {
             return Observable.fromPromise(
               brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray)
-            ).mergeMap(({ data }) => {
-              const { purchase: brokerNodeAddress } = data;
-              return Observable.of(
-                nodeActions.addBrokerNode(brokerNodeAddress)
-              );
-            });
+            )
+              .mergeMap(({ data }) => {
+                const { purchase: brokerNodeAddress } = data;
+                return Observable.of(
+                  nodeActions.addBrokerNode(brokerNodeAddress)
+                );
+              })
+              .map(() => {
+                let hardcodedHooks = ["54.208.39.116"];
+                // TODO remove this when we get the Go API done
+                return requestPoWSuccess({
+                  trytesArray,
+                  broadcastingNodes: hardcodedHooks
+                });
+              });
           });
         });
       })
