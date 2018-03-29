@@ -9,6 +9,7 @@ const ACTIONS = Object.freeze({
   // actions
   NODE_DETERMINE_REQUEST,
   NODE_ADD_BROKER_NODE,
+  NODE_REQUEST_BROKER_NODES,
   NODE_RESET,
 
   // actionCreators
