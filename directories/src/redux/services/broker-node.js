@@ -20,7 +20,7 @@ const requestBrokerNodeAddressPoW = currentList =>
       data: {
         id: "tx1",
         pow: {
-          message: "FAKE_MESSAGE",
+          message: "FAKEEEEEEEEEEEEEEEEEEEEEEEEE",
           address:
             "ZLXRHOQL2H84BHAMNZVDXMBNKAMALAHB6BDUYQPH2ETJPMK5HTGRXXP1APJMIBLCKRDVWCULDFFKGEWMH",
           branchTransaction:
