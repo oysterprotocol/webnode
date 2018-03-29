@@ -60,6 +60,13 @@ const requestBrokerEpic = (action$, store) => {
         const seed =
           "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
+        console.log("eeeeeeeeeeeeeeeee", {
+          address,
+          message,
+          value,
+          tag,
+          seed
+        });
         return Observable.fromPromise(
           iota.prepareTransfers({ address, message, value, tag, seed })
         ).mergeMap(trytes => {
