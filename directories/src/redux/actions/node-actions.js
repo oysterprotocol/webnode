@@ -21,9 +21,9 @@ const ACTIONS = Object.freeze({
     type: NODE_REQUEST_BROKER_NODES
   }),
 
-  addBrokerNode: brokerNode => ({
+  addBrokerNode: address => ({
     type: NODE_ADD_BROKER_NODE,
-    payload: brokerNode
+    payload: address
   }),
 
   resetNode: ({ id, lastResetAt }) => ({

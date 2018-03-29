@@ -14,9 +14,8 @@ const registerWebnode = address =>
 // return { error: API_REQUEST_ERROR };
 // });
 
-const requestBrokerNodeAddresses = currentList =>
+const requestBrokerNodeAddressPoW = currentList =>
   new Promise((resolve, reject) => {
-    console.log("xxxxxxxxxxxxxxxx");
     resolve({
       data: {
         id: "tx1",
@@ -38,7 +37,25 @@ const requestBrokerNodeAddresses = currentList =>
 // return { error: API_REQUEST_ERROR };
 // });
 
+const completeBrokerNodeAddressPoW = (txid, trytes) =>
+  new Promise((resolve, reject) => {
+    resolve({
+      data: {
+        id: "tx1",
+        purchase: "SUCCESS.SUCCESS.COM"
+      }
+    });
+  });
+// axios({
+// method: "PUT",
+// url: `${API_ROOT_URL}/api/v1/demand/transactions/brokernodes/${txid}`,
+// data: { trytes }
+// }).catch(error => {
+// console.log("PUT " + error);
+// return { error: API_REQUEST_ERROR };
+// });
+
 export default {
   registerWebnode,
-  requestBrokerNodeAddresses
+  requestBrokerNodeAddressPoW
 };
