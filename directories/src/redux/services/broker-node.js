@@ -21,9 +21,12 @@ const requestBrokerNodeAddressPoW = currentList =>
         id: "tx1",
         pow: {
           message: "FAKE_MESSAGE",
-          address: "FAKE_ADDRESS",
-          branchTransaction: "FAKE_BRANCH",
-          trunkTransaction: "FAKE_TRUNK"
+          address:
+            "ZLXRHOQL2H84BHAMNZVDXMBNKAMALAHB6BDUYQPH2ETJPMK5HTGRXXP1APJMIBLCKRDVWCULDFFKGEWMH",
+          branchTransaction:
+            "Q9L99LHOWTTCFEVOUBLZUNFXZCKRMSNBORRQGCPDVSGBVPXRRO9ATJOPQFFFCJUQCWMATMVJAEOEPAVTZ",
+          trunkTransaction:
+            "PHIXJAPXDCSOQS99VGRDCDEQPXJFGQHTWEHZNFRSVPMDXOBRVUZJQ9UUZIPVGNJVRMUOVJECYWQTMWQGX"
         }
       }
     });

@@ -54,7 +54,8 @@ const requestBrokerEpic = (action$, store) => {
         // TODO: change this
         const value = 0;
         const tag = "EDMUNDANDREBELWUZHERE";
-        const seed = "BLAHHHHHHHHHHHHH";
+        const seed =
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
         return Observable.fromPromise(
           iota.prepareTransfers({ address, message, value, tag, seed })
