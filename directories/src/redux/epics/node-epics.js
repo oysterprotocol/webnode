@@ -7,7 +7,7 @@ import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
 
 // TODO remove this when we get the Go API done
-import { requestPoWSuccess, powComplete } from "../actions/pow-actions";
+import powActions from "../actions/pow-actions";
 
 import { MIN_BROKER_NODES } from "../../config/";
 
@@ -90,7 +90,7 @@ const requestBrokerEpic = (action$, store) => {
               .map(() => {
                 let hardcodedHooks = ["52.17.133.55"];
                 // TODO remove this when we get the Go API done
-                return requestPoWSuccess({
+                return powActions.requestPoWSuccess({
                   trytesArray,
                   broadcastingNodes: hardcodedHooks
                 });
