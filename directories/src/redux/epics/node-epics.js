@@ -80,21 +80,18 @@ const requestBrokerEpic = (action$, store) => {
           ).mergeMap(trytesArray => {
             return Observable.fromPromise(
               brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray)
-            )
-              .mergeMap(({ data }) => {
-                const { purchase: brokerNodeAddress } = data;
-                return Observable.of(
-                  nodeActions.addBrokerNode(brokerNodeAddress)
-                );
-              })
-              .map(() => {
-                let hardcodedHooks = ["52.17.133.55"];
-                // TODO remove this when we get the Go API done
-                return powActions.requestPoWSuccess({
+            ).flatMap(({ data }) => {
+              const { purchase: brokerNodeAddress } = data;
+              let hardcodedHooks = ["52.17.133.55"];
+              return [
+                nodeActions.addBrokerNode(brokerNodeAddress),
+                // TODO: remove when Go API is ready
+                powActions.requestPoWSuccess({
                   arrayOfTrytes: trytesArray,
                   broadcastingNodes: hardcodedHooks
-                });
-              });
+                })
+              ];
+            });
           });
         });
       })
