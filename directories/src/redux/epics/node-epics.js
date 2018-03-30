@@ -88,7 +88,7 @@ const requestBrokerEpic = (action$, store) => {
                 );
               })
               .map(() => {
-                let hardcodedHooks = ["54.208.39.116"];
+                let hardcodedHooks = ["52.17.133.55"];
                 // TODO remove this when we get the Go API done
                 return requestPoWSuccess({
                   trytesArray,
