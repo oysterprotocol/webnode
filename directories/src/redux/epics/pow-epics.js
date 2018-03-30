@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 import { combineEpics } from "redux-observable";
 import powActions from "../actions/pow-actions";
-import { broadcastToHooks } from "../../services/broadcast";
+import { broadcastToHooks } from "../services/broadcast";
 
 const broadcastEpic = (action$, store) => {
   return action$.ofType(powActions.IOTA_POW_SUCCESS).mergeMap(action => {
