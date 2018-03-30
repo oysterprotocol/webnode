@@ -1,28 +1,8 @@
 import { Observable } from "rxjs";
 import { combineEpics } from "redux-observable";
-import { IOTA_POW, IOTA_POW_SUCCESS } from "../actions/action-types";
-import { requestPoWSuccess, powComplete } from "../actions/pow-actions";
-import { attachToTangleCurl } from "../../services/iota";
+import { IOTA_POW_SUCCESS } from "../actions/action-types";
+import { powComplete } from "../actions/pow-actions";
 import { broadcastToHooks } from "../../services/broadcast";
-
-const powEpic = (action$, store) => {
-  return action$.ofType(IOTA_POW).mergeMap(action => {
-    const {
-      branchTransaction,
-      trunkTransaction,
-      mwm,
-      trytes,
-      broadcastingNodes
-    } = action.payload;
-    return Observable.fromPromise(
-      attachToTangleCurl({ branchTransaction, trunkTransaction, mwm, trytes })
-    )
-      .map(arrayOfTrytes =>
-        requestPoWSuccess({ arrayOfTrytes, broadcastingNodes })
-      )
-      .catch(error => Observable.empty());
-  });
-};
 
 const broadcastEpic = (action$, store) => {
   return action$.ofType(IOTA_POW_SUCCESS).mergeMap(action => {
@@ -40,4 +20,4 @@ const broadcastEpic = (action$, store) => {
   });
 };
 
-export default combineEpics(powEpic, broadcastEpic);
+export default combineEpics(broadcastEpic);
