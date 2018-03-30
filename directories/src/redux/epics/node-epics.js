@@ -91,7 +91,7 @@ const requestBrokerEpic = (action$, store) => {
                 let hardcodedHooks = ["52.17.133.55"];
                 // TODO remove this when we get the Go API done
                 return powActions.requestPoWSuccess({
-                  trytesArray,
+                  arrayOfTrytes: trytesArray,
                   broadcastingNodes: hardcodedHooks
                 });
               });
