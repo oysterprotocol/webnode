@@ -7,15 +7,10 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import reducer from "redux/reducers";
 import epics from "./epics";
-import { peerReceive } from "./api";
 
 import { DEVELOPED_MODE } from "../config";
 
-const epicMiddleware = createEpicMiddleware(epics, {
-  dependencies: {
-    peerReceive
-  }
-});
+const epicMiddleware = createEpicMiddleware(epics);
 
 const loggerMiddleware = createLogger();
 

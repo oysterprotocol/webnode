@@ -1,18 +1,8 @@
-import { Observable } from "rxjs";
 import Peer from "peerjs";
 
 import { PEER_HOST, PEER_PORT, PEER_PATH, PEER_DEBUG } from "../../config/";
 
-export default peer =>
-  Observable.create(observer => {
-    peer.on("connection", connection => {
-      connection.on("data", data => {
-        observer.next(data);
-      });
-    });
-  });
-
-export const peerInit = () => {
+const init = () => {
   const randomClient = Math.random()
     .toString(36)
     .replace(/[^a-z]+/g, "")
@@ -24,4 +14,8 @@ export const peerInit = () => {
     debug: PEER_DEBUG
   });
   return peer;
+};
+
+export default {
+  init
 };

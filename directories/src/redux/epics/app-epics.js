@@ -4,7 +4,7 @@ import moment from "moment";
 
 import appActions from "../actions/app-actions";
 import nodeActions from "../actions/node-actions";
-import { peerInit } from "../api";
+import peer from "../services/peer";
 
 const startAppEpic = (action$, store) => {
   return action$
@@ -20,9 +20,9 @@ const startAppEpic = (action$, store) => {
       );
     })
     .map(() => {
-      const peer = peerInit();
+      const p = peer.init();
       const today = new Date();
-      return nodeActions.resetNode({ id: peer.id, lastResetAt: today });
+      return nodeActions.resetNode({ id: p.id, lastResetAt: today });
     });
 };
 
