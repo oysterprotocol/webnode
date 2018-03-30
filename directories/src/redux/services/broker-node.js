@@ -60,5 +60,6 @@ const completeBrokerNodeAddressPoW = (txid, trytes) =>
 
 export default {
   registerWebnode,
-  requestBrokerNodeAddressPoW
+  requestBrokerNodeAddressPoW,
+  completeBrokerNodeAddressPoW
 };

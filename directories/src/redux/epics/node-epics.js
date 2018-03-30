@@ -74,7 +74,7 @@ const requestBrokerEpic = (action$, store) => {
             iota.attachToTangleCurl({
               branchTransaction,
               trunkTransaction,
-              mvm: 14,
+              mwm: 14,
               trytes
             })
           ).mergeMap(trytesArray => {
