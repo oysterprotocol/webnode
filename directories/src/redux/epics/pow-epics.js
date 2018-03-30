@@ -7,16 +7,11 @@ const broadcastEpic = (action$, store) => {
   return action$.ofType(powActions.IOTA_POW_SUCCESS).mergeMap(action => {
     const { arrayOfTrytes, broadcastingNodes } = action.payload;
     let hardcodedHooks = ["54.208.39.116"];
-    console.log("arrayOfTrytes: ", arrayOfTrytes);
-    console.log("broadcastingNodes: ", broadcastingNodes);
 
     return Observable.fromPromise(
       broadcastToHooks({ trytes: arrayOfTrytes }, broadcastingNodes)
     )
-      .map(powResults => {
-        console.log("booyaaaaaaaaaaaaaa");
-        return powActions.powComplete();
-      })
+      .map(powActions.powComplete)
       .catch(error => Observable.empty());
   });
 };
