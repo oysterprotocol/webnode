@@ -7,7 +7,7 @@ import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
 
 // TODO remove this when we get the Go API done
-import { requestPoWSuccess, powComplete } from "../actions/pow-actions";
+import powActions from "../actions/pow-actions";
 
 import { MIN_BROKER_NODES } from "../../config/";
 
@@ -74,27 +74,24 @@ const requestBrokerEpic = (action$, store) => {
             iota.attachToTangleCurl({
               branchTransaction,
               trunkTransaction,
-              mvm: 14,
+              mwm: 14,
               trytes
             })
           ).mergeMap(trytesArray => {
             return Observable.fromPromise(
               brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray)
-            )
-              .mergeMap(({ data }) => {
-                const { purchase: brokerNodeAddress } = data;
-                return Observable.of(
-                  nodeActions.addBrokerNode(brokerNodeAddress)
-                );
-              })
-              .map(() => {
-                let hardcodedHooks = ["54.208.39.116"];
-                // TODO remove this when we get the Go API done
-                return requestPoWSuccess({
-                  trytesArray,
+            ).flatMap(({ data }) => {
+              const { purchase: brokerNodeAddress } = data;
+              let hardcodedHooks = ["52.17.133.55"];
+              return [
+                nodeActions.addBrokerNode(brokerNodeAddress),
+                // TODO: remove when Go API is ready
+                powActions.requestPoWSuccess({
+                  arrayOfTrytes: trytesArray,
                   broadcastingNodes: hardcodedHooks
-                });
-              });
+                })
+              ];
+            });
           });
         });
       })

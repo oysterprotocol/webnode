@@ -22,7 +22,7 @@ const requestBrokerNodeAddressPoW = currentList =>
         pow: {
           message: "FAKEEEEEEEEEEEEEEEEEEEEEEEEE",
           address:
-            "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY",
+            "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UX",
           branchTransaction:
             "HT9QZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY",
           trunkTransaction:
@@ -60,5 +60,6 @@ const completeBrokerNodeAddressPoW = (txid, trytes) =>
 
 export default {
   registerWebnode,
-  requestBrokerNodeAddressPoW
+  requestBrokerNodeAddressPoW,
+  completeBrokerNodeAddressPoW
 };
