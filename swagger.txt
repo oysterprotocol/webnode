@@ -1,0 +1,9 @@
+DO AFTER regenerate api from swaggerhub
+
+ON project - terminal
+npm i cors
+
+ON index.js
+
+var cors = require('cors')
+app.use(cors())

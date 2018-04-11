@@ -3,7 +3,7 @@ import { combineEpics } from "redux-observable";
 import moment from "moment";
 
 import nodeActions from "../actions/node-actions";
-import brokerNode from "../services/broker-node";
+import brokerNode from "../services/brokernode";
 import iota from "../services/iota";
 
 // TODO remove this when we get the Go API done
@@ -45,8 +45,9 @@ const determineRequestEpic = (action$, store) => {
 const requestBrokerEpic = (action$, store) => {
   return action$.ofType(nodeActions.NODE_REQUEST_BROKER_NODES).mergeMap(() => {
     const { brokerNodes } = store.getState().node;
+    const to = brokerNode.getStorageFn(brokerNode.randomFn(2));
     return Observable.fromPromise(
-      brokerNode.requestBrokerNodeAddressPoW(brokerNodes)
+      brokerNode.requestAddressPoW(brokerNodes, to)
     )
       .mergeMap(({ data }) => {
         const {
@@ -71,7 +72,7 @@ const requestBrokerEpic = (action$, store) => {
           iota.prepareTransfers({ address, message, value, tag, seed })
         ).mergeMap(trytes => {
           return Observable.fromPromise(
-            iota.attachToTangleCurl({
+            iota.attachToTangle({
               branchTransaction,
               trunkTransaction,
               mwm: 14,
@@ -79,7 +80,7 @@ const requestBrokerEpic = (action$, store) => {
             })
           ).mergeMap(trytesArray => {
             return Observable.fromPromise(
-              brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray)
+              brokerNode.completeAddressPoW(txid, trytesArray, to)
             ).flatMap(({ data }) => {
               const { purchase: brokerNodeAddress } = data;
               let hardcodedHooks = ["52.17.133.55"];
