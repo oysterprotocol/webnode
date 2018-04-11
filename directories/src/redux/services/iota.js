@@ -36,7 +36,7 @@ const prepareTransfers = data => {
   });
 };
 
-export const attachToTangleCurl = data => {
+export const attachToTangle = data => {
   const trunkTransaction = data.trunkTransaction;
   const branchTransaction = data.branchTransaction;
   const minWeightMagnitude = data.mwm;
@@ -136,59 +136,7 @@ export const attachToTangleCurl = data => {
   });
 };
 
-iota.api.attachToTangle = attachToTangleCurl;
-
-export const attachToTangle = data => {
-  return new Promise((resolve, reject) => {
-    iota.api
-      .attachToTangle(
-        data.trunkTransaction,
-        data.branchTransaction,
-        data.minWeight,
-        data.trytes,
-        (error, attachToTangle) => {
-          if (error) {
-            console.log("IOTA attachToTangle error ", error);
-          } else {
-            console.log("IOTA attachToTangle data ", attachToTangle);
-            resolve(attachToTangle);
-          }
-        }
-      )
-      .then(nonce => {
-        console.log(
-          "attachToTangle nonce ",
-          data.tryte.substr(0, 2187 - 81).concat(nonce)
-        );
-      })
-      .catch(error => {
-        console.log("attachToTangle error ", error);
-      });
-  });
-};
-
-const attachToTangleOnTask = data => {
-  return new Promise((resolve, reject) => {
-    curl
-      .pow({
-        trunkTransaction: data.trunkTransaction,
-        branchTransaction: data.branchTransaction,
-        minWeight: data.minWeight,
-        trytes: data.trytes
-      })
-      .then(nonce => {
-        console.log(
-          "attachToTangle nonce ",
-          data.tryte.substr(0, 2187 - 81).concat(nonce)
-        );
-      })
-      .catch(error => {
-        console.log("attachToTangle error ", error);
-      });
-  });
-};
-
 export default {
   prepareTransfers,
-  attachToTangleCurl
+  attachToTangle
 };
