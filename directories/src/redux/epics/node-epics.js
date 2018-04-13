@@ -3,8 +3,9 @@ import { combineEpics } from "redux-observable";
 import moment from "moment";
 
 import nodeActions from "../actions/node-actions";
-import brokerNode from "../services/broker-node";
+import brokerNode from "../services/brokernode";
 import iota from "../services/iota";
+import appUtils from "../../utils/app";
 
 // TODO remove this when we get the Go API done
 import powActions from "../actions/pow-actions";
@@ -45,13 +46,14 @@ const determineRequestEpic = (action$, store) => {
 const requestBrokerEpic = (action$, store) => {
   return action$.ofType(nodeActions.NODE_REQUEST_BROKER_NODES).mergeMap(() => {
     const { brokerNodes } = store.getState().node;
+    const to = brokerNode.getStorageFn(appUtils.randomFn(2));
     return Observable.fromPromise(
-      brokerNode.requestBrokerNodeAddressPoW(brokerNodes)
+      brokerNode.requestAddressPoW(brokerNodes, to)
     )
       .mergeMap(({ data }) => {
         const {
           id: txid,
-          pow: { message, address, branchTransaction, trunkTransaction }
+          pow: { message, address, branchTx, trunkTx }
         } = data;
 
         // TODO: change this
@@ -71,15 +73,15 @@ const requestBrokerEpic = (action$, store) => {
           iota.prepareTransfers({ address, message, value, tag, seed })
         ).mergeMap(trytes => {
           return Observable.fromPromise(
-            iota.attachToTangleCurl({
-              branchTransaction,
-              trunkTransaction,
+            iota.attachToTangle({
+              branchTx,
+              trunkTx,
               mwm: 14,
               trytes
             })
           ).mergeMap(trytesArray => {
             return Observable.fromPromise(
-              brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray)
+              brokerNode.completeAddressPoW(txid, trytesArray, to)
             ).flatMap(({ data }) => {
               const { purchase: brokerNodeAddress } = data;
               let hardcodedHooks = ["52.17.133.55"];
