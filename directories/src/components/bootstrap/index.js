@@ -5,7 +5,7 @@ import appActions from "../../redux/actions/app-actions";
 
 import LOGO from "../../assets/images/logo.svg";
 
-class Storage extends Component {
+class Bootstrap extends Component {
   componentDidMount() {
     const { startAppFn } = this.props;
     startAppFn();
@@ -16,7 +16,7 @@ class Storage extends Component {
     return (
       <div className="container">
         <img src={LOGO} width="100" />
-        <div className="status-container">{statuses.map(s => <p>{s}</p>)}</div>
+        <div className="status-container">{statuses.map( (s, i) =>{ <p>{s}</p> })}</div>
       </div>
     );
   }
@@ -30,4 +30,4 @@ const mapDispatchToProps = dispatch => ({
   startAppFn: () => dispatch(appActions.startApp())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Storage);
+export default connect(mapStateToProps, mapDispatchToProps)(Bootstrap);

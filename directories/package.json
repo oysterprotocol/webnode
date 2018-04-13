@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap": "^3.3.7",
+    "crypto-js": "^3.1.9-1",
     "curl.lib.js": "^1.0.22",
     "iota.lib.js": "^0.4.7",
     "lodash": "^4.17.5",

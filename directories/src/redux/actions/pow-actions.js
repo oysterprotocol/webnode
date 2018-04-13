@@ -10,18 +10,18 @@ const ACTIONS = Object.freeze({
 
   // actionCreators
   requestPoW: ({
-    branchTransaction,
+    branchTx,
     broadcastingNodes,
     mwm,
-    trunkTransaction,
+    trunkTx,
     trytes
   }) => ({
     type: IOTA_POW,
     payload: {
-      branchTransaction,
+      branchTx,
       broadcastingNodes,
       mwm,
-      trunkTransaction,
+      trunkTx,
       trytes
     }
   }),

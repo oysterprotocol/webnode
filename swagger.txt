@@ -1,0 +1,355 @@
+DO AFTER regenerate api from swaggerhub
+
+ON project - terminal
+npm i cors
+
+ON index.js
+
+var cors = require('cors');
+app.use(cors());
+
+
+
+
+
+SWAGGERHUB.COM -> SWAGGER2.0 API BACKUP
+
+swagger: '2.0'
+info:
+  description: Brokernode API for Webnode application
+  version: "0.8.9"
+  title: Brokernode API
+  # put the contact info of your company
+  contact:
+    email: your@your-company.com
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+# tags
+tags:
+- name: brokers
+  description: Operations available to brokers
+- name: webNodes
+  description: Operations for web nodes.
+
+paths:
+  /api/v1/supply/webnodes:
+    post:
+      tags:
+      - webNodes
+      summary: Register a new webnode
+      operationId: addWebnode
+      description: Register a new webnode
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: WebNode
+        description: Register new webnode
+        schema:
+          $ref: '#/definitions/webNode'
+      responses:
+        200:
+          description: ""
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/webNodeResponse'
+  /api/v1/supply/claimtreasure:
+    post:
+      tags:
+      - claimTreasure
+      summary: claimtreasure
+      operationId: claimTreasure
+      description: claimtreasure
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: claimtreasure
+        schema:
+          $ref: '#/definitions/claimTreasure'
+      responses:
+        201:
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/claimTreasureResponse'
+  /api/v1/demand/transactions/brokernodes:
+    post:
+      tags:
+      - brokers
+      summary: Register proof of work
+      operationId: registerProofWork
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: List of current brokernodes
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/currentList'
+      responses:
+        201:
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/transactionResponse'
+  /api/v1/demand/transactions/{id}/brokernodes:
+    put:
+      tags:
+      - brokers
+      summary: Inform broker that the webnode has done
+      operationId: informBroker
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: Node id
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        description: List of trytes
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/pow'
+      responses:
+        200:
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/informResponse'
+        400:
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/errorResponse'
+  /api/v1/demand/transactions/genesishash:
+    post:
+      tags:
+      - brokers
+      summary: Register proof of work
+      operationId: registerProofWorkGenesisHash
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: body
+        description: List of current genesis hashes
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/currentListGenesisHash'
+      responses:
+        201:
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/transactionResponse'
+  /api/v1/demand/transactions/{id}/genesishash:
+    put:
+      tags:
+      - brokers
+      summary: Inform broker that the webnode has done
+      operationId: informBrokerGenesisHash
+      consumes:
+      - application/x-www-form-urlencoded
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: id
+        in: path
+        description: Node id
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: body
+        description: List of trytes
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/pow'
+      responses:
+        200:
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/informResponseGenesisHash'
+        400:
+          description: ""
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/errorResponse'
+
+definitions:
+  webNode:
+    type: object
+    required:
+    - address
+    properties:
+      address:
+        type: string
+        format: uuid
+        example: d290f
+  claimTreasure:
+    type: object
+    required:
+    - seed
+    properties:
+      seed:
+        type: string
+        format: uuid
+        example: d290f
+  currentList:
+    type: object
+    properties:
+      currentList:
+        type: array
+        items:
+          type: object
+          properties:
+            item:
+              type: string
+        format: url
+        example: [broker-node1.com, broker-node2.com]
+    xml:
+      name: currentList
+  currentListGenesisHash:
+    type: object
+    properties:
+      currentList:
+        type: array
+        items:
+          type: object
+          properties:
+            item:
+              type: string
+        format: url
+        example: [gdsjiogjoisgdjio, hdfklpokpospo]
+    xml:
+      name: currentList
+  pow:
+    type: object
+    properties:
+      trytes:
+        type: string
+        format: uuid
+        example: Some tryte...
+    xml:
+      name: trytes 
+  webNodeResponse:
+    type: object
+    properties:
+     available:
+        description: ""
+  claimTreasureResponse:
+    type: object
+    properties:
+      item:
+        type: string
+        example: success
+    xml:
+      name: answer
+  transactionResponse:
+    type: object
+    properties:
+      id:
+        type: boolean
+      pow:
+        type: object
+        properties:
+          message:
+            type: string
+            format: uuid
+            example: tx1
+          address:
+            type: string
+            format: uuid
+            example: Address example
+          branchTx:
+            type: string
+            format: uuid
+            example: Branch transaction example
+          trunkTx:
+            type: string
+            format: uuid
+            example: Trunk transaction example
+          size:
+            type: number
+            example: 11
+          datamap:
+            type: array
+            items:
+              type: object
+              properties:
+                item:
+                  type: string
+                  example: aa
+    xml:
+      name: brokernode     
+  informResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        example: tx1
+      purchase:
+        type: string
+        example: broker-node1.com 
+    xml:
+      name: brokernode 
+  informResponseGenesisHash:
+    type: object
+    properties:
+      id:
+        type: string
+        example: tx1
+      purchase:
+        type: string
+        example: asdha;sljdflasjddeuyjhvbnbdrtyujk 
+    xml:
+      name: brokernode 
+
+  errorResponse:
+    type: object
+    properties:
+      error:
+        type: string
+    xml:
+      name: error

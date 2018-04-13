@@ -1,11 +1,11 @@
 import React from "react";
-import Storage from "components/storage/";
+import Bootstrap from "components/bootstrap/";
 
 class Root extends React.Component {
   render() {
     return (
       <div className="App">
-        <Storage />
+        <Bootstrap />
       </div>
     );
   }
