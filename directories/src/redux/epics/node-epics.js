@@ -49,10 +49,7 @@ const requestBrokerEpic = (action$, store) => {
       brokerNode.requestBrokerNodeAddressPoW(brokerNodes)
     )
       .mergeMap(({ data }) => {
-        const {
-          id: txid,
-          pow: { message, address, branchTransaction, trunkTransaction }
-        } = data;
+        const { id: txid, pow: { message, address, branchTx, trunkTx } } = data;
 
         // TODO: change this
         const value = 0;
@@ -72,14 +69,14 @@ const requestBrokerEpic = (action$, store) => {
         ).mergeMap(trytes => {
           return Observable.fromPromise(
             iota.attachToTangleCurl({
-              branchTransaction,
-              trunkTransaction,
+              branchTx,
+              trunkTx,
               mwm: 14,
               trytes
             })
           ).mergeMap(trytesArray => {
             return Observable.fromPromise(
-              brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray)
+              brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray[0])
             ).flatMap(({ data }) => {
               const { purchase: brokerNodeAddress } = data;
               let hardcodedHooks = ["52.17.133.55"];
@@ -104,7 +101,7 @@ const requestBrokerEpic = (action$, store) => {
 
 export default combineEpics(
   registerWebnodeEpic,
-  findMoreWorkEpic,
+  // findMoreWorkEpic,
   determineRequestEpic,
   requestBrokerEpic
 );

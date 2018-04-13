@@ -37,8 +37,8 @@ const prepareTransfers = data => {
 };
 
 export const attachToTangleCurl = data => {
-  const trunkTransaction = data.trunkTransaction;
-  const branchTransaction = data.branchTransaction;
+  const trunkTransaction = data.trunkTx;
+  const branchTransaction = data.branchTx;
   const minWeightMagnitude = data.mwm;
   const trytes = data.trytes;
   const callback = data.callback;
