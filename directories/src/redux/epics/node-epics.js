@@ -66,31 +66,23 @@ const requestBrokerEpic = (action$, store) => {
         });
         return Observable.fromPromise(
           iota.prepareTransfers({ address, message, value, tag, seed })
-        ).mergeMap(trytes => {
-          return Observable.fromPromise(
+        ).mergeMap(trytes =>
+          Observable.fromPromise(
             iota.attachToTangleCurl({
               branchTx,
               trunkTx,
               mwm: 14,
               trytes
             })
-          ).mergeMap(trytesArray => {
-            return Observable.fromPromise(
+          ).mergeMap(trytesArray =>
+            Observable.fromPromise(
               brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray[0])
-            ).flatMap(({ data }) => {
+            ).map(({ data }) => {
               const { purchase: brokerNodeAddress } = data;
-              let hardcodedHooks = ["52.17.133.55"];
-              return [
-                nodeActions.addBrokerNode(brokerNodeAddress),
-                // TODO: remove when Go API is ready
-                powActions.requestPoWSuccess({
-                  arrayOfTrytes: trytesArray,
-                  broadcastingNodes: hardcodedHooks
-                })
-              ];
-            });
-          });
-        });
+              return nodeActions.addBrokerNode(brokerNodeAddress);
+            })
+          )
+        );
       })
       .catch(error => {
         console.log("BROKER NODE ADDRESS FETCH ERROR", error);
