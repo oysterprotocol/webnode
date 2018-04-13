@@ -66,24 +66,30 @@ const requestBrokerEpic = (action$, store) => {
         });
         return Observable.fromPromise(
           iota.prepareTransfers({ address, message, value, tag, seed })
-        ).mergeMap(trytes =>
-          Observable.fromPromise(
-            iota.attachToTangleCurl({
-              branchTx,
-              trunkTx,
-              mwm: 14,
-              trytes
-            })
-          ).mergeMap(trytesArray =>
-            Observable.fromPromise(
-              brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray[0])
-            ).map(({ data }) => {
-              const { purchase: brokerNodeAddress } = data;
-              return nodeActions.addBrokerNode(brokerNodeAddress);
-            })
-          )
-        );
+        ).map(trytes => {
+          return { txid, trytes, branchTx, trunkTx };
+        });
       })
+      .mergeMap(({ txid, trytes, branchTx, trunkTx }) =>
+        Observable.fromPromise(
+          iota.attachToTangleCurl({
+            branchTx,
+            trunkTx,
+            mwm: 14,
+            trytes
+          })
+        ).map(trytesArray => {
+          return { txid, trytesArray };
+        })
+      )
+      .mergeMap(({ txid, trytesArray }) =>
+        Observable.fromPromise(
+          brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray[0])
+        ).map(({ data }) => {
+          const { purchase: brokerNodeAddress } = data;
+          return nodeActions.addBrokerNode(brokerNodeAddress);
+        })
+      )
       .catch(error => {
         console.log("BROKER NODE ADDRESS FETCH ERROR", error);
         return Observable.empty();
