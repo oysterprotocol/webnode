@@ -1,7 +1,7 @@
 export const DEVELOPED_MODE = true;
 export const API_ROOT_URL =
   window.location.href.indexOf("localhost") > 0
-    ? "http://18.217.131.231:3000"
+    ? "http://localhost:3000"
     : "http://18.217.131.231:3000";
 export const API_HEADERS = ["Content-type : application/json"];
 export const API_REQUEST_ERROR = "API_REQUEST_ERROR";
