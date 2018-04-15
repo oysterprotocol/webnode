@@ -32,7 +32,7 @@ const findMoreWorkEpic = (action$, store) => {
     .map(nodeActions.determineRequest);
 };
 
-const determineRequestEpic = (action$, store) => {
+const collectBrokersEpic = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_DETERMINE_REQUEST)
     .filter(() => {
@@ -40,6 +40,16 @@ const determineRequestEpic = (action$, store) => {
       return node.brokerNodes.length <= MIN_BROKER_NODES;
     })
     .map(nodeActions.requestBrokerNodes);
+};
+
+const collectGenesisHashesEpic = (action$, store) => {
+  return action$
+    .ofType(nodeActions.NODE_DETERMINE_REQUEST)
+    .filter(() => {
+      const { node } = store.getState();
+      return node.brokerNodes.length <= MIN_BROKER_NODES;
+    })
+    .map(nodeActions.requestGenesisHash);
 };
 
 const requestBrokerEpic = (action$, store) => {
@@ -57,13 +67,6 @@ const requestBrokerEpic = (action$, store) => {
         const seed =
           "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-        console.log("eeeeeeeeeeeeeeeee", {
-          address,
-          message,
-          value,
-          tag,
-          seed
-        });
         return Observable.fromPromise(
           iota.prepareTransfers({ address, message, value, tag, seed })
         ).map(trytes => {
@@ -97,9 +100,63 @@ const requestBrokerEpic = (action$, store) => {
   });
 };
 
+const requestGenesisHashEpic = (action$, store) => {
+  return action$
+    .ofType(nodeActions.NODE_REQUEST_GENESIS_HASHES)
+    .mergeMap(() => {
+      const { genesisHashes } = store.getState().node;
+      return Observable.fromPromise(
+        brokerNode.requestGenesisHashPoW(genesisHashes)
+      )
+        .mergeMap(({ data }) => {
+          const {
+            id: txid,
+            pow: { message, address, branchTx, trunkTx }
+          } = data;
+
+          // TODO: change this
+          const value = 0;
+          const tag = "EDMUNDANDREBELWUZHERE";
+          const seed =
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+          return Observable.fromPromise(
+            iota.prepareTransfers({ address, message, value, tag, seed })
+          ).map(trytes => {
+            return { txid, trytes, branchTx, trunkTx };
+          });
+        })
+        .mergeMap(({ txid, trytes, branchTx, trunkTx }) =>
+          Observable.fromPromise(
+            iota.attachToTangleCurl({
+              branchTx,
+              trunkTx,
+              mwm: 14,
+              trytes
+            })
+          ).map(trytesArray => {
+            return { txid, trytesArray };
+          })
+        )
+        .mergeMap(({ txid, trytesArray }) =>
+          Observable.fromPromise(
+            brokerNode.completeGenesisHashPoW(txid, trytesArray[0])
+          ).map(({ data }) => {
+            const { purchase: genesisHash } = data;
+            return nodeActions.addGenesisHash(genesisHash);
+          })
+        )
+        .catch(error => {
+          console.log("GENESIS HASH FETCH ERROR", error);
+          return Observable.empty();
+        });
+    });
+};
+
 export default combineEpics(
   registerWebnodeEpic,
   // findMoreWorkEpic,
-  determineRequestEpic,
+  // collectBrokersEpic,
+  // collectGenesisHashesEpic,
   requestBrokerEpic
 );
