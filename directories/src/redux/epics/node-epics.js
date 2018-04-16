@@ -9,7 +9,7 @@ import iota from "../services/iota";
 // TODO remove this when we get the Go API done
 import powActions from "../actions/pow-actions";
 
-import { MIN_BROKER_NODES } from "../../config/";
+import { MIN_GENESIS_HASHES, MIN_BROKER_NODES } from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {
   return action$.ofType(nodeActions.NODE_RESET).mergeMap(action => {
@@ -37,7 +37,7 @@ const collectBrokersEpic = (action$, store) => {
     .ofType(nodeActions.NODE_DETERMINE_REQUEST)
     .filter(() => {
       const { node } = store.getState();
-      return node.brokerNodes.length <= MIN_BROKER_NODES;
+      return node.genesisHashes.length <= MIN_BROKER_NODES;
     })
     .map(nodeActions.requestBrokerNodes);
 };
@@ -47,9 +47,9 @@ const collectGenesisHashesEpic = (action$, store) => {
     .ofType(nodeActions.NODE_DETERMINE_REQUEST)
     .filter(() => {
       const { node } = store.getState();
-      return node.brokerNodes.length <= MIN_BROKER_NODES;
+      return node.brokerNodes.length <= MIN_GENESIS_HASHES;
     })
-    .map(nodeActions.requestGenesisHash);
+    .map(nodeActions.requestGenesisHashes);
 };
 
 const requestBrokerEpic = (action$, store) => {
@@ -142,7 +142,7 @@ const requestGenesisHashEpic = (action$, store) => {
           Observable.fromPromise(
             brokerNode.completeGenesisHashPoW(txid, trytesArray[0])
           ).map(({ data }) => {
-            const { purchase: genesisHash } = data;
+            const { purchase: genesisHash, numberOfChunks } = data;
             return nodeActions.addGenesisHash(genesisHash);
           })
         )
@@ -157,6 +157,7 @@ export default combineEpics(
   registerWebnodeEpic,
   // findMoreWorkEpic,
   // collectBrokersEpic,
-  // collectGenesisHashesEpic,
-  requestBrokerEpic
+  collectGenesisHashesEpic,
+  requestBrokerEpic,
+  requestGenesisHashEpic
 );
