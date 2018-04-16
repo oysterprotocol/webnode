@@ -89,8 +89,8 @@ const requestBrokerEpic = (action$, store) => {
         Observable.fromPromise(
           brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray[0])
         ).map(({ data }) => {
-          const { purchase: brokerNodeAddress } = data;
-          return nodeActions.addBrokerNode(brokerNodeAddress);
+          const { purchase: address } = data;
+          return nodeActions.addBrokerNode({ address });
         })
       )
       .catch(error => {
@@ -143,7 +143,7 @@ const requestGenesisHashEpic = (action$, store) => {
             brokerNode.completeGenesisHashPoW(txid, trytesArray[0])
           ).map(({ data }) => {
             const { purchase: genesisHash, numberOfChunks } = data;
-            return nodeActions.addGenesisHash(genesisHash);
+            return nodeActions.addGenesisHash({ genesisHash, numberOfChunks });
           })
         )
         .catch(error => {

@@ -13,18 +13,31 @@ const initState = {
   lastResetAt: new Date()
 };
 
+const brokerNodeGenerator = address => {
+  return { address };
+};
+
+const genesisHashGenerator = (genesisHash, numberOfChunks) => {
+  return { genesisHash, numberOfChunks };
+};
+
 export default (state = initState, action) => {
   switch (action.type) {
     case NODE_ADD_BROKER_NODE:
+      const { address } = action.payload;
       return {
         ...state,
-        brokerNodes: _.uniq([...state.brokerNodes, action.payload])
+        brokerNodes: [...state.brokerNodes, brokerNodeGenerator(address)]
       };
 
     case NODE_ADD_GENESIS_HASH:
+      const { genesisHash, numberOfChunks } = action.payload;
       return {
         ...state,
-        genesisHashes: _.uniq([...state.genesisHashes, action.payload])
+        genesisHashes: [
+          ...state.genesisHashes,
+          genesisHashGenerator(genesisHash, numberOfChunks)
+        ]
       };
 
     case NODE_RESET:

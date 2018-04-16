@@ -26,18 +26,18 @@ const ACTIONS = Object.freeze({
     type: NODE_REQUEST_BROKER_NODES
   }),
 
-  addBrokerNode: address => ({
+  addBrokerNode: ({ address }) => ({
     type: NODE_ADD_BROKER_NODE,
-    payload: address
+    payload: { address }
   }),
 
   requestGenesisHashes: () => ({
     type: NODE_REQUEST_GENESIS_HASHES
   }),
 
-  addGenesisHash: genesisHash => ({
+  addGenesisHash: ({ genesisHash, numberOfChunks }) => ({
     type: NODE_ADD_GENESIS_HASH,
-    payload: genesisHash
+    payload: { genesisHash, numberOfChunks }
   }),
 
   resetNode: ({ id, lastResetAt }) => ({
