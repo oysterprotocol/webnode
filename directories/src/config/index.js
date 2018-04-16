@@ -28,3 +28,4 @@ export const DEFAULT_CONSTANT = Object.freeze({
 });
 
 export const MIN_BROKER_NODES = 5;
+export const MIN_GENESIS_HASHES = 5;

@@ -22,8 +22,24 @@ const completeBrokerNodeAddressPoW = (txid, trytes) =>
     data: { trytes }
   });
 
+const requestGenesisHashPoW = currentList =>
+  axios({
+    method: "POST",
+    url: `${API_ROOT_URL}/api/v2/demand/transactions/genesis_hashes`,
+    data: { currentList }
+  });
+
+const completeGenesisHashPoW = (txid, trytes) =>
+  axios({
+    method: "PUT",
+    url: `${API_ROOT_URL}/api/v2/demand/transactions/genesis_hashes/${txid}`,
+    data: { trytes }
+  });
+
 export default {
   registerWebnode,
   requestBrokerNodeAddressPoW,
-  completeBrokerNodeAddressPoW
+  completeBrokerNodeAddressPoW,
+  requestGenesisHashPoW,
+  completeGenesisHashPoW
 };

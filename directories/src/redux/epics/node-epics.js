@@ -9,7 +9,7 @@ import iota from "../services/iota";
 // TODO remove this when we get the Go API done
 import powActions from "../actions/pow-actions";
 
-import { MIN_BROKER_NODES } from "../../config/";
+import { MIN_GENESIS_HASHES, MIN_BROKER_NODES } from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {
   return action$.ofType(nodeActions.NODE_RESET).mergeMap(action => {
@@ -32,14 +32,24 @@ const findMoreWorkEpic = (action$, store) => {
     .map(nodeActions.determineRequest);
 };
 
-const determineRequestEpic = (action$, store) => {
+const collectBrokersEpic = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_DETERMINE_REQUEST)
     .filter(() => {
       const { node } = store.getState();
-      return node.brokerNodes.length <= MIN_BROKER_NODES;
+      return node.genesisHashes.length <= MIN_BROKER_NODES;
     })
     .map(nodeActions.requestBrokerNodes);
+};
+
+const collectGenesisHashesEpic = (action$, store) => {
+  return action$
+    .ofType(nodeActions.NODE_DETERMINE_REQUEST)
+    .filter(() => {
+      const { node } = store.getState();
+      return node.brokerNodes.length <= MIN_GENESIS_HASHES;
+    })
+    .map(nodeActions.requestGenesisHashes);
 };
 
 const requestBrokerEpic = (action$, store) => {
@@ -57,13 +67,6 @@ const requestBrokerEpic = (action$, store) => {
         const seed =
           "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-        console.log("eeeeeeeeeeeeeeeee", {
-          address,
-          message,
-          value,
-          tag,
-          seed
-        });
         return Observable.fromPromise(
           iota.prepareTransfers({ address, message, value, tag, seed })
         ).map(trytes => {
@@ -86,8 +89,8 @@ const requestBrokerEpic = (action$, store) => {
         Observable.fromPromise(
           brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray[0])
         ).map(({ data }) => {
-          const { purchase: brokerNodeAddress } = data;
-          return nodeActions.addBrokerNode(brokerNodeAddress);
+          const { purchase: address } = data;
+          return nodeActions.addBrokerNode({ address });
         })
       )
       .catch(error => {
@@ -97,9 +100,64 @@ const requestBrokerEpic = (action$, store) => {
   });
 };
 
+const requestGenesisHashEpic = (action$, store) => {
+  return action$
+    .ofType(nodeActions.NODE_REQUEST_GENESIS_HASHES)
+    .mergeMap(() => {
+      const { genesisHashes } = store.getState().node;
+      return Observable.fromPromise(
+        brokerNode.requestGenesisHashPoW(genesisHashes)
+      )
+        .mergeMap(({ data }) => {
+          const {
+            id: txid,
+            pow: { message, address, branchTx, trunkTx }
+          } = data;
+
+          // TODO: change this
+          const value = 0;
+          const tag = "EDMUNDANDREBELWUZHERE";
+          const seed =
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+          return Observable.fromPromise(
+            iota.prepareTransfers({ address, message, value, tag, seed })
+          ).map(trytes => {
+            return { txid, trytes, branchTx, trunkTx };
+          });
+        })
+        .mergeMap(({ txid, trytes, branchTx, trunkTx }) =>
+          Observable.fromPromise(
+            iota.attachToTangleCurl({
+              branchTx,
+              trunkTx,
+              mwm: 14,
+              trytes
+            })
+          ).map(trytesArray => {
+            return { txid, trytesArray };
+          })
+        )
+        .mergeMap(({ txid, trytesArray }) =>
+          Observable.fromPromise(
+            brokerNode.completeGenesisHashPoW(txid, trytesArray[0])
+          ).map(({ data }) => {
+            const { purchase: genesisHash, numberOfChunks } = data;
+            return nodeActions.addGenesisHash({ genesisHash, numberOfChunks });
+          })
+        )
+        .catch(error => {
+          console.log("GENESIS HASH FETCH ERROR", error);
+          return Observable.empty();
+        });
+    });
+};
+
 export default combineEpics(
   registerWebnodeEpic,
   // findMoreWorkEpic,
-  determineRequestEpic,
-  requestBrokerEpic
+  // collectBrokersEpic,
+  collectGenesisHashesEpic,
+  requestBrokerEpic,
+  requestGenesisHashEpic
 );
