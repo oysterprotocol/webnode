@@ -2,38 +2,99 @@ import axios from "axios";
 import { API_HEADERS, API_ROOT_URL, API_REQUEST_ERROR } from "../../config/";
 
 const registerWebnode = address =>
-  axios({
-    method: "POST",
-    url: `${API_ROOT_URL}/api/v2/supply/webnodes`,
-    data: { address }
+  new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: `${API_ROOT_URL}/api/v1/supply/webnodes`,
+      data: { address }
+    })
+    .then(data => {
+      resolve({ data });
+    })
+    .catch(error => {
+      console.log("POST registerWebnode" + error);
+      reject(API_REQUEST_ERROR);
+    });
   });
 
-const requestBrokerNodeAddressPoW = currentList =>
-  axios({
-    method: "POST",
-    url: `${API_ROOT_URL}/api/v2/demand/transactions/brokernodes`,
-    data: { currentList }
+const claimTreasure = seed =>
+  new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: `${API_ROOT_URL}/api/v1/supply/claimtreasure`,
+      data: { seed }
+    })
+    .then(data => {
+      resolve({ data });
+    })
+    .catch(error => {
+      console.log("POST claimTreasure" + error);
+      reject(API_REQUEST_ERROR);
+    });
+  });
+
+const requestBrokerNodeAddressPoW = (currentList) =>
+  new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: `${API_ROOT_URL}/api/v1/demand/transactions/brokernodes`,
+      data: {currentList}
+    })
+    .then(data => {
+      resolve({ data });
+    })
+    .catch(error => {
+      console.log("POST request" + error);
+      reject(API_REQUEST_ERROR);
+    });
   });
 
 const completeBrokerNodeAddressPoW = (txid, trytes) =>
-  axios({
-    method: "PUT",
-    url: `${API_ROOT_URL}/api/v2/demand/transactions/brokernodes/${txid}`,
-    data: { trytes }
+  new Promise((resolve, reject) => {
+    axios({
+      method: "PUT",
+      url: `${API_ROOT_URL}/api/v1/demand/transactions/${txid}/brokernodes`,
+      data: { trytes }
+    })
+    .then(data => {
+      resolve({ data });
+    })
+    .catch(error => {
+      console.log("PUT complete " + error);
+      reject(API_REQUEST_ERROR);
+    });
   });
 
-const requestGenesisHashPoW = currentList =>
-  axios({
-    method: "POST",
-    url: `${API_ROOT_URL}/api/v2/demand/transactions/genesis_hashes`,
-    data: { currentList }
+const requestGenesisHashPoW = (currentList) =>
+  new Promise((resolve, reject) => {
+    axios({
+      method: "POST",
+      url: `${API_ROOT_URL}/api/v1/demand/transactions/genesishash`,
+      data: {currentList}
+    })
+    .then(data => {
+      resolve({ data });
+    })
+    .catch(error => {
+      console.log("POST request" + error);
+      reject(API_REQUEST_ERROR);
+    });
   });
 
 const completeGenesisHashPoW = (txid, trytes) =>
-  axios({
-    method: "PUT",
-    url: `${API_ROOT_URL}/api/v2/demand/transactions/genesis_hashes/${txid}`,
-    data: { trytes }
+  new Promise((resolve, reject) => {
+    axios({
+      method: "PUT",
+      url: `${API_ROOT_URL}/api/v1/demand/transactions/${txid}/genesishash`,
+      data: { trytes }
+    })
+    .then(data => {
+      resolve({ data });
+    })
+    .catch(error => {
+      console.log("PUT complete " + error);
+      reject(API_REQUEST_ERROR);
+    });
   });
 
 export default {

@@ -1,10 +1,14 @@
 import { Observable } from "rxjs";
 import { combineEpics } from "redux-observable";
 import moment from "moment";
+import _ from "lodash";
 
 import nodeActions from "../actions/node-actions";
 import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
+
+import Datamap from "../../utils/datamap";
+import AppUtils from "../../utils/app";
 
 // TODO remove this when we get the Go API done
 import powActions from "../actions/pow-actions";
@@ -143,9 +147,34 @@ const requestGenesisHashEpic = (action$, store) => {
             brokerNode.completeGenesisHashPoW(txid, trytesArray[0])
           ).map(({ data }) => {
             const { purchase: genesisHash, numberOfChunks } = data;
-            return nodeActions.addGenesisHash({ genesisHash, numberOfChunks });
-          })
+            return { genesisHash, numberOfChunks };
+          }).catch(error => {
+            console.log("GENESIS HASH COMPLETE ERROR", error);
+            return Observable.empty();
+          });
         )
+        .mergeMap(({ genesisHash, numberOfChunks }) => {
+          const datamap = Datamap.generate(genesisHash, numberOfChunks);
+          const addresses = _.values(datamap);
+          const randomNumber = AppUtils.randomNumber(addresses.length);
+          const randomSectorAddresses = addresses.slice(randomNumber);
+          return Observable.fromPromise(
+             iota.findTransactions(randomSectorAddresses)
+          ).map(({ transaction }) => {
+            const { bundles, addresses, tags, approvees } = transaction;
+            return { bundles, addreses, tags, approvees, genesisHash, numberOfChunks };
+          });
+        })
+        .mergeMap(({ bundles, addreses, tags, approvees, genesisHash, numberOfChunks}) => {
+          return Observable.fromPromise(
+             iota.getTrytes(bundles)
+          ).map(({ trytesArray }) => {
+            const transactionObject = iota.utils.TransactionObject(trytesArray);
+            const asciiTimestampTrytes = trytesArray.map(trytes => trytes.timestamp.charCodeAt(0))
+              .reduce((current, previous) => previous + current);
+            return nodeActions.addGenesisHash({ genesisHash, numberOfChunks });
+          });
+        })
         .catch(error => {
           console.log("GENESIS HASH FETCH ERROR", error);
           return Observable.empty();
