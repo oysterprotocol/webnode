@@ -53,7 +53,5 @@ export default {
   completeBrokerNodeAddressPoW,
   requestGenesisHashPoW,
   completeGenesisHashPoW,
-  requestOldGenesisHashPoW,
-  completeOldGenesisHashPoW,
   claimTreasure
 };

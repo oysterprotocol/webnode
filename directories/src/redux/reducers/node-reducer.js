@@ -2,7 +2,7 @@ import _ from "lodash";
 
 import {
   NODE_ADD_BROKER_NODE,
-  NODE_ADD_GENESIS_HASH,
+  NODE_ADD_NEW_GENESIS_HASH,
   NODE_RESET
 } from "../actions/node-actions";
 
@@ -37,16 +37,6 @@ export default (state = initState, action) => {
         ...state,
         newGenesisHashes: [
           ...state.newGenesisHashes,
-          genesisHashGenerator(genesisHash, numberOfChunks)
-        ]
-      };
-
-    case NODE_ADD_OLD_GENESIS_HASH:
-      const { genesisHash, numberOfChunks } = action.payload;
-      return {
-        ...state,
-        oldGenesisHashes: [
-          ...state.oldGenesisHashes,
           genesisHashGenerator(genesisHash, numberOfChunks)
         ]
       };

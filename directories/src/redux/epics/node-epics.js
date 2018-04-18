@@ -13,7 +13,11 @@ import AppUtils from "../../utils/app";
 // TODO remove this when we get the Go API done
 import powActions from "../actions/pow-actions";
 
-import { MIN_GENESIS_HASHES, MIN_BROKER_NODES, SECTOR_DIVIDER } from "../../config/";
+import {
+  MIN_GENESIS_HASHES,
+  MIN_BROKER_NODES,
+  SECTOR_DIVIDER
+} from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {
   return action$.ofType(nodeActions.NODE_RESET).mergeMap(action => {
@@ -36,22 +40,22 @@ const findMoreWorkEpic = (action$, store) => {
     .map(nodeActions.determineRequest);
 };
 
-const collectGenesisHashesEpic = (action$, store) => {
-  return action$
-    .ofType(nodeActions.NODE_DETERMINE_REQUEST)
-    .filter(() => {
-      const { node } = store.getState();
-      return node.newGenesisHashes.length <= MIN_BROKER_NODES;
-    })
-    .map(nodeActions.requestBrokerNodes);
-};
-
 const collectBrokersEpic = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_DETERMINE_REQUEST)
     .filter(() => {
       const { node } = store.getState();
       return node.brokerNodes.length <= MIN_GENESIS_HASHES;
+    })
+    .map(nodeActions.requestBrokerNodes);
+};
+
+const collectGenesisHashesEpic = (action$, store) => {
+  return action$
+    .ofType(nodeActions.NODE_DETERMINE_REQUEST)
+    .filter(() => {
+      const { node } = store.getState();
+      return node.newGenesisHashes.length <= MIN_BROKER_NODES;
     })
     .map(nodeActions.requestGenesisHashes);
 };
@@ -145,13 +149,18 @@ const requestGenesisHashEpic = (action$, store) => {
         .mergeMap(({ txid, trytesArray }) =>
           Observable.fromPromise(
             brokerNode.completeGenesisHashPoW(txid, trytesArray[0])
-          ).map(({ data }) => {
-            const { purchase: genesisHash, numberOfChunks } = data;
-            return nodeActions.addNewGenesisHash({ genesisHash, numberOfChunks });
-          }).catch(error => {
-            console.log("GENESIS HASH COMPLETE ERROR", error);
-            return Observable.empty();
-          });
+          )
+            .map(({ data }) => {
+              const { purchase: genesisHash, numberOfChunks } = data;
+              return nodeActions.addNewGenesisHash({
+                genesisHash,
+                numberOfChunks
+              });
+            })
+            .catch(error => {
+              console.log("GENESIS HASH COMPLETE ERROR", error);
+              return Observable.empty();
+            })
         )
         .catch(error => {
           console.log("GENESIS HASH FETCH ERROR", error);
@@ -160,52 +169,53 @@ const requestGenesisHashEpic = (action$, store) => {
     });
 };
 
-const treasureHuntEpic = (action$, store) => {
-  return action$
-    .ofType(nodeActions.TREASURE_HUNT)
-    .mergeMap((action) => {
-      const { genesisHash, numberOfChunks } = action.payload;
-      const datamap = Datamap.generate(genesisHash, numberOfChunks);
-      const addresses = _.values(datamap);
-      const countSector = addresses / SECTOR_DIVIDER;
-      const randomSector = AppUtils.randomArray(1, countSector);
-      randomSector.map((sectorIndex) => {
-        let min = 0;
-        if((sectorIndex - 1) !== 0) {
-          min = (sectorIndex - 1) * SECTOR_DIVIDER;
-        }
-        const max = (sectorIndex * SECTOR_DIVIDER) - 1;
-        const randomSectorAddress = AppUtils.randomArray(min, max);
-        randomSectorAddress.map((addressIndex) => {
-          randomAddress = addresses.slice(addressIndex);
-          return Observable.fromPromise(
-            iota.findTransactions(randomAddress)
-          )
-            .mergeMap(({ hashes }) => {
-              return Observable.fromPromise(
-                iota.getTrytes(hashes)
-              )
-              .map(({ trytesArray }) => {
-                const transactionObject = iota.utils.TransactionObject(trytesArray);
-                const asciiTimestampTrytes = trytesArray.map(trytes => trytes.timestamp.charCodeAt(0))
-                  .reduce((current, previous) => previous + current);
-                return nodeActions.addGenesisHash({ genesisHash, numberOfChunks });
-              });
-            })
-            .catch(error => {
-              console.log("TREASURE HUNT ERROR", error);
-              return Observable.empty();
-            });
-        });
-      });
-    });
-};
+// const treasureHuntEpic = (action$, store) => {
+// return action$.ofType(nodeActions.TREASURE_HUNT).mergeMap(action => {
+// const { genesisHash, numberOfChunks } = action.payload;
+// const datamap = Datamap.generate(genesisHash, numberOfChunks);
+// const addresses = _.values(datamap);
+// const countSector = addresses / SECTOR_DIVIDER;
+// const randomSector = AppUtils.randomArray(1, countSector);
+// randomSector.map(sectorIndex => {
+// let min = 0;
+// if (sectorIndex - 1 !== 0) {
+// min = (sectorIndex - 1) * SECTOR_DIVIDER;
+// }
+// const max = sectorIndex * SECTOR_DIVIDER - 1;
+// const randomSectorAddress = AppUtils.randomArray(min, max);
+// randomSectorAddress.map(addressIndex => {
+// const randomAddress = addresses.slice(addressIndex);
+// return Observable.fromPromise(iota.findTransactions(randomAddress))
+// .mergeMap(({ hashes }) => {
+// return Observable.fromPromise(iota.getTrytes(hashes)).map(
+// ({ trytesArray }) => {
+// const transactionObject = iota.utils.TransactionObject(
+// trytesArray
+// );
+// const asciiTimestampTrytes = trytesArray
+// .map(trytes => trytes.timestamp.charCodeAt(0))
+// .reduce((current, previous) => previous + current);
+// return nodeActions.addGenesisHash({
+// genesisHash,
+// numberOfChunks
+// });
+// }
+// );
+// })
+// .catch(error => {
+// console.log("TREASURE HUNT ERROR", error);
+// return Observable.empty();
+// });
+// });
+// });
+// });
+// };
 
 export default combineEpics(
   registerWebnodeEpic,
   // findMoreWorkEpic,
   // collectBrokersEpic,
   collectGenesisHashesEpic,
-  requestBrokerEpic,
+  // requestBrokerEpic,
   requestGenesisHashEpic
 );
