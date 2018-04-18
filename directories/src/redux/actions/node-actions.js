@@ -16,6 +16,7 @@ const ACTIONS = Object.freeze({
   NODE_REQUEST_GENESIS_HASHES,
   NODE_ADD_GENESIS_HASH,
   NODE_RESET,
+  TREASURE_HUNT
 
   // actionCreators
   determineRequest: () => ({
@@ -40,10 +41,25 @@ const ACTIONS = Object.freeze({
     payload: { genesisHash, numberOfChunks }
   }),
 
+  requestOldGenesisHashes: () => ({
+    type: NODE_REQUEST_OLD_GENESIS_HASHES
+  }),
+
+  addOldGenesisHash: ({ genesisHash, numberOfChunks }) => ({
+    type: NODE_ADD_OLD_GENESIS_HASH,
+    payload: { genesisHash, numberOfChunks }
+  }),
+
   resetNode: ({ id, lastResetAt }) => ({
     type: NODE_RESET,
     payload: { id, lastResetAt }
-  })
+  }),
+
+  treasureHunt: ({ genesisHash, numberOfChunks }) => ({
+    type: TREASURE_HUNT,
+    payload: { genesisHash, numberOfChunks }
+  }),
+
 });
 
 export default ACTIONS;

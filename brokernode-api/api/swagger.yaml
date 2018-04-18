@@ -1,0 +1,369 @@
+---
+swagger: "2.0"
+info:
+  description: "Brokernode API for Webnode application"
+  version: "0.8.5"
+  title: "Brokernode API"
+  contact:
+    email: "your@your-company.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+tags:
+- name: "brokers"
+  description: "Operations available to brokers"
+- name: "webNodes"
+  description: "Operations for web nodes."
+paths:
+  /api/v1/supply/webnodes:
+    post:
+      tags:
+      - "webNodes"
+      summary: "Register a new webnode"
+      description: "Register a new webnode"
+      operationId: "addWebnode"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "WebNode"
+        description: "Register new webnode"
+        required: false
+        schema:
+          $ref: "#/definitions/webNode"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "object"
+            properties: {}
+      x-swagger-router-controller: "WebNodes"
+  /api/v1/supply/claimtreasure:
+    post:
+      tags:
+      - "claimTreasure"
+      summary: "claimtreasure"
+      description: "claimtreasure"
+      operationId: "claimTreasure"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "claimtreasure"
+        required: false
+        schema:
+          $ref: "#/definitions/claimTreasure"
+      responses:
+        201:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/claimTreasureResponse"
+      x-swagger-router-controller: "ClaimTreasure"
+  /api/v1/demand/transactions/brokernodes:
+    post:
+      tags:
+      - "brokers"
+      summary: "Register proof of work"
+      operationId: "registerProofWork"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "List of current brokernodes"
+        required: true
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/currentList"
+      responses:
+        201:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/transactionResponse"
+      x-swagger-router-controller: "Brokers"
+  /api/v1/demand/transactions/{id}/brokernodes:
+    put:
+      tags:
+      - "brokers"
+      summary: "Inform broker that the webnode has done"
+      operationId: "informBroker"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Node id"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "List of trytes"
+        required: true
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/pow"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/informResponse"
+        400:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/errorResponse"
+      x-swagger-router-controller: "Brokers"
+  /api/v1/demand/transactions/genesishash:
+    post:
+      tags:
+      - "brokers"
+      summary: "Register proof of work"
+      operationId: "registerProofWorkGenesisHash"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "List of current genesis hashes"
+        required: true
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/currentListGenesisHash"
+      responses:
+        201:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/transactionResponse"
+      x-swagger-router-controller: "Brokers"
+  /api/v1/demand/transactions/{id}/genesishash:
+    put:
+      tags:
+      - "brokers"
+      summary: "Inform broker that the webnode has done"
+      operationId: "informBrokerGenesisHash"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      - "application/xml"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Node id"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "List of trytes"
+        required: true
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/pow"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/informResponseGenesisHash"
+        400:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/errorResponse"
+      x-swagger-router-controller: "Brokers"
+definitions:
+  webNode:
+    type: "object"
+    required:
+    - "address"
+    properties:
+      address:
+        type: "string"
+        format: "uuid"
+        example: "d290f"
+  claimTreasure:
+    type: "object"
+    required:
+    - "seed"
+    properties:
+      seed:
+        type: "string"
+        format: "uuid"
+        example: "d290f"
+  currentList:
+    type: "object"
+    properties:
+      currentList:
+        type: "array"
+        example:
+        - "broker-node1.com"
+        - "broker-node2.com"
+        items:
+          $ref: "#/definitions/currentList_currentList"
+    xml:
+      name: "currentList"
+  currentListGenesisHash:
+    type: "object"
+    properties:
+      currentList:
+        type: "array"
+        example:
+        - "gdsjiogjoisgdjio"
+        - "hdfklpokpospo"
+        items:
+          $ref: "#/definitions/currentList_currentList"
+    xml:
+      name: "currentList"
+  pow:
+    type: "object"
+    properties:
+      trytes:
+        type: "string"
+        format: "uuid"
+        example: "Some tryte..."
+    xml:
+      name: "trytes"
+  webNodeResponse:
+    type: "object"
+  claimTreasureResponse:
+    type: "object"
+    properties:
+      item:
+        type: "string"
+        example: "success"
+    example:
+      item: "success"
+    xml:
+      name: "answer"
+  transactionResponse:
+    type: "object"
+    properties:
+      id:
+        type: "boolean"
+      pow:
+        $ref: "#/definitions/transactionResponse_pow"
+    example:
+      pow:
+        address: "Address example"
+        size: 11.0
+        trunkTx: "Trunk transaction example"
+        datamap:
+        - item: "aa"
+        - item: "aa"
+        branchTx: "Branch transaction example"
+        message: "tx1"
+      id: true
+    xml:
+      name: "brokernode"
+  informResponse:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "tx1"
+      purchase:
+        type: "string"
+        example: "broker-node1.com"
+    example:
+      purchase: "broker-node1.com"
+      id: "tx1"
+    xml:
+      name: "brokernode"
+  informResponseGenesisHash:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "tx1"
+      purchase:
+        type: "string"
+        example: "asdha;sljdflasjddeuyjhvbnbdrtyujk"
+    example:
+      purchase: "asdha;sljdflasjddeuyjhvbnbdrtyujk"
+      id: "tx1"
+    xml:
+      name: "brokernode"
+  errorResponse:
+    type: "object"
+    properties:
+      error:
+        type: "string"
+    xml:
+      name: "error"
+  currentList_currentList:
+    properties:
+      item:
+        type: "string"
+  transactionResponse_pow_datamap:
+    properties:
+      item:
+        type: "string"
+        example: "aa"
+    example:
+      item: "aa"
+  transactionResponse_pow:
+    properties:
+      message:
+        type: "string"
+        format: "uuid"
+        example: "tx1"
+      address:
+        type: "string"
+        format: "uuid"
+        example: "Address example"
+      branchTx:
+        type: "string"
+        format: "uuid"
+        example: "Branch transaction example"
+      trunkTx:
+        type: "string"
+        format: "uuid"
+        example: "Trunk transaction example"
+      size:
+        type: "number"
+        example: 11.0
+      datamap:
+        type: "array"
+        items:
+          $ref: "#/definitions/transactionResponse_pow_datamap"
+    example:
+      address: "Address example"
+      size: 11.0
+      trunkTx: "Trunk transaction example"
+      datamap:
+      - item: "aa"
+      - item: "aa"
+      branchTx: "Branch transaction example"
+      message: "tx1"

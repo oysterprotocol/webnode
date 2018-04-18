@@ -1,38 +1,59 @@
 import axios from "axios";
-import { API_HEADERS, API_ROOT_URL, API_REQUEST_ERROR } from "../../config/";
+import { API_ROOT_URL, API_VERSION } from "../../config/";
 
 const registerWebnode = address =>
   axios({
     method: "POST",
-    url: `${API_ROOT_URL}/api/v2/supply/webnodes`,
+    url: `${API_ROOT_URL}/${API_VERSION}/supply/webnodes`,
     data: { address }
   });
 
-const requestBrokerNodeAddressPoW = currentList =>
+const claimTreasure = (seed, genesisHash, numberOfChunks) =>
   axios({
     method: "POST",
-    url: `${API_ROOT_URL}/api/v2/demand/transactions/brokernodes`,
+    url: `${API_ROOT_URL}/${API_VERSION}/supply/claim_treasure`,
+    data: { seed, genesisHash, numberOfChunks }
+  });
+
+const requestBrokerNodeAddressPoW = (currentList) =>
+  axios({
+    method: "POST",
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/brokernodes`,
     data: { currentList }
   });
 
 const completeBrokerNodeAddressPoW = (txid, trytes) =>
   axios({
     method: "PUT",
-    url: `${API_ROOT_URL}/api/v2/demand/transactions/brokernodes/${txid}`,
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/brokernodes/${txid}`,
     data: { trytes }
   });
 
-const requestGenesisHashPoW = currentList =>
+const requestGenesisHashPoW = (currentList) =>
   axios({
     method: "POST",
-    url: `${API_ROOT_URL}/api/v2/demand/transactions/genesis_hashes`,
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/genesis_hashes`,
     data: { currentList }
   });
 
 const completeGenesisHashPoW = (txid, trytes) =>
   axios({
     method: "PUT",
-    url: `${API_ROOT_URL}/api/v2/demand/transactions/genesis_hashes/${txid}`,
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/genesis_hashes/${txid}`,
+    data: { trytes }
+  });
+
+const requestOldGenesisHashPoW = (currentList) =>
+  axios({
+    method: "POST",
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/old_genesis_hashes`,
+    data: { currentList }
+  });
+
+const completeOldGenesisHashPoW = (txid, trytes) =>
+  axios({
+    method: "PUT",
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/old_genesis_hashes/${txid}`,
     data: { trytes }
   });
 
@@ -41,5 +62,8 @@ export default {
   requestBrokerNodeAddressPoW,
   completeBrokerNodeAddressPoW,
   requestGenesisHashPoW,
-  completeGenesisHashPoW
+  completeGenesisHashPoW,
+  requestOldGenesisHashPoW,
+  completeOldGenesisHashPoW,
+  claimTreasure
 };
