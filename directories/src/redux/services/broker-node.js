@@ -8,14 +8,7 @@ const registerWebnode = address =>
     data: { address }
   });
 
-const claimTreasure = (seed, genesisHash, numberOfChunks) =>
-  axios({
-    method: "POST",
-    url: `${API_ROOT_URL}/${API_VERSION}/supply/claim_treasure`,
-    data: { seed, genesisHash, numberOfChunks }
-  });
-
-const requestBrokerNodeAddressPoW = (currentList) =>
+const requestBrokerNodeAddressPoW = currentList =>
   axios({
     method: "POST",
     url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/brokernodes`,
@@ -25,11 +18,13 @@ const requestBrokerNodeAddressPoW = (currentList) =>
 const completeBrokerNodeAddressPoW = (txid, trytes) =>
   axios({
     method: "PUT",
-    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/brokernodes/${txid}`,
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/brokernodes/${
+      txid
+    }`,
     data: { trytes }
   });
 
-const requestGenesisHashPoW = (currentList) =>
+const requestGenesisHashPoW = currentList =>
   axios({
     method: "POST",
     url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/genesis_hashes`,
@@ -39,22 +34,17 @@ const requestGenesisHashPoW = (currentList) =>
 const completeGenesisHashPoW = (txid, trytes) =>
   axios({
     method: "PUT",
-    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/genesis_hashes/${txid}`,
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/genesis_hashes/${
+      txid
+    }`,
     data: { trytes }
   });
 
-const requestOldGenesisHashPoW = (currentList) =>
+const claimTreasure = (seed, genesisHash, numberOfChunks) =>
   axios({
     method: "POST",
-    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/old_genesis_hashes`,
-    data: { currentList }
-  });
-
-const completeOldGenesisHashPoW = (txid, trytes) =>
-  axios({
-    method: "PUT",
-    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/old_genesis_hashes/${txid}`,
-    data: { trytes }
+    url: `${API_ROOT_URL}/${API_VERSION}/supply/claim_treasure`,
+    data: { seed, genesisHash, numberOfChunks }
   });
 
 export default {

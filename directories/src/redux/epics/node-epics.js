@@ -36,17 +36,17 @@ const findMoreWorkEpic = (action$, store) => {
     .map(nodeActions.determineRequest);
 };
 
-const collectBrokersEpic = (action$, store) => {
+const collectGenesisHashesEpic = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_DETERMINE_REQUEST)
     .filter(() => {
       const { node } = store.getState();
-      return node.genesisHashes.length <= MIN_BROKER_NODES;
+      return node.newGenesisHashes.length <= MIN_BROKER_NODES;
     })
     .map(nodeActions.requestBrokerNodes);
 };
 
-const collectGenesisHashesEpic = (action$, store) => {
+const collectBrokersEpic = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_DETERMINE_REQUEST)
     .filter(() => {
@@ -108,9 +108,9 @@ const requestGenesisHashEpic = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_REQUEST_GENESIS_HASHES)
     .mergeMap(() => {
-      const { genesisHashes } = store.getState().node;
+      const { newGenesisHashes } = store.getState().node;
       return Observable.fromPromise(
-        brokerNode.requestGenesisHashPoW(genesisHashes)
+        brokerNode.requestGenesisHashPoW(newGenesisHashes)
       )
         .mergeMap(({ data }) => {
           const {
@@ -147,8 +147,7 @@ const requestGenesisHashEpic = (action$, store) => {
             brokerNode.completeGenesisHashPoW(txid, trytesArray[0])
           ).map(({ data }) => {
             const { purchase: genesisHash, numberOfChunks } = data;
-            nodeActions.addGenesisHash({ genesisHash, numberOfChunks });
-            return nodeActions.treasureHunt({ genesisHash, numberOfChunks });;
+            return nodeActions.addNewGenesisHash({ genesisHash, numberOfChunks });
           }).catch(error => {
             console.log("GENESIS HASH COMPLETE ERROR", error);
             return Observable.empty();
