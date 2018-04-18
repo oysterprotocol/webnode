@@ -13,7 +13,7 @@ import AppUtils from "../../utils/app";
 // TODO remove this when we get the Go API done
 import powActions from "../actions/pow-actions";
 
-import { MIN_GENESIS_HASHES, MIN_BROKER_NODES } from "../../config/";
+import { MIN_GENESIS_HASHES, MIN_BROKER_NODES, SECTOR_DIVIDER } from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {
   return action$.ofType(nodeActions.NODE_RESET).mergeMap(action => {
@@ -147,38 +147,58 @@ const requestGenesisHashEpic = (action$, store) => {
             brokerNode.completeGenesisHashPoW(txid, trytesArray[0])
           ).map(({ data }) => {
             const { purchase: genesisHash, numberOfChunks } = data;
-            return { genesisHash, numberOfChunks };
+            nodeActions.addGenesisHash({ genesisHash, numberOfChunks });
+            return nodeActions.treasureHunt({ genesisHash, numberOfChunks });;
           }).catch(error => {
             console.log("GENESIS HASH COMPLETE ERROR", error);
             return Observable.empty();
           });
         )
-        .mergeMap(({ genesisHash, numberOfChunks }) => {
-          const datamap = Datamap.generate(genesisHash, numberOfChunks);
-          const addresses = _.values(datamap);
-          const randomNumber = AppUtils.randomNumber(addresses.length);
-          const randomSectorAddresses = addresses.slice(randomNumber);
-          return Observable.fromPromise(
-             iota.findTransactions(randomSectorAddresses)
-          ).map(({ transaction }) => {
-            const { bundles, addresses, tags, approvees } = transaction;
-            return { bundles, addreses, tags, approvees, genesisHash, numberOfChunks };
-          });
-        })
-        .mergeMap(({ bundles, addreses, tags, approvees, genesisHash, numberOfChunks}) => {
-          return Observable.fromPromise(
-             iota.getTrytes(bundles)
-          ).map(({ trytesArray }) => {
-            const transactionObject = iota.utils.TransactionObject(trytesArray);
-            const asciiTimestampTrytes = trytesArray.map(trytes => trytes.timestamp.charCodeAt(0))
-              .reduce((current, previous) => previous + current);
-            return nodeActions.addGenesisHash({ genesisHash, numberOfChunks });
-          });
-        })
         .catch(error => {
           console.log("GENESIS HASH FETCH ERROR", error);
           return Observable.empty();
         });
+    });
+};
+
+const treasureHuntEpic = (action$, store) => {
+  return action$
+    .ofType(nodeActions.TREASURE_HUNT)
+    .mergeMap((action) => {
+      const { genesisHash, numberOfChunks } = action.payload;
+      const datamap = Datamap.generate(genesisHash, numberOfChunks);
+      const addresses = _.values(datamap);
+      const countSector = addresses / SECTOR_DIVIDER;
+      const randomSector = AppUtils.randomArray(1, countSector);
+      randomSector.map((sectorIndex) => {
+        let min = 0;
+        if((sectorIndex - 1) !== 0) {
+          min = (sectorIndex - 1) * SECTOR_DIVIDER;
+        }
+        const max = (sectorIndex * SECTOR_DIVIDER) - 1;
+        const randomSectorAddress = AppUtils.randomArray(min, max);
+        randomSectorAddress.map((addressIndex) => {
+          randomAddress = addresses.slice(addressIndex);
+          return Observable.fromPromise(
+            iota.findTransactions(randomAddress)
+          )
+            .mergeMap(({ hashes }) => {
+              return Observable.fromPromise(
+                iota.getTrytes(hashes)
+              )
+              .map(({ trytesArray }) => {
+                const transactionObject = iota.utils.TransactionObject(trytesArray);
+                const asciiTimestampTrytes = trytesArray.map(trytes => trytes.timestamp.charCodeAt(0))
+                  .reduce((current, previous) => previous + current);
+                return nodeActions.addGenesisHash({ genesisHash, numberOfChunks });
+              });
+            })
+            .catch(error => {
+              console.log("TREASURE HUNT ERROR", error);
+              return Observable.empty();
+            });
+        });
+      });
     });
 };
 

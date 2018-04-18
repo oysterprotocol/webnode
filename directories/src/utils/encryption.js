@@ -9,11 +9,13 @@ const parseEightCharsOfFilename = fileName => {
 };
 
 const getSalt = numChars => {
-  const salt = Math.random()
+  let array = new Uint32Array(1);
+  window.crypto.getRandomValues(array);
+  let salt = array[0];
+
+  return salt
     .toString(36)
     .substr(2, numChars);
-
-  return salt;
 };
 
 const getPrimordialHash = () => {

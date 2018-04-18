@@ -9,6 +9,7 @@ import {
 const initState = {
   brokerNodes: [],
   genesisHashes: [],
+  oldGenesisHashes: [],
   id: null,
   lastResetAt: new Date()
 };
@@ -36,6 +37,16 @@ export default (state = initState, action) => {
         ...state,
         genesisHashes: [
           ...state.genesisHashes,
+          genesisHashGenerator(genesisHash, numberOfChunks)
+        ]
+      };
+
+     case NODE_ADD_OLD_GENESIS_HASH:
+      const { genesisHash, numberOfChunks } = action.payload;
+      return {
+        ...state,
+        oldGenesisHashes: [
+          ...state.oldGenesisHashes,
           genesisHashGenerator(genesisHash, numberOfChunks)
         ]
       };

@@ -1,100 +1,60 @@
 import axios from "axios";
-import { API_HEADERS, API_ROOT_URL, API_REQUEST_ERROR } from "../../config/";
+import { API_ROOT_URL, API_VERSION } from "../../config/";
 
 const registerWebnode = address =>
-  new Promise((resolve, reject) => {
-    axios({
-      method: "POST",
-      url: `${API_ROOT_URL}/api/v1/supply/webnodes`,
-      data: { address }
-    })
-    .then(data => {
-      resolve({ data });
-    })
-    .catch(error => {
-      console.log("POST registerWebnode" + error);
-      reject(API_REQUEST_ERROR);
-    });
+  axios({
+    method: "POST",
+    url: `${API_ROOT_URL}/${API_VERSION}/supply/webnodes`,
+    data: { address }
   });
 
-const claimTreasure = seed =>
-  new Promise((resolve, reject) => {
-    axios({
-      method: "POST",
-      url: `${API_ROOT_URL}/api/v1/supply/claimtreasure`,
-      data: { seed }
-    })
-    .then(data => {
-      resolve({ data });
-    })
-    .catch(error => {
-      console.log("POST claimTreasure" + error);
-      reject(API_REQUEST_ERROR);
-    });
+const claimTreasure = (seed, genesisHash, numberOfChunks) =>
+  axios({
+    method: "POST",
+    url: `${API_ROOT_URL}/${API_VERSION}/supply/claim_treasure`,
+    data: { seed, genesisHash, numberOfChunks }
   });
 
 const requestBrokerNodeAddressPoW = (currentList) =>
-  new Promise((resolve, reject) => {
-    axios({
-      method: "POST",
-      url: `${API_ROOT_URL}/api/v1/demand/transactions/brokernodes`,
-      data: {currentList}
-    })
-    .then(data => {
-      resolve({ data });
-    })
-    .catch(error => {
-      console.log("POST request" + error);
-      reject(API_REQUEST_ERROR);
-    });
+  axios({
+    method: "POST",
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/brokernodes`,
+    data: { currentList }
   });
 
 const completeBrokerNodeAddressPoW = (txid, trytes) =>
-  new Promise((resolve, reject) => {
-    axios({
-      method: "PUT",
-      url: `${API_ROOT_URL}/api/v1/demand/transactions/${txid}/brokernodes`,
-      data: { trytes }
-    })
-    .then(data => {
-      resolve({ data });
-    })
-    .catch(error => {
-      console.log("PUT complete " + error);
-      reject(API_REQUEST_ERROR);
-    });
+  axios({
+    method: "PUT",
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/brokernodes/${txid}`,
+    data: { trytes }
   });
 
 const requestGenesisHashPoW = (currentList) =>
-  new Promise((resolve, reject) => {
-    axios({
-      method: "POST",
-      url: `${API_ROOT_URL}/api/v1/demand/transactions/genesishash`,
-      data: {currentList}
-    })
-    .then(data => {
-      resolve({ data });
-    })
-    .catch(error => {
-      console.log("POST request" + error);
-      reject(API_REQUEST_ERROR);
-    });
+  axios({
+    method: "POST",
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/genesis_hashes`,
+    data: { currentList }
   });
 
 const completeGenesisHashPoW = (txid, trytes) =>
-  new Promise((resolve, reject) => {
-    axios({
-      method: "PUT",
-      url: `${API_ROOT_URL}/api/v1/demand/transactions/${txid}/genesishash`,
-      data: { trytes }
-    })
-    .then(data => {
-      resolve({ data });
-    })
-    .catch(error => {
-      console.log("PUT complete " + error);
-      reject(API_REQUEST_ERROR);
-    });
+  axios({
+    method: "PUT",
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/genesis_hashes/${txid}`,
+    data: { trytes }
+  });
+
+const requestOldGenesisHashPoW = (currentList) =>
+  axios({
+    method: "POST",
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/old_genesis_hashes`,
+    data: { currentList }
+  });
+
+const completeOldGenesisHashPoW = (txid, trytes) =>
+  axios({
+    method: "PUT",
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/old_genesis_hashes/${txid}`,
+    data: { trytes }
   });
 
 export default {
@@ -102,5 +62,8 @@ export default {
   requestBrokerNodeAddressPoW,
   completeBrokerNodeAddressPoW,
   requestGenesisHashPoW,
-  completeGenesisHashPoW
+  completeGenesisHashPoW,
+  requestOldGenesisHashPoW,
+  completeOldGenesisHashPoW,
+  claimTreasure
 };
