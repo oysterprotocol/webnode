@@ -2,13 +2,13 @@ import _ from "lodash";
 
 import {
   NODE_ADD_BROKER_NODE,
-  NODE_ADD_GENESIS_HASH,
+  NODE_ADD_NEW_GENESIS_HASH,
   NODE_RESET
 } from "../actions/node-actions";
 
 const initState = {
   brokerNodes: [],
-  genesisHashes: [],
+  newGenesisHashes: [],
   oldGenesisHashes: [],
   id: null,
   lastResetAt: new Date()
@@ -31,29 +31,26 @@ export default (state = initState, action) => {
         brokerNodes: [...state.brokerNodes, brokerNodeGenerator(address)]
       };
 
-    case NODE_ADD_GENESIS_HASH:
+    case NODE_ADD_NEW_GENESIS_HASH:
       const { genesisHash, numberOfChunks } = action.payload;
       return {
         ...state,
-        genesisHashes: [
-          ...state.genesisHashes,
-          genesisHashGenerator(genesisHash, numberOfChunks)
-        ]
-      };
-
-     case NODE_ADD_OLD_GENESIS_HASH:
-      const { genesisHash, numberOfChunks } = action.payload;
-      return {
-        ...state,
-        oldGenesisHashes: [
-          ...state.oldGenesisHashes,
+        newGenesisHashes: [
+          ...state.newGenesisHashes,
           genesisHashGenerator(genesisHash, numberOfChunks)
         ]
       };
 
     case NODE_RESET:
       const { id, lastResetAt } = action.payload;
-      return { ...state, id, lastResetAt, brokerNodes: [], genesisHashes: [] };
+      return {
+        ...state,
+        id,
+        lastResetAt,
+        brokerNodes: [],
+        newGenesisHashes: [],
+        oldGenesisHashes: []
+      };
 
     default:
       return { ...state };

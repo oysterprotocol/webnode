@@ -5,8 +5,10 @@ export const NODE_REQUEST_GENESIS_HASHES =
   "directories/node/request_genesis_hashes";
 
 export const NODE_ADD_BROKER_NODE = "directories/node/add_broker_node";
-export const NODE_ADD_GENESIS_HASH = "directories/node/add_genesis_hash";
+export const NODE_ADD_NEW_GENESIS_HASH =
+  "directories/node/add_new_genesis_hash";
 export const NODE_RESET = "directories/node/reset";
+export const NODE_TREASURE_HUNT = "directories/node/treasure_hunt";
 
 const ACTIONS = Object.freeze({
   // actions
@@ -14,9 +16,9 @@ const ACTIONS = Object.freeze({
   NODE_REQUEST_BROKER_NODES,
   NODE_ADD_BROKER_NODE,
   NODE_REQUEST_GENESIS_HASHES,
-  NODE_ADD_GENESIS_HASH,
+  NODE_ADD_NEW_GENESIS_HASH,
   NODE_RESET,
-  TREASURE_HUNT
+  NODE_TREASURE_HUNT,
 
   // actionCreators
   determineRequest: () => ({
@@ -36,17 +38,8 @@ const ACTIONS = Object.freeze({
     type: NODE_REQUEST_GENESIS_HASHES
   }),
 
-  addGenesisHash: ({ genesisHash, numberOfChunks }) => ({
-    type: NODE_ADD_GENESIS_HASH,
-    payload: { genesisHash, numberOfChunks }
-  }),
-
-  requestOldGenesisHashes: () => ({
-    type: NODE_REQUEST_OLD_GENESIS_HASHES
-  }),
-
-  addOldGenesisHash: ({ genesisHash, numberOfChunks }) => ({
-    type: NODE_ADD_OLD_GENESIS_HASH,
+  addNewGenesisHash: ({ genesisHash, numberOfChunks }) => ({
+    type: NODE_ADD_NEW_GENESIS_HASH,
     payload: { genesisHash, numberOfChunks }
   }),
 
@@ -56,10 +49,9 @@ const ACTIONS = Object.freeze({
   }),
 
   treasureHunt: ({ genesisHash, numberOfChunks }) => ({
-    type: TREASURE_HUNT,
+    type: NODE_TREASURE_HUNT,
     payload: { genesisHash, numberOfChunks }
-  }),
-
+  })
 });
 
 export default ACTIONS;
