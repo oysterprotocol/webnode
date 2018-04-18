@@ -1,4 +1,7 @@
-export const NODE_DETERMINE_REQUEST = "directories/node/determine_request";
+export const NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH =
+  "directories/node/determine_broker_node_or_genesis_hash";
+export const NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT =
+  "directories/node/determine_genesis_hash_or_treasure_hunt";
 export const NODE_REQUEST_BROKER_NODES =
   "directories/node/request_broker_nodes";
 export const NODE_REQUEST_GENESIS_HASHES =
@@ -12,7 +15,8 @@ export const NODE_TREASURE_HUNT = "directories/node/treasure_hunt";
 
 const ACTIONS = Object.freeze({
   // actions
-  NODE_DETERMINE_REQUEST,
+  NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH,
+  NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT,
   NODE_REQUEST_BROKER_NODES,
   NODE_ADD_BROKER_NODE,
   NODE_REQUEST_GENESIS_HASHES,
@@ -21,8 +25,12 @@ const ACTIONS = Object.freeze({
   NODE_TREASURE_HUNT,
 
   // actionCreators
-  determineRequest: () => ({
-    type: NODE_DETERMINE_REQUEST
+  determineBrokerNodeOrGenesisHash: () => ({
+    type: NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH
+  }),
+
+  determineGenesisHashOrTreasureHunt: () => ({
+    type: NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT
   }),
 
   requestBrokerNodes: () => ({
@@ -48,9 +56,8 @@ const ACTIONS = Object.freeze({
     payload: { id, lastResetAt }
   }),
 
-  treasureHunt: ({ genesisHash, numberOfChunks }) => ({
-    type: NODE_TREASURE_HUNT,
-    payload: { genesisHash, numberOfChunks }
+  treasureHunt: () => ({
+    type: NODE_TREASURE_HUNT
   })
 });
 
