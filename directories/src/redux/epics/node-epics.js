@@ -25,46 +25,47 @@ const registerWebnodeEpic = (action$, store) => {
     return Observable.fromPromise(brokerNode.registerWebnode(id))
       .map(({ data }) => {
         console.log("/api/v1/supply/webnodes response:", data);
-        return nodeActions.determineRequest();
+        return nodeActions.determineGenesisHashOrTreasureHunt();
       })
       .catch(error => {
         console.log("/api/v1/supply/webnodes error:", error);
-        return Observable.of(nodeActions.determineRequest());
+        return nodeActions.determineGenesisHashOrTreasureHunt();
       });
   });
 };
 
-const findMoreWorkEpic = (action$, store) => {
+const brokerNodeOrGenesisHashEpic = (action$, store) => {
   return action$
-    .ofType(nodeActions.NODE_ADD_BROKER_NODE)
-    .map(nodeActions.determineRequest);
+    .ofType(nodeActions.NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH)
+    .mergeMap(() => {
+      const { node } = store.getState();
+      return Observable.if(
+        () => node.brokerNodes.length <= MIN_BROKER_NODES,
+        nodeActions.requestBrokerNodes,
+        nodeActions.determineGenesisHashOrTreasureHunt
+      );
+    });
 };
 
-const collectBrokersEpic = (action$, store) => {
+const genesisHashOrTreasureHuntEpic = (action$, store) => {
   return action$
-    .ofType(nodeActions.NODE_DETERMINE_REQUEST)
-    .filter(() => {
+    .ofType(nodeActions.NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT)
+    .mergeMap(() => {
       const { node } = store.getState();
-      return node.brokerNodes.length <= MIN_GENESIS_HASHES;
-    })
-    .map(nodeActions.requestBrokerNodes);
-};
-
-const collectGenesisHashesEpic = (action$, store) => {
-  return action$
-    .ofType(nodeActions.NODE_DETERMINE_REQUEST)
-    .filter(() => {
-      const { node } = store.getState();
-      return node.newGenesisHashes.length <= MIN_BROKER_NODES;
-    })
-    .map(nodeActions.requestGenesisHashes);
+      return Observable.if(
+        () => node.newGenesisHashes.length <= MIN_GENESIS_HASHES,
+        Observable.of(nodeActions.requestGenesisHashes()),
+        Observable.of(nodeActions.treasureHunt())
+      );
+    });
 };
 
 const requestBrokerEpic = (action$, store) => {
   return action$.ofType(nodeActions.NODE_REQUEST_BROKER_NODES).mergeMap(() => {
     const { brokerNodes } = store.getState().node;
+    const currentList = brokerNodes.map(bn => bn.address);
     return Observable.fromPromise(
-      brokerNode.requestBrokerNodeAddressPoW(brokerNodes)
+      brokerNode.requestBrokerNodeAddressPoW(currentList)
     )
       .mergeMap(({ data }) => {
         const { id: txid, pow: { message, address, branchTx, trunkTx } } = data;
@@ -96,9 +97,12 @@ const requestBrokerEpic = (action$, store) => {
       .mergeMap(({ txid, trytesArray }) =>
         Observable.fromPromise(
           brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray[0])
-        ).map(({ data }) => {
+        ).flatMap(({ data }) => {
           const { purchase: address } = data;
-          return nodeActions.addBrokerNode({ address });
+          return [
+            nodeActions.addBrokerNode({ address }),
+            nodeActions.determineBrokerNodeOrGenesisHash()
+          ];
         })
       )
       .catch(error => {
@@ -113,8 +117,9 @@ const requestGenesisHashEpic = (action$, store) => {
     .ofType(nodeActions.NODE_REQUEST_GENESIS_HASHES)
     .mergeMap(() => {
       const { newGenesisHashes } = store.getState().node;
+      const currentList = newGenesisHashes.map(gh => gh.genesisHash);
       return Observable.fromPromise(
-        brokerNode.requestGenesisHashPoW(newGenesisHashes)
+        brokerNode.requestGenesisHashPoW(currentList)
       )
         .mergeMap(({ data }) => {
           const {
@@ -150,12 +155,15 @@ const requestGenesisHashEpic = (action$, store) => {
           Observable.fromPromise(
             brokerNode.completeGenesisHashPoW(txid, trytesArray[0])
           )
-            .map(({ data }) => {
+            .flatMap(({ data }) => {
               const { purchase: genesisHash, numberOfChunks } = data;
-              return nodeActions.addNewGenesisHash({
-                genesisHash,
-                numberOfChunks
-              });
+              return [
+                nodeActions.addNewGenesisHash({
+                  genesisHash,
+                  numberOfChunks
+                }),
+                nodeActions.determineGenesisHashOrTreasureHunt()
+              ];
             })
             .catch(error => {
               console.log("GENESIS HASH COMPLETE ERROR", error);
@@ -170,52 +178,16 @@ const requestGenesisHashEpic = (action$, store) => {
 };
 
 const treasureHuntEpic = (action$, store) => {
-  return action$.ofType(nodeActions.TREASURE_HUNT).mergeMap(action => {
-    const { genesisHash, numberOfChunks } = action.payload;
-    const datamap = Datamap.generate(genesisHash, numberOfChunks);
-    const addresses = _.values(datamap);
-    const countSector = addresses / SECTOR_DIVIDER;
-    const randomSector = AppUtils.randomArray(1, countSector);
-    randomSector.map(sectorIndex => {
-      let min = 0;
-      if (sectorIndex - 1 !== 0) {
-        min = (sectorIndex - 1) * SECTOR_DIVIDER;
-      }
-      const max = sectorIndex * SECTOR_DIVIDER - 1;
-      const randomSectorAddress = AppUtils.randomArray(min, max);
-      randomSectorAddress.map(addressIndex => {
-        const randomAddress = addresses.slice(addressIndex);
-        return Observable.fromPromise(iota.findTransactions(randomAddress))
-          .mergeMap(({ hashes }) => {
-            return Observable.fromPromise(iota.getTrytes(hashes)).map(
-              ({ trytesArray }) => {
-                const transactionObject = iota.utils.TransactionObject(
-                  trytesArray
-                );
-                const asciiTimestampTrytes = trytesArray
-                  .map(trytes => trytes.timestamp.charCodeAt(0))
-                  .reduce((current, previous) => previous + current);
-                return nodeActions.addGenesisHash({
-                  genesisHash,
-                  numberOfChunks
-                });
-              }
-            );
-          })
-          .catch(error => {
-            console.log("TREASURE HUNT ERROR", error);
-            return Observable.empty();
-          });
-      });
-    });
-  });
+  return action$.ofType(nodeActions.TREASURE_HUNT).mergeMap(action => {});
 };
 
 export default combineEpics(
   registerWebnodeEpic,
+  // brokerNodeOrGenesisHashEpic,
+  genesisHashOrTreasureHuntEpic,
   // findMoreWorkEpic,
   // collectBrokersEpic,
-  collectGenesisHashesEpic,
+  // collectGenesisHashesEpic,
   // requestBrokerEpic,
   requestGenesisHashEpic
 );

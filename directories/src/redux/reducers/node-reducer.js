@@ -14,12 +14,18 @@ const initState = {
   lastResetAt: new Date()
 };
 
+const STATUS = {
+  UNCLAIMED: "UNCLAIMED",
+  IN_PROGRESS: "IN_PROGRESS",
+  CLAIMED: "CLAIMED"
+};
+
 const brokerNodeGenerator = address => {
   return { address };
 };
 
-const genesisHashGenerator = (genesisHash, numberOfChunks) => {
-  return { genesisHash, numberOfChunks };
+const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
+  return { genesisHash, numberOfChunks, status: STATUS.UNCLAIMED };
 };
 
 export default (state = initState, action) => {
@@ -37,7 +43,7 @@ export default (state = initState, action) => {
         ...state,
         newGenesisHashes: [
           ...state.newGenesisHashes,
-          genesisHashGenerator(genesisHash, numberOfChunks)
+          newGenesisHashGenerator(genesisHash, numberOfChunks)
         ]
       };
 
