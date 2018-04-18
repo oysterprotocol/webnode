@@ -169,47 +169,47 @@ const requestGenesisHashEpic = (action$, store) => {
     });
 };
 
-// const treasureHuntEpic = (action$, store) => {
-// return action$.ofType(nodeActions.TREASURE_HUNT).mergeMap(action => {
-// const { genesisHash, numberOfChunks } = action.payload;
-// const datamap = Datamap.generate(genesisHash, numberOfChunks);
-// const addresses = _.values(datamap);
-// const countSector = addresses / SECTOR_DIVIDER;
-// const randomSector = AppUtils.randomArray(1, countSector);
-// randomSector.map(sectorIndex => {
-// let min = 0;
-// if (sectorIndex - 1 !== 0) {
-// min = (sectorIndex - 1) * SECTOR_DIVIDER;
-// }
-// const max = sectorIndex * SECTOR_DIVIDER - 1;
-// const randomSectorAddress = AppUtils.randomArray(min, max);
-// randomSectorAddress.map(addressIndex => {
-// const randomAddress = addresses.slice(addressIndex);
-// return Observable.fromPromise(iota.findTransactions(randomAddress))
-// .mergeMap(({ hashes }) => {
-// return Observable.fromPromise(iota.getTrytes(hashes)).map(
-// ({ trytesArray }) => {
-// const transactionObject = iota.utils.TransactionObject(
-// trytesArray
-// );
-// const asciiTimestampTrytes = trytesArray
-// .map(trytes => trytes.timestamp.charCodeAt(0))
-// .reduce((current, previous) => previous + current);
-// return nodeActions.addGenesisHash({
-// genesisHash,
-// numberOfChunks
-// });
-// }
-// );
-// })
-// .catch(error => {
-// console.log("TREASURE HUNT ERROR", error);
-// return Observable.empty();
-// });
-// });
-// });
-// });
-// };
+const treasureHuntEpic = (action$, store) => {
+  return action$.ofType(nodeActions.TREASURE_HUNT).mergeMap(action => {
+    const { genesisHash, numberOfChunks } = action.payload;
+    const datamap = Datamap.generate(genesisHash, numberOfChunks);
+    const addresses = _.values(datamap);
+    const countSector = addresses / SECTOR_DIVIDER;
+    const randomSector = AppUtils.randomArray(1, countSector);
+    randomSector.map(sectorIndex => {
+      let min = 0;
+      if (sectorIndex - 1 !== 0) {
+        min = (sectorIndex - 1) * SECTOR_DIVIDER;
+      }
+      const max = sectorIndex * SECTOR_DIVIDER - 1;
+      const randomSectorAddress = AppUtils.randomArray(min, max);
+      randomSectorAddress.map(addressIndex => {
+        const randomAddress = addresses.slice(addressIndex);
+        return Observable.fromPromise(iota.findTransactions(randomAddress))
+          .mergeMap(({ hashes }) => {
+            return Observable.fromPromise(iota.getTrytes(hashes)).map(
+              ({ trytesArray }) => {
+                const transactionObject = iota.utils.TransactionObject(
+                  trytesArray
+                );
+                const asciiTimestampTrytes = trytesArray
+                  .map(trytes => trytes.timestamp.charCodeAt(0))
+                  .reduce((current, previous) => previous + current);
+                return nodeActions.addGenesisHash({
+                  genesisHash,
+                  numberOfChunks
+                });
+              }
+            );
+          })
+          .catch(error => {
+            console.log("TREASURE HUNT ERROR", error);
+            return Observable.empty();
+          });
+      });
+    });
+  });
+};
 
 export default combineEpics(
   registerWebnodeEpic,
