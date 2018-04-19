@@ -1,19 +1,42 @@
 import IOTA from "iota.lib.js";
 import { IOTA_API_PROVIDER } from "../../config";
 import curl from "curl.lib.js";
+import _ from "lodash";
 
 const iota = new IOTA();
 
-const providerIota = new IOTA({
+const iotaProvider = new IOTA({
   provider: IOTA_API_PROVIDER
 });
 
 curl.init();
 const MAX_TIMESTAMP_VALUE = (Math.pow(3, 27) - 1) / 2;
 
+const checkIfClaimed = address =>
+  findTransactions([address]).then(transactions => {
+    const latestTransaction = transactions[0];
+    console.log("xxxxxxxxxxxxxx: ", latestTransaction);
+    return false;
+  });
+
+const findTransactions = addresses =>
+  new Promise((resolve, reject) => {
+    iotaProvider.api.findTransactionObjects(
+      { addresses },
+      (error, transactionObjects) => {
+        if (error) {
+          console.log("IOTA ERROR: ", error);
+        }
+        const settledTransactions = transactionObjects || [];
+        const uniqTransactions = _.uniqBy(settledTransactions, "address");
+        resolve(uniqTransactions);
+      }
+    );
+  });
+
 const prepareTransfers = data => {
   return new Promise((resolve, reject) => {
-    providerIota.api.prepareTransfers(
+    iotaProvider.api.prepareTransfers(
       data.seed,
       [
         {
@@ -190,5 +213,6 @@ const attachToTangleOnTask = data => {
 
 export default {
   prepareTransfers,
-  attachToTangleCurl
+  attachToTangleCurl,
+  checkIfClaimed
 };

@@ -20,6 +20,10 @@ const treasureHuntableGenesisHash = createSelector(
 const treasureHuntableSector = createSelector(
   [treasureHuntableGenesisHash],
   genesisHash => {
+    if (!genesisHash) {
+      return null;
+    }
+
     return _.find(
       genesisHash.sectors,
       sector =>
@@ -30,12 +34,7 @@ const treasureHuntableSector = createSelector(
   }
 );
 
-const unclaimedGenesisHashExists = createSelector(
-  [treasureHuntableGenesisHash],
-  genesisHash => !!genesisHash
-);
-
 export default {
-  unclaimedGenesisHashExists,
+  treasureHuntableGenesisHash,
   treasureHuntableSector
 };

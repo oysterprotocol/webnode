@@ -17,7 +17,8 @@ import powActions from "../actions/pow-actions";
 import {
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
-  SECTOR_STATUS
+  SECTOR_STATUS,
+  CHUNKS_PER_SECTOR
 } from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {
@@ -42,8 +43,8 @@ const brokerNodeOrGenesisHashEpic = (action$, store) => {
       const { node } = store.getState();
       return Observable.if(
         () => node.brokerNodes.length <= MIN_BROKER_NODES,
-        nodeActions.requestBrokerNodes,
-        nodeActions.determineGenesisHashOrTreasureHunt
+        Observable.of(nodeActions.requestBrokerNodes()),
+        Observable.of(nodeActions.determineGenesisHashOrTreasureHunt())
       );
     });
 };
@@ -53,12 +54,25 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
     .ofType(nodeActions.NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT)
     .mergeMap(() => {
       const { node } = store.getState();
+      const treasureHuntableGenesisHash = nodeSelectors.treasureHuntableGenesisHash(
+        store.getState()
+      );
+      const treasureHuntableSector = nodeSelectors.treasureHuntableSector(
+        store.getState()
+      );
       return Observable.if(
         () =>
-          node.newGenesisHashes.length <= MIN_GENESIS_HASHES ||
-          !nodeSelectors.unclaimedGenesisHashExists(store.getState()),
+          node.newGenesisHashes.length <= MIN_GENESIS_HASHES &&
+          !!treasureHuntableGenesisHash,
         Observable.of(nodeActions.requestGenesisHashes()),
-        Observable.of(nodeActions.treasureHunt())
+        Observable.of(
+          nodeActions.treasureHunt({
+            genesisHash: treasureHuntableGenesisHash.genesisHash,
+            currentChunkIdx: treasureHuntableGenesisHash.currentChunkIdx,
+            sectorIndex: treasureHuntableSector.index,
+            numberOfChunks: treasureHuntableGenesisHash.numberOfChunks
+          })
+        )
       );
     });
 };
@@ -182,7 +196,29 @@ const requestGenesisHashEpic = (action$, store) => {
 
 const treasureHuntEpic = (action$, store) => {
   return action$.ofType(nodeActions.TREASURE_HUNT).mergeMap(action => {
-    const sector = nodeSelectors.treasureHuntableSector(store.getState());
+    const {
+      genesisHash,
+      numberOfChunks,
+      sectorIndex,
+      currentChunkIdx
+    } = action.payload;
+    const specialChunkIdx = sectorIndex * CHUNKS_PER_SECTOR;
+    const dataMap = Datamap.generate(genesisHash, numberOfChunks);
+    const specialChunkAddress = dataMap[specialChunkIdx];
+
+    Observable.fromPromise(iota.checkIfTaken(specialChunkAddress)).mergeMap(
+      isTaken =>
+        Observable.if(
+          () => isTaken,
+          Observable.of(
+            nodeActions.markSectorAsClaimedByOtherNode({
+              genesisHash,
+              sectorIndex
+            })
+          ),
+          Observable.of(nodeActions.hunt())
+        )
+    );
   });
 };
 
