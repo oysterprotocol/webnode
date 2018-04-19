@@ -4,6 +4,7 @@ import moment from "moment";
 import _ from "lodash";
 
 import nodeActions from "../actions/node-actions";
+import nodeSelectors from "../selectors/node-selectors";
 import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
 
@@ -53,7 +54,9 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
     .mergeMap(() => {
       const { node } = store.getState();
       return Observable.if(
-        () => node.newGenesisHashes.length <= MIN_GENESIS_HASHES,
+        () =>
+          node.newGenesisHashes.length <= MIN_GENESIS_HASHES ||
+          !nodeSelectors.unclaimedGenesisHashExists(store.getState()),
         Observable.of(nodeActions.requestGenesisHashes()),
         Observable.of(nodeActions.treasureHunt())
       );
@@ -179,20 +182,7 @@ const requestGenesisHashEpic = (action$, store) => {
 
 const treasureHuntEpic = (action$, store) => {
   return action$.ofType(nodeActions.TREASURE_HUNT).mergeMap(action => {
-    const { node: { newGenesisHashes } } = store.getState();
-    const { NOT_STARTED, SEARCHING, TREASURE_FOUND } = SECTOR_STATUS;
-    const genesisHash = _.find(newGenesisHashes, gh => {
-      return _.find(gh.sectors, sector =>
-        _.includes([NOT_STARTED, SEARCHING, TREASURE_FOUND], sector.status)
-      );
-    });
-    const sector = _.find(
-      genesisHash.sectors,
-      sector =>
-        sector.status === TREASURE_FOUND ||
-        sector.status === SEARCHING ||
-        sector.status === NOT_STARTED
-    );
+    const sector = nodeSelectors.treasureHuntableSector(store.getState());
   });
 };
 
