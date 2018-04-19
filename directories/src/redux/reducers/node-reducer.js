@@ -6,6 +6,8 @@ import {
   NODE_RESET
 } from "../actions/node-actions";
 
+import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
+
 const initState = {
   brokerNodes: [],
   newGenesisHashes: [],
@@ -14,18 +16,19 @@ const initState = {
   lastResetAt: new Date()
 };
 
-const STATUS = {
-  UNCLAIMED: "UNCLAIMED",
-  IN_PROGRESS: "IN_PROGRESS",
-  CLAIMED: "CLAIMED"
-};
-
 const brokerNodeGenerator = address => {
   return { address };
 };
 
 const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
-  return { genesisHash, numberOfChunks, status: STATUS.UNCLAIMED };
+  const numberOfSectors = Math.ceil(numberOfChunks / CHUNKS_PER_SECTOR);
+  const sectors = _.range(numberOfSectors).map(index => {
+    return {
+      index,
+      status: SECTOR_STATUS.NOT_STARTED
+    };
+  });
+  return { genesisHash, numberOfChunks, sectors, currentChunkIdx: 0 };
 };
 
 export default (state = initState, action) => {

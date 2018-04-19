@@ -16,7 +16,7 @@ import powActions from "../actions/pow-actions";
 import {
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
-  SECTOR_DIVIDER
+  SECTOR_STATUS
 } from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {
@@ -97,7 +97,7 @@ const requestBrokerEpic = (action$, store) => {
       .mergeMap(({ txid, trytesArray }) =>
         Observable.fromPromise(
           brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray[0])
-        ).flatMap(({ data }) => {
+        ).mergeMap(({ data }) => {
           const { purchase: address } = data;
           return [
             nodeActions.addBrokerNode({ address }),
@@ -155,7 +155,7 @@ const requestGenesisHashEpic = (action$, store) => {
           Observable.fromPromise(
             brokerNode.completeGenesisHashPoW(txid, trytesArray[0])
           )
-            .flatMap(({ data }) => {
+            .mergeMap(({ data }) => {
               const { purchase: genesisHash, numberOfChunks } = data;
               return [
                 nodeActions.addNewGenesisHash({
@@ -178,7 +178,22 @@ const requestGenesisHashEpic = (action$, store) => {
 };
 
 const treasureHuntEpic = (action$, store) => {
-  return action$.ofType(nodeActions.TREASURE_HUNT).mergeMap(action => {});
+  return action$.ofType(nodeActions.TREASURE_HUNT).mergeMap(action => {
+    const { node: { newGenesisHashes } } = store.getState();
+    const { NOT_STARTED, SEARCHING, TREASURE_FOUND } = SECTOR_STATUS;
+    const genesisHash = _.find(newGenesisHashes, gh => {
+      return _.find(gh.sectors, sector =>
+        _.includes([NOT_STARTED, SEARCHING, TREASURE_FOUND], sector.status)
+      );
+    });
+    const sector = _.find(
+      genesisHash.sectors,
+      sector =>
+        sector.status === TREASURE_FOUND ||
+        sector.status === SEARCHING ||
+        sector.status === NOT_STARTED
+    );
+  });
 };
 
 export default combineEpics(
