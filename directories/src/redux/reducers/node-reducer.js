@@ -31,7 +31,8 @@ const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
         status: SECTOR_STATUS.NOT_STARTED
       };
     })
-    .shuffle();
+    .shuffle()
+    .value();
   return { genesisHash, numberOfChunks, sectors, currentChunkIdx: 0 };
 };
 
@@ -89,7 +90,7 @@ export default (state = initState, action) => {
       );
       return {
         ...state,
-        newGenesisHash: updatedGenesisHashes
+        newGenesisHashes: updatedGenesisHashes
       };
 
     default:

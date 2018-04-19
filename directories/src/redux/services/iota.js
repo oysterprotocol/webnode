@@ -1,7 +1,8 @@
 import IOTA from "iota.lib.js";
-import { IOTA_API_PROVIDER } from "../../config";
+import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
 import curl from "curl.lib.js";
 import _ from "lodash";
+import moment from "moment";
 
 const iota = new IOTA();
 
@@ -15,9 +16,14 @@ const MAX_TIMESTAMP_VALUE = (Math.pow(3, 27) - 1) / 2;
 const checkIfClaimed = address =>
   findTransactions([address]).then(transactions => {
     const latestTransaction = transactions[0];
-    console.log("xxxxxxxxxxxxxx: ", latestTransaction);
-    return false;
+    const attachedAt = latestTransaction.attachmentTimestamp;
+    const lastEpoch = moment()
+      .subtract(1, "year")
+      .valueOf();
+    return lastEpoch > attachedAt;
   });
+
+const toAddress = string => string.substr(0, IOTA_ADDRESS_LENGTH);
 
 const findTransactions = addresses =>
   new Promise((resolve, reject) => {
@@ -214,5 +220,7 @@ const attachToTangleOnTask = data => {
 export default {
   prepareTransfers,
   attachToTangleCurl,
-  checkIfClaimed
+  checkIfClaimed,
+  utils: iota.utils,
+  toAddress: toAddress
 };

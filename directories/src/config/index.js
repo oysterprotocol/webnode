@@ -18,6 +18,7 @@ export const PEER_PATH = "/peer";
 export const PEER_DEBUG = 3;
 
 export const IOTA_API_PROVIDER = "https://nodes.thetangle.org:443";
+export const IOTA_ADDRESS_LENGTH = 81;
 
 export const DEFAULT_CONSTANT = Object.freeze({
   PEER_ID: "",
