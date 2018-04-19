@@ -61,7 +61,10 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
         store.getState()
       );
 
-      if (node.newGenesisHashes.length <= 1 && !treasureHuntableGenesisHash) {
+      if (
+        node.newGenesisHashes.length <= MIN_GENESIS_HASHES &&
+        !treasureHuntableGenesisHash
+      ) {
         return Observable.of(nodeActions.requestGenesisHashes());
       } else {
         return Observable.of(
