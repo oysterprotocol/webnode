@@ -1,17 +1,38 @@
-import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
+import { TREASURE_HUNT_INITIALIZE } from "../actions/treasure-hunt-actions";
 
-import treasureHuntActions from "../actions/treasure-hunt-actions";
+import { CHUNKS_PER_SECTOR } from "../../config/";
 
 const initState = {
   genesisHash: null,
   chunkIdx: 0,
   numberOfChunks: 1,
-  sector: 0,
+  sectorIndex: 0,
   treasureFound: false
 };
 
 export default (state = initState, action) => {
   switch (action.type) {
+    case TREASURE_HUNT_INITIALIZE:
+      const { genesisHash, sectorIndex, numberOfChunks } = action.payload;
+      const sectorStartingIdx = sectorIndex * CHUNKS_PER_SECTOR;
+      if (
+        genesisHash === state.genesisHash &&
+        sectorIndex === state.sectorIndex
+      ) {
+        return {
+          ...state,
+          chunkIdx: Math.max(state.chunkIdx, sectorStartingIdx)
+        };
+      } else {
+        return {
+          ...state,
+          genesisHash,
+          sectorIndex,
+          numberOfChunks,
+          treasureFound: false,
+          chunkIdx: sectorStartingIdx
+        };
+      }
     default:
       return { ...state };
   }
