@@ -15,6 +15,8 @@ const MAX_TIMESTAMP_VALUE = (Math.pow(3, 27) - 1) / 2;
 
 const checkIfClaimed = address =>
   findTransactionObjects([address]).then(transactions => {
+    if (!transactions.length) return false;
+
     const latestTransaction = _.maxBy(transactions, "attachmentTimestamp");
     const attachedAt = latestTransaction.attachmentTimestamp;
     const lastEpoch = moment()

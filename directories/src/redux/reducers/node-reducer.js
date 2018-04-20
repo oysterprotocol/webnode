@@ -24,16 +24,13 @@ const brokerNodeGenerator = address => {
 const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
   const numberOfSectors = Math.ceil(numberOfChunks / CHUNKS_PER_SECTOR);
   const sectorIndexes = _.range(numberOfSectors);
-  const sectors = _.chain(sectorIndexes)
-    .map(index => {
-      return {
-        index,
-        status: SECTOR_STATUS.NOT_STARTED
-      };
-    })
-    .shuffle()
-    .value();
-  return { genesisHash, numberOfChunks, sectors, currentChunkIdx: 0 };
+  const sectors = _.map(sectorIndexes, index => {
+    return {
+      index,
+      status: SECTOR_STATUS.NOT_STARTED
+    };
+  });
+  return { genesisHash, numberOfChunks, sectors };
 };
 
 export default (state = initState, action) => {
