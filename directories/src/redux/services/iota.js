@@ -1,48 +1,19 @@
 import IOTA from "iota.lib.js";
-import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
+import { IOTA_API_PROVIDER } from "../../config";
 import curl from "curl.lib.js";
-import _ from "lodash";
-import moment from "moment";
 
 const iota = new IOTA();
 
-const iotaProvider = new IOTA({
+const providerIota = new IOTA({
   provider: IOTA_API_PROVIDER
 });
 
 curl.init();
 const MAX_TIMESTAMP_VALUE = (Math.pow(3, 27) - 1) / 2;
 
-const checkIfClaimed = address =>
-  findTransactionObjects([address]).then(transactions => {
-    const latestTransaction = _.maxBy(transactions, "attachmentTimestamp");
-    const attachedAt = latestTransaction.attachmentTimestamp;
-    const lastEpoch = moment()
-      .subtract(1, "year")
-      .valueOf();
-    return lastEpoch > attachedAt;
-  });
-
-const toAddress = string => string.substr(0, IOTA_ADDRESS_LENGTH);
-
-const findTransactionObjects = addresses =>
-  new Promise((resolve, reject) => {
-    iotaProvider.api.findTransactionObjects(
-      { addresses },
-      (error, transactionObjects) => {
-        if (error) {
-          console.log("IOTA ERROR: ", error);
-        }
-        const settledTransactions = transactionObjects || [];
-        const uniqTransactions = _.uniqBy(settledTransactions, "address");
-        resolve(uniqTransactions);
-      }
-    );
-  });
-
 const prepareTransfers = data => {
   return new Promise((resolve, reject) => {
-    iotaProvider.api.prepareTransfers(
+    providerIota.api.prepareTransfers(
       data.seed,
       [
         {
@@ -219,8 +190,5 @@ const attachToTangleOnTask = data => {
 
 export default {
   prepareTransfers,
-  attachToTangleCurl,
-  checkIfClaimed,
-  utils: iota.utils,
-  toAddress: toAddress
+  attachToTangleCurl
 };
