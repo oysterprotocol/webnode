@@ -13,24 +13,30 @@ const initState = {
 export default (state = initState, action) => {
   switch (action.type) {
     case TREASURE_HUNT_INITIALIZE:
-      const { genesisHash, sectorIndex, numberOfChunks } = action.payload;
-      const sectorStartingIdx = sectorIndex * CHUNKS_PER_SECTOR;
+      const {
+        address,
+        genesisHash,
+        sectorIndex,
+        numberOfChunks
+      } = action.payload;
       if (
         genesisHash === state.genesisHash &&
         sectorIndex === state.sectorIndex
       ) {
-        // start from where webnode left off if it's the same same
+        // start from where webnode left off if it's the same
         // genesis hash and same sector index
         return {
-          ...state,
-          chunkIdx: Math.max(state.chunkIdx, sectorStartingIdx)
+          ...state
         };
       } else {
+        const sectorStartingIdx = sectorIndex * CHUNKS_PER_SECTOR;
         return {
           ...state,
+          address,
           genesisHash,
           sectorIndex,
           numberOfChunks,
+          address,
           treasureFound: false,
           chunkIdx: sectorStartingIdx
         };

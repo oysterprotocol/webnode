@@ -224,5 +224,6 @@ export default {
   attachToTangleCurl,
   checkIfClaimed,
   utils: iota.utils,
-  toAddress: toAddress
+  toAddress: toAddress,
+  getTransactionsToApprove: iota.getTransactionsToApprove
 };

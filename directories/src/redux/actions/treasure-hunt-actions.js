@@ -5,9 +5,9 @@ const ACTIONS = Object.freeze({
   TREASURE_HUNT_INITIALIZE,
 
   // actionCreators
-  initialize: ({ genesisHash, sectorIndex, numberOfChunks }) => ({
+  initialize: ({ address, genesisHash, sectorIndex, numberOfChunks }) => ({
     type: TREASURE_HUNT_INITIALIZE,
-    payload: { genesisHash, sectorIndex, numberOfChunks }
+    payload: { address, genesisHash, sectorIndex, numberOfChunks }
   })
 });
 

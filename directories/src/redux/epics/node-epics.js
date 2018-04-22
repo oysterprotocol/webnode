@@ -201,29 +201,29 @@ const treasureHuntEpic = (action$, store) => {
     const { genesisHash, numberOfChunks, sectorIndex } = action.payload;
     const specialChunkIdx = sectorIndex * CHUNKS_PER_SECTOR;
     const dataMap = Datamap.generate(genesisHash, numberOfChunks);
-    // const specialChunkAddress = dataMap[specialChunkIdx];
-    const specialChunkAddress =
+    // const address = dataMap[specialChunkIdx];
+    const address =
       "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
-    return Observable.fromPromise(
-      iota.checkIfClaimed(specialChunkAddress)
-    ).mergeMap(isClaimed =>
-      Observable.if(
-        () => isClaimed,
-        Observable.of(
-          nodeActions.markSectorAsClaimedByOtherNode({
-            genesisHash,
-            sectorIndex
-          })
-        ),
-        Observable.of(
-          treasureHuntActions.initialize({
-            genesisHash,
-            numberOfChunks,
-            sectorIndex
-          })
+    return Observable.fromPromise(iota.checkIfClaimed(address)).mergeMap(
+      isClaimed =>
+        Observable.if(
+          () => isClaimed,
+          Observable.of(
+            nodeActions.markSectorAsClaimedByOtherNode({
+              genesisHash,
+              sectorIndex
+            })
+          ),
+          Observable.of(
+            treasureHuntActions.initialize({
+              address,
+              genesisHash,
+              numberOfChunks,
+              sectorIndex
+            })
+          )
         )
-      )
     );
   });
 };

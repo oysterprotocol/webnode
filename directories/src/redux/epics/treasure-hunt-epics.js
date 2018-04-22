@@ -19,7 +19,15 @@ import { SECTOR_STATUS, CHUNKS_PER_SECTOR } from "../../config/";
 const treasureHuntEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_INITIALIZE)
-    .mergeMap(action => {});
+    .mergeMap(action => {
+      const { treasureHunt } = store.getState();
+      const { address } = treasureHunt;
+
+      return Observable.fromPromise(iota.getTransactionsToApprove()).mergeMap({
+        trunkTransaction,
+        branchTransaction
+      });
+    });
 };
 
 export default combineEpics(treasureHuntEpic);
