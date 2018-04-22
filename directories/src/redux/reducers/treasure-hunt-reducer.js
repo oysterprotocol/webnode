@@ -19,6 +19,8 @@ export default (state = initState, action) => {
         genesisHash === state.genesisHash &&
         sectorIndex === state.sectorIndex
       ) {
+        // start from where webnode left off if it's the same same
+        // genesis hash and same sector index
         return {
           ...state,
           chunkIdx: Math.max(state.chunkIdx, sectorStartingIdx)
