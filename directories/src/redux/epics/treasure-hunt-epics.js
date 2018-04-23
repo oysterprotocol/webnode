@@ -29,7 +29,7 @@ const performPowEpic = (action$, store) => {
       const seed =
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-      return Observable.fromPromise(iota.getTransactionsToApprove())
+      return Observable.fromPromise(iota.getTransactionsToApprove(1))
         .mergeMap(({ trunkTransaction, branchTransaction }) =>
           Observable.fromPromise(
             iota.prepareTransfers({ address, message, value, tag, seed })
@@ -60,7 +60,7 @@ const performPowEpic = (action$, store) => {
           );
         })
         .catch(error => {
-          console.log("BROKER NODE ADDRESS FETCH ERROR", error);
+          console.log("TREASURE HUNTING ERROR", error);
           return Observable.empty();
         });
     });
