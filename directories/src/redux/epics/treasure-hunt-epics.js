@@ -29,38 +29,40 @@ const performPowEpic = (action$, store) => {
       const seed =
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-      return Observable.fromPromise(iota.getTransactionsToApprove()).mergeMap({
-        trunkTransaction,
-        branchTransaction
-      } =>
-        Observable.fromPromise(
-          iota.prepareTransfers({ address, message, value, tag, seed })
-        ).map(trytes => {
-          return { trytes, branchTransaction, trunkTransaction };
-        });
-      )
-      .mergeMap({ trytes, branchTransaction, trunkTransaction } =>
-        Observable.fromPromise(
-          iota.localPow({
-            branchTransaction,
-            trunkTransaction,
-            mwm: 14,
-            trytes
+      return Observable.fromPromise(iota.getTransactionsToApprove())
+        .mergeMap(({ trunkTransaction, branchTransaction }) =>
+          Observable.fromPromise(
+            iota.prepareTransfers({ address, message, value, tag, seed })
+          ).map(trytes => {
+            return { trytes, branchTransaction, trunkTransaction };
           })
         )
-      ).mergeMap(trytesArray =>
-        Observable.fromPromise(iota.broadcastTransactions(trytesArray))
-      ).mergeMap(() => {
+        .mergeMap(({ trytes, branchTransaction, trunkTransaction }) =>
+          Observable.fromPromise(
+            iota.localPow({
+              branchTransaction,
+              trunkTransaction,
+              mwm: 14,
+              trytes
+            })
+          )
+        )
+        .mergeMap(trytesArray =>
+          Observable.fromPromise(iota.broadcastTransactions(trytesArray))
+        )
+        .mergeMap(() => {
           Observable.if(
             () => treasureFound,
-            Observable.of(treasureHuntActions.updateChunkIdx(chunkIdx+1)),
-            Observable.of(treasureHuntActions.unlockTreasure({ address, chainIdx: 0 })),
-          )
+            Observable.of(treasureHuntActions.updateChunkIdx(chunkIdx + 1)),
+            Observable.of(
+              treasureHuntActions.unlockTreasure({ address, chainIdx: 0 })
+            )
+          );
         })
-      .catch(error => {
-        console.log("BROKER NODE ADDRESS FETCH ERROR", error);
-        return Observable.empty();
-      });
+        .catch(error => {
+          console.log("BROKER NODE ADDRESS FETCH ERROR", error);
+          return Observable.empty();
+        });
     });
 };
 
