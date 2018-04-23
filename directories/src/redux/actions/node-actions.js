@@ -63,14 +63,9 @@ const ACTIONS = Object.freeze({
     payload: { id, lastResetAt }
   }),
 
-  treasureHunt: ({
-    genesisHash,
-    sectorIndex,
-    currentChunkIdx,
-    numberOfChunks
-  }) => ({
+  treasureHunt: ({ genesisHash, sectorIndex, numberOfChunks }) => ({
     type: NODE_TREASURE_HUNT,
-    payload: { genesisHash, sectorIndex, currentChunkIdx, numberOfChunks }
+    payload: { genesisHash, sectorIndex, numberOfChunks }
   }),
 
   markSectorAsClaimedByOtherNode: ({ genesisHash, sectorIndex }) => ({

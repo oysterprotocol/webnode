@@ -4,6 +4,7 @@ import moment from "moment";
 import _ from "lodash";
 
 import nodeActions from "../actions/node-actions";
+import treasureHuntActions from "../actions/treasure-hunt-actions";
 import nodeSelectors from "../selectors/node-selectors";
 import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
@@ -70,7 +71,6 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
         return Observable.of(
           nodeActions.treasureHunt({
             genesisHash: treasureHuntableGenesisHash.genesisHash,
-            currentChunkIdx: treasureHuntableGenesisHash.currentChunkIdx,
             sectorIndex: treasureHuntableSector.index,
             numberOfChunks: treasureHuntableGenesisHash.numberOfChunks
           })
@@ -198,12 +198,7 @@ const requestGenesisHashEpic = (action$, store) => {
 
 const treasureHuntEpic = (action$, store) => {
   return action$.ofType(nodeActions.NODE_TREASURE_HUNT).mergeMap(action => {
-    const {
-      genesisHash,
-      numberOfChunks,
-      sectorIndex,
-      currentChunkIdx
-    } = action.payload;
+    const { genesisHash, numberOfChunks, sectorIndex } = action.payload;
     const specialChunkIdx = sectorIndex * CHUNKS_PER_SECTOR;
     const dataMap = Datamap.generate(genesisHash, numberOfChunks);
     // const specialChunkAddress = dataMap[specialChunkIdx];
@@ -218,6 +213,13 @@ const treasureHuntEpic = (action$, store) => {
         Observable.of(
           nodeActions.markSectorAsClaimedByOtherNode({
             genesisHash,
+            sectorIndex
+          })
+        ),
+        Observable.of(
+          treasureHuntActions.initialize({
+            genesisHash,
+            numberOfChunks,
             sectorIndex
           })
         )
