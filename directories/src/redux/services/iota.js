@@ -14,11 +14,10 @@ curl.init();
 const MAX_TIMESTAMP_VALUE = (Math.pow(3, 27) - 1) / 2;
 
 const checkIfClaimed = address =>
-  findTransactionObjects([address]).then(transactions => {
-    if (!transactions.length) return false;
+  findMostRecentTransaction(address).then(transaction => {
+    if (!transaction) return false;
 
-    const latestTransaction = _.maxBy(transactions, "attachmentTimestamp");
-    const attachedAt = latestTransaction.attachmentTimestamp;
+    const attachedAt = transaction.attachmentTimestamp;
     const lastEpoch = moment()
       .subtract(1, "year")
       .valueOf();
@@ -27,17 +26,20 @@ const checkIfClaimed = address =>
 
 const toAddress = string => string.substr(0, IOTA_ADDRESS_LENGTH);
 
-const findTransactionObjects = addresses =>
+const findMostRecentTransaction = address =>
   new Promise((resolve, reject) => {
     iotaProvider.api.findTransactionObjects(
-      { addresses },
+      { addresses: [address] },
       (error, transactionObjects) => {
         if (error) {
           console.log("IOTA ERROR: ", error);
         }
         const settledTransactions = transactionObjects || [];
-        const uniqTransactions = _.uniqBy(settledTransactions, "address");
-        resolve(uniqTransactions);
+        const recentTransaction = _.maxBy(
+          settledTransactions,
+          "attachmentTimestamp"
+        );
+        resolve(recentTransaction);
       }
     );
   });
