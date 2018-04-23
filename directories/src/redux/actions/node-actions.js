@@ -11,7 +11,8 @@ export const NODE_ADD_BROKER_NODE = "directories/node/add_broker_node";
 export const NODE_ADD_NEW_GENESIS_HASH =
   "directories/node/add_new_genesis_hash";
 export const NODE_RESET = "directories/node/reset";
-export const NODE_TREASURE_HUNT = "directories/node/treasure_hunt";
+export const NODE_CHECK_IF_SECTOR_CLAIMED =
+  "directories/node/check_if_sector_claimed";
 export const NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE =
   "directories/node/mark_sector_as_claimed_by_other_node";
 
@@ -24,7 +25,7 @@ const ACTIONS = Object.freeze({
   NODE_REQUEST_GENESIS_HASHES,
   NODE_ADD_NEW_GENESIS_HASH,
   NODE_RESET,
-  NODE_TREASURE_HUNT,
+  NODE_CHECK_IF_SECTOR_CLAIMED,
   NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE,
 
   // actionCreators
@@ -59,8 +60,8 @@ const ACTIONS = Object.freeze({
     payload: { id, lastResetAt }
   }),
 
-  treasureHunt: ({ genesisHash, sectorIndex, numberOfChunks }) => ({
-    type: NODE_TREASURE_HUNT,
+  checkIfSectorClaimed: ({ genesisHash, sectorIndex, numberOfChunks }) => ({
+    type: NODE_CHECK_IF_SECTOR_CLAIMED,
     payload: { genesisHash, sectorIndex, numberOfChunks }
   }),
 

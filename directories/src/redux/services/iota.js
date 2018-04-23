@@ -13,16 +13,15 @@ const iotaProvider = new IOTA({
 curl.init();
 const MAX_TIMESTAMP_VALUE = (Math.pow(3, 27) - 1) / 2;
 
-const checkIfClaimed = address =>
-  findMostRecentTransaction(address).then(transaction => {
-    if (!transaction) return false;
+const checkIfClaimed = transaction => {
+  if (!transaction) return false;
 
-    const attachedAt = transaction.attachmentTimestamp;
-    const lastEpoch = moment()
-      .subtract(1, "year")
-      .valueOf();
-    return lastEpoch > attachedAt;
-  });
+  const attachedAt = transaction.attachmentTimestamp;
+  const lastEpoch = moment()
+    .subtract(1, "year")
+    .valueOf();
+  return lastEpoch > attachedAt;
+};
 
 const toAddress = string => string.substr(0, IOTA_ADDRESS_LENGTH);
 
@@ -39,6 +38,7 @@ const findMostRecentTransaction = address =>
           settledTransactions,
           "attachmentTimestamp"
         );
+        console.log("IOTA TRANSACTION: ", recentTransaction);
         resolve(recentTransaction);
       }
     );
@@ -69,7 +69,7 @@ const prepareTransfers = data => {
   });
 };
 
-export const attachToTangleCurl = data => {
+export const localPow = data => {
   const trunkTransaction = data.trunkTx;
   const branchTransaction = data.branchTx;
   const minWeightMagnitude = data.mwm;
@@ -169,7 +169,7 @@ export const attachToTangleCurl = data => {
   });
 };
 
-iota.api.attachToTangle = attachToTangleCurl;
+iota.api.attachToTangle = localPow;
 
 export const attachToTangle = data => {
   return new Promise((resolve, reject) => {
@@ -223,8 +223,10 @@ const attachToTangleOnTask = data => {
 
 export default {
   prepareTransfers,
-  attachToTangleCurl,
+  localPow,
   checkIfClaimed,
+  broadcastTransactions: iota.api.broadcastTransactions,
+  findMostRecentTransaction,
   utils: iota.utils,
   toAddress: toAddress,
   getTransactionsToApprove: iota.getTransactionsToApprove
