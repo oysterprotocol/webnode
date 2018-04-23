@@ -1,12 +1,11 @@
 export const DEVELOPED_MODE = true;
-export const API_VERSION = 'api/v2';
+export const API_VERSION = "api/v2";
 export const API_ROOT_URL =
   window.location.href.indexOf("localhost") > 0
     ? "http://localhost:3000"
     : "http://18.217.131.231:3000";
 export const API_HEADERS = ["Content-type : application/json"];
 export const API_REQUEST_ERROR = "API_REQUEST_ERROR";
-
 
 export const API_URL_PEER_ID = "/givePeerId";
 export const API_URL_START_TRANSACTION = "/startTransaction";
@@ -19,6 +18,7 @@ export const PEER_PATH = "/peer";
 export const PEER_DEBUG = 3;
 
 export const IOTA_API_PROVIDER = "https://nodes.thetangle.org:443";
+export const IOTA_ADDRESS_LENGTH = 81;
 
 export const DEFAULT_CONSTANT = Object.freeze({
   PEER_ID: "",
@@ -32,4 +32,12 @@ export const DEFAULT_CONSTANT = Object.freeze({
 export const MIN_BROKER_NODES = 5;
 export const MIN_GENESIS_HASHES = 5;
 
-export const SECTOR_DIVIDER = 1000000;
+export const SECTOR_STATUS = {
+  CLAIMED_BY_OTHER_NODE: "CLAIMED_BY_OTHER_NODE",
+  NOT_STARTED: "NOT_STARTED",
+  SEARCHING: "SEARCHING",
+  TREASURE_FOUND: "TREASURE_FOUND",
+  CLAIMED: "CLAIMED"
+};
+
+export const CHUNKS_PER_SECTOR = 1000000;

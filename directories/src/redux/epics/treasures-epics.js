@@ -10,44 +10,54 @@ import iota from "../services/iota";
 import ethereum from "../services/ethereum";
 
 const claimTreasureEpic = (action$, store) => {
-  return action$
-    .ofType(nodeActions.NODE_CLAIM_TREASURE)
-    .mergeMap((action) => {
-      return Observable.fromPromise(
-        brokerNode.treasures()
-      )
+  return action$.ofType(nodeActions.NODE_CLAIM_TREASURE).mergeMap(action => {
+    return Observable.fromPromise(brokerNode.treasures())
       .mergeMap(({ data }) => {
         const {
           receiverEthAdd,
           treasure: { genesisHash, sectorIdx, ethAddr, ethKey }
         } = data;
 
-        // TODO: change this
-        const value = 0;
-        const tag = "EDMUNDANDREBELWUZHERE";
-        const seed =
-          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-
-        const contracts = "";
-        const contractName = "";
-        const contractAddress = "";
+        const specialChunkAddress =
+          "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
         return Observable.fromPromise(
-          iota.prepareTransfers({ ethAddr, genesisHash, value, tag, seed })
-        ).map(trytes => {
-          return { receiverEthAdd, genesisHash, sectorIdx, ethAddr, ethKey, contracts, contractName, contractAddress };
+          iota.checkIfClaimed(specialChunkAddress)
+        ).mergeMap(isClaimed => {
+          if (!isClaimed) {
+            const from = "";
+            const to = "";
+            return {
+              receiverEthAdd,
+              genesisHash,
+              sectorIdx,
+              ethAddr,
+              ethKey,
+              from,
+              to
+            };
+          } else {
+            return Observable.empty();
+          }
         });
       })
-      .mergeMap(({ receiverEthAdd, genesisHash, sectorIdx, ethAddr, ethKey, contracts, contractName, contractAddress}) =>
-        Observable.fromPromise(
-          ethereum.subsribeToClaim(contracts, contractName, contractAddress)
-        ).map(result => {
-          return nodeActions.completeClaimTreasure();
-        })
-      )
-    });
+      .mergeMap(
+        ({
+          receiverEthAdd,
+          genesisHash,
+          sectorIdx,
+          ethAddr,
+          ethKey,
+          from,
+          to
+        }) =>
+          Observable.fromPromise(
+            ethereum.subsribeToClaim(from, to)
+          ).map(result => {
+            return nodeActions.completeClaimTreasure();
+          })
+      );
+  });
 };
 
-export default combineEpics(
-  claimTreasureEpic
-);
+export default combineEpics(claimTreasureEpic);

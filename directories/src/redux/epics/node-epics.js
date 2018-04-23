@@ -4,6 +4,7 @@ import moment from "moment";
 import _ from "lodash";
 
 import nodeActions from "../actions/node-actions";
+import nodeSelectors from "../selectors/node-selectors";
 import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
 
@@ -16,7 +17,8 @@ import powActions from "../actions/pow-actions";
 import {
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
-  SECTOR_DIVIDER
+  SECTOR_STATUS,
+  CHUNKS_PER_SECTOR
 } from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {
@@ -41,8 +43,8 @@ const brokerNodeOrGenesisHashEpic = (action$, store) => {
       const { node } = store.getState();
       return Observable.if(
         () => node.brokerNodes.length <= MIN_BROKER_NODES,
-        nodeActions.requestBrokerNodes,
-        nodeActions.determineGenesisHashOrTreasureHunt
+        Observable.of(nodeActions.requestBrokerNodes()),
+        Observable.of(nodeActions.determineGenesisHashOrTreasureHunt())
       );
     });
 };
@@ -52,11 +54,28 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
     .ofType(nodeActions.NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT)
     .mergeMap(() => {
       const { node } = store.getState();
-      return Observable.if(
-        () => node.newGenesisHashes.length <= MIN_GENESIS_HASHES,
-        Observable.of(nodeActions.requestGenesisHashes()),
-        Observable.of(nodeActions.treasureHunt())
+      const treasureHuntableGenesisHash = nodeSelectors.treasureHuntableGenesisHash(
+        store.getState()
       );
+      const treasureHuntableSector = nodeSelectors.treasureHuntableSector(
+        store.getState()
+      );
+
+      if (
+        node.newGenesisHashes.length <= MIN_GENESIS_HASHES &&
+        !treasureHuntableGenesisHash
+      ) {
+        return Observable.of(nodeActions.requestGenesisHashes());
+      } else {
+        return Observable.of(
+          nodeActions.treasureHunt({
+            genesisHash: treasureHuntableGenesisHash.genesisHash,
+            currentChunkIdx: treasureHuntableGenesisHash.currentChunkIdx,
+            sectorIndex: treasureHuntableSector.index,
+            numberOfChunks: treasureHuntableGenesisHash.numberOfChunks
+          })
+        );
+      }
     });
 };
 
@@ -97,7 +116,7 @@ const requestBrokerEpic = (action$, store) => {
       .mergeMap(({ txid, trytesArray }) =>
         Observable.fromPromise(
           brokerNode.completeBrokerNodeAddressPoW(txid, trytesArray[0])
-        ).flatMap(({ data }) => {
+        ).mergeMap(({ data }) => {
           const { purchase: address } = data;
           return [
             nodeActions.addBrokerNode({ address }),
@@ -155,7 +174,7 @@ const requestGenesisHashEpic = (action$, store) => {
           Observable.fromPromise(
             brokerNode.completeGenesisHashPoW(txid, trytesArray[0])
           )
-            .flatMap(({ data }) => {
+            .mergeMap(({ data }) => {
               const { purchase: genesisHash, numberOfChunks } = data;
               return [
                 nodeActions.addNewGenesisHash({
@@ -178,48 +197,33 @@ const requestGenesisHashEpic = (action$, store) => {
 };
 
 const treasureHuntEpic = (action$, store) => {
-  return action$
-    .ofType(nodeActions.NODE_TREASURE_HUNT)
-    .mergeMap((action) => {
-      //const { genesisHash, numberOfChunks } = action.store.newGenesisHashes[0];
-      const genesisHash = 'aaaaaaa';
-      const numberOfChunks = 'bbbbbb';
-      const datamap = Datamap.generate(genesisHash, numberOfChunks);
-      const addresses = _.values(datamap);
-      const countSector = addresses / SECTOR_DIVIDER;
-      const randomSector = AppUtils.randomArray(1, countSector);
-      return Observable.from(randomSector)
-        .map((sectorIndex) => {
-          let min = 0;
-          if((sectorIndex - 1) !== 0) {
-            min = (sectorIndex - 1) * SECTOR_DIVIDER;
-          }
-          const max = (sectorIndex * SECTOR_DIVIDER) - 1;
-          const randomSectorAddress = AppUtils.randomArray(min, max);
-          return Observable.from(randomSectorAddress)
-            .map((addressIndex) => {
-              const randomAddress = addresses.slice(addressIndex);
-              return Observable.fromPromise(
-                iota.findTransactions(randomAddress)
-              )
-                .mergeMap(({ hashes }) => {
-                  return Observable.fromPromise(
-                    iota.getTrytes(hashes)
-                  )
-                  .map(({ trytesArray }) => {
-                    const transactionObject = iota.utils.TransactionObject(trytesArray);
-                    const asciiTimestampTrytes = trytesArray.map(tryte => tryte.timestamp.charCodeAt(0))
-                      .reduce((current, previous) => previous + current);
-                    return nodeActions.completeTreasureHunt();
-                  });
-                })
-                .catch(error => {
-                  console.log("TREASURE HUNT ERROR", error);
-                  return Observable.empty();
-                });
-            })
-        })
-    });
+  return action$.ofType(nodeActions.NODE_TREASURE_HUNT).mergeMap(action => {
+    const {
+      genesisHash,
+      numberOfChunks,
+      sectorIndex,
+      currentChunkIdx
+    } = action.payload;
+    const specialChunkIdx = sectorIndex * CHUNKS_PER_SECTOR;
+    const dataMap = Datamap.generate(genesisHash, numberOfChunks);
+    // const specialChunkAddress = dataMap[specialChunkIdx];
+    const specialChunkAddress =
+      "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
+
+    return Observable.fromPromise(
+      iota.checkIfClaimed(specialChunkAddress)
+    ).mergeMap(isClaimed =>
+      Observable.if(
+        () => isClaimed,
+        Observable.of(
+          nodeActions.markSectorAsClaimedByOtherNode({
+            genesisHash,
+            sectorIndex
+          })
+        )
+      )
+    );
+  });
 };
 
 export default combineEpics(
@@ -230,5 +234,6 @@ export default combineEpics(
   // collectBrokersEpic,
   // collectGenesisHashesEpic,
   // requestBrokerEpic,
-  requestGenesisHashEpic
+  requestGenesisHashEpic,
+  treasureHuntEpic
 );

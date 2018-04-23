@@ -47,19 +47,11 @@ const claimTreasure = (seed, genesisHash, numberOfChunks) =>
     data: { seed, genesisHash, numberOfChunks }
   });
 
-const treasures = () =>
-  axios({
-    method: "POST",
-    url: `${API_ROOT_URL}/${API_VERSION}/supply/treasures`
-  });
-
-
 export default {
   registerWebnode,
   requestBrokerNodeAddressPoW,
   completeBrokerNodeAddressPoW,
   requestGenesisHashPoW,
   completeGenesisHashPoW,
-  claimTreasure,
-  treasures
+  claimTreasure
 };
