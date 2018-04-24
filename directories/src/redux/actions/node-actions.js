@@ -14,8 +14,6 @@ export const NODE_RESET = "directories/node/reset";
 export const NODE_TREASURE_HUNT = "directories/node/treasure_hunt";
 export const NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE =
   "directories/node/mark_sector_as_claimed_by_other_node";
-export const NODE_CLAIM_TREASURE = "directories/node/claim_treasure";
-export const NODE_COMPLETE_CLAIM_TREASURE = "directories/node/complete_claim_treasure";
 
 const ACTIONS = Object.freeze({
   // actions
@@ -28,8 +26,6 @@ const ACTIONS = Object.freeze({
   NODE_RESET,
   NODE_TREASURE_HUNT,
   NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE,
-  NODE_CLAIM_TREASURE,
-  NODE_COMPLETE_CLAIM_TREASURE,
 
   // actionCreators
   determineBrokerNodeOrGenesisHash: () => ({
@@ -71,14 +67,6 @@ const ACTIONS = Object.freeze({
   markSectorAsClaimedByOtherNode: ({ genesisHash, sectorIndex }) => ({
     type: NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE,
     payload: { genesisHash, sectorIndex }
-  }),
-
-  claimTreasure: () => ({
-    type: NODE_CLAIM_TREASURE
-  }),
-
-  completeClaimTreasure: () => ({
-    type: NODE_COMPLETE_CLAIM_TREASURE
   })
 });
 

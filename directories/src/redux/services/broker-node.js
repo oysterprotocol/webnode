@@ -18,9 +18,7 @@ const requestBrokerNodeAddressPoW = currentList =>
 const completeBrokerNodeAddressPoW = (txid, trytes) =>
   axios({
     method: "PUT",
-    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/brokernodes/${
-      txid
-    }`,
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/brokernodes/${txid}`,
     data: { trytes }
   });
 
@@ -34,9 +32,7 @@ const requestGenesisHashPoW = currentList =>
 const completeGenesisHashPoW = (txid, trytes) =>
   axios({
     method: "PUT",
-    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/genesis_hashes/${
-      txid
-    }`,
+    url: `${API_ROOT_URL}/${API_VERSION}/demand/transactions/genesis_hashes/${txid}`,
     data: { trytes }
   });
 
@@ -47,11 +43,29 @@ const claimTreasure = (seed, genesisHash, numberOfChunks) =>
     data: { seed, genesisHash, numberOfChunks }
   });
 
+const treasures = (
+  receiverEthAdd,
+  genesisHash,
+  numberOfChunks,
+  sectorIdx,
+  ethAddr,
+  ethKey
+) =>
+  axios({
+    method: "POST",
+    url: `${API_ROOT_URL}/${API_VERSION}/supply/treasures`,
+    data: {
+      receiverEthAdd,
+      treasure: { genesisHash, numberOfChunks, sectorIdx, ethAddr, ethKey }
+    }
+  });
+
 export default {
   registerWebnode,
   requestBrokerNodeAddressPoW,
   completeBrokerNodeAddressPoW,
   requestGenesisHashPoW,
   completeGenesisHashPoW,
-  claimTreasure
+  claimTreasure,
+  treasures
 };
