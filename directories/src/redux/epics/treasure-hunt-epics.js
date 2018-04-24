@@ -30,18 +30,19 @@ const performPowEpic = (action$, store) => {
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
       return Observable.fromPromise(iota.getTransactionsToApprove(1))
-        .mergeMap(({ trunkTransaction, branchTransaction }) =>
-          Observable.fromPromise(
-            iota.prepareTransfers({ address, message, value, tag, seed })
-          ).map(trytes => {
-            return { trytes, branchTransaction, trunkTransaction };
-          })
+        .mergeMap(
+          ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) =>
+            Observable.fromPromise(
+              iota.prepareTransfers({ address, message, value, tag, seed })
+            ).map(trytes => {
+              return { trytes, trunkTx, branchTx };
+            })
         )
-        .mergeMap(({ trytes, branchTransaction, trunkTransaction }) =>
+        .mergeMap(({ trytes, trunkTx, branchTx }) =>
           Observable.fromPromise(
             iota.localPow({
-              branchTransaction,
-              trunkTransaction,
+              trunkTx,
+              branchTx,
               mwm: 14,
               trytes
             })
@@ -50,15 +51,14 @@ const performPowEpic = (action$, store) => {
         .mergeMap(trytesArray =>
           Observable.fromPromise(iota.broadcastTransactions(trytesArray))
         )
-        .mergeMap(() => {
+        .mergeMap(() =>
           Observable.if(
-            () => treasureFound,
-            Observable.of(treasureHuntActions.updateChunkIdx(chunkIdx + 1)),
+            () => !treasureFound,
             Observable.of(
               treasureHuntActions.unlockTreasure({ address, chainIdx: 0 })
             )
-          );
-        })
+          )
+        )
         .catch(error => {
           console.log("TREASURE HUNTING ERROR", error);
           return Observable.empty();

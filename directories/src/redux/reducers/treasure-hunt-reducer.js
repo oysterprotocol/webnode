@@ -17,12 +17,6 @@ const initState = {
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case TREASURE_HUNT_UPDATE_CHUNK_IDX:
-      return {
-        ...state,
-        chunkIdx: action.payload
-      };
-
     case TREASURE_HUNT_PERFORM_POW:
       const {
         address,
@@ -49,7 +43,6 @@ export default (state = initState, action) => {
           genesisHash,
           sectorIndex,
           numberOfChunks,
-          address,
           treasureFound: false,
           chunkIdx: sectorStartingIdx
         };

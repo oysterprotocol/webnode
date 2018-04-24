@@ -183,6 +183,14 @@ export const getTransactionsToApprove = (depth, reference) => {
   });
 };
 
+export const broadcastTransactions = trytes => {
+  return new Promise((resolve, reject) => {
+    iotaProvider.api.broadcastTransactions(trytes, (error, success) => {
+      error ? reject(error) : resolve(success);
+    });
+  });
+};
+
 export const attachToTangle = data => {
   return new Promise((resolve, reject) => {
     iota.api
@@ -238,7 +246,7 @@ export default {
   localPow,
   checkIfClaimed,
   getTransactionsToApprove,
-  broadcastTransactions: iotaProvider.api.broadcastTransactions,
+  broadcastTransactions,
   findMostRecentTransaction,
   utils: iota.utils,
   toAddress: toAddress
