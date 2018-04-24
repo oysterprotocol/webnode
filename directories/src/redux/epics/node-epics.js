@@ -68,11 +68,13 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
       ) {
         return Observable.of(nodeActions.requestGenesisHashes());
       } else {
+        const { genesisHash, numberOfChunks } = treasureHuntableGenesisHash;
+        const { index } = treasureHuntableSector;
         return Observable.of(
-          nodeActions.treasureHunt({
-            genesisHash: treasureHuntableGenesisHash.genesisHash,
-            sectorIndex: treasureHuntableSector.index,
-            numberOfChunks: treasureHuntableGenesisHash.numberOfChunks
+          nodeActions.checkIfSectorClaimed({
+            genesisHash: genesisHash,
+            numberOfChunks: numberOfChunks,
+            sectorIndex: index
           })
         );
       }
@@ -103,7 +105,7 @@ const requestBrokerEpic = (action$, store) => {
       })
       .mergeMap(({ txid, trytes, branchTx, trunkTx }) =>
         Observable.fromPromise(
-          iota.attachToTangleCurl({
+          iota.localPow({
             branchTx,
             trunkTx,
             mwm: 14,
@@ -160,7 +162,7 @@ const requestGenesisHashEpic = (action$, store) => {
         })
         .mergeMap(({ txid, trytes, branchTx, trunkTx }) =>
           Observable.fromPromise(
-            iota.attachToTangleCurl({
+            iota.localPow({
               branchTx,
               trunkTx,
               mwm: 14,
@@ -196,36 +198,36 @@ const requestGenesisHashEpic = (action$, store) => {
     });
 };
 
-const treasureHuntEpic = (action$, store) => {
-  return action$.ofType(nodeActions.NODE_TREASURE_HUNT).mergeMap(action => {
-    const { genesisHash, numberOfChunks, sectorIndex } = action.payload;
-    const specialChunkIdx = sectorIndex * CHUNKS_PER_SECTOR;
-    const dataMap = Datamap.generate(genesisHash, numberOfChunks);
-    // const specialChunkAddress = dataMap[specialChunkIdx];
-    const specialChunkAddress =
-      "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
+const checkIfSectorClaimedEpic = (action$, store) => {
+  return action$
+    .ofType(nodeActions.NODE_CHECK_IF_SECTOR_CLAIMED)
+    .mergeMap(action => {
+      const { genesisHash, numberOfChunks, sectorIndex } = action.payload;
+      const specialChunkIdx = sectorIndex * CHUNKS_PER_SECTOR;
+      const dataMap = Datamap.generate(genesisHash, numberOfChunks);
+      // const address = dataMap[specialChunkIdx];
+      const address =
+        "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
-    return Observable.fromPromise(
-      iota.checkIfClaimed(specialChunkAddress)
-    ).mergeMap(isClaimed =>
-      Observable.if(
-        () => isClaimed,
-        Observable.of(
-          nodeActions.markSectorAsClaimedByOtherNode({
+      return Observable.fromPromise(
+        iota.findMostRecentTransaction(address)
+      ).map(transaction => {
+        if (iota.checkIfClaimed(transaction)) {
+          return nodeActions.markSectorAsClaimedByOtherNode({
             genesisHash,
             sectorIndex
-          })
-        ),
-        Observable.of(
-          treasureHuntActions.initialize({
+          });
+        } else {
+          return treasureHuntActions.performPow({
+            address,
+            message: transaction.signatureMessageFragment,
             genesisHash,
             numberOfChunks,
             sectorIndex
-          })
-        )
-      )
-    );
-  });
+          });
+        }
+      });
+    });
 };
 
 export default combineEpics(
@@ -237,5 +239,5 @@ export default combineEpics(
   // collectGenesisHashesEpic,
   // requestBrokerEpic,
   requestGenesisHashEpic,
-  treasureHuntEpic
+  checkIfSectorClaimedEpic
 );

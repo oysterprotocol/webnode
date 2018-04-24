@@ -13,9 +13,7 @@ const getSalt = numChars => {
   window.crypto.getRandomValues(array);
   let salt = array[0];
 
-  return salt
-    .toString(36)
-    .substr(2, numChars);
+  return salt.toString(36).substr(2, numChars);
 };
 
 const getPrimordialHash = () => {
