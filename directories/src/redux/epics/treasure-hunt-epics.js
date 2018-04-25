@@ -17,10 +17,54 @@ import powActions from "../actions/pow-actions";
 
 import { SECTOR_STATUS, CHUNKS_PER_SECTOR } from "../../config/";
 
-const treasureHuntEpic = (action$, store) => {
+const performPowEpic = (action$, store) => {
   return action$
-    .ofType(treasureHuntActions.TREASURE_HUNT_INITIALIZE)
-    .mergeMap(action => {});
+    .ofType(treasureHuntActions.TREASURE_HUNT_PERFORM_POW)
+    .mergeMap(action => {
+      const { treasureHunt } = store.getState();
+      const { address, message, treasureFound, chunkIdx } = treasureHunt;
+
+      // TODO: change this
+      const value = 0;
+      const tag = "EDMUNDANDREBELWUZHERE";
+      const seed =
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+      return Observable.fromPromise(iota.getTransactionsToApprove(1))
+        .mergeMap(
+          ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) =>
+            Observable.fromPromise(
+              iota.prepareTransfers({ address, message, value, tag, seed })
+            ).map(trytes => {
+              return { trytes, trunkTx, branchTx };
+            })
+        )
+        .mergeMap(({ trytes, trunkTx, branchTx }) =>
+          Observable.fromPromise(
+            iota.localPow({
+              trunkTx,
+              branchTx,
+              mwm: 14,
+              trytes
+            })
+          )
+        )
+        .mergeMap(trytesArray =>
+          Observable.fromPromise(iota.broadcastTransactions(trytesArray))
+        )
+        .mergeMap(() =>
+          Observable.if(
+            () => !treasureFound,
+            Observable.of(
+              treasureHuntActions.unlockTreasure({ address, chainIdx: 0 })
+            )
+          )
+        )
+        .catch(error => {
+          console.log("TREASURE HUNTING ERROR", error);
+          return Observable.empty();
+        });
+    });
 };
 
 const treasureClaimEpic = (action$, store) => {
@@ -48,4 +92,4 @@ const treasureClaimEpic = (action$, store) => {
   });
 };
 
-export default combineEpics(treasureHuntEpic, treasureClaimEpic);
+export default combineEpics(performPowEpic, treasureClaimEpic);
