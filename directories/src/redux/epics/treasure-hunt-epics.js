@@ -7,7 +7,6 @@ import treasureHuntActions from "../actions/treasure-hunt-actions";
 import nodeSelectors from "../selectors/node-selectors";
 import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
-import ethereum from "../services/ethereum";
 
 import Datamap from "../../utils/datamap";
 import AppUtils from "../../utils/app";
@@ -67,29 +66,11 @@ const performPowEpic = (action$, store) => {
     });
 };
 
-const treasureClaimEpic = (action$, store) => {
-  return action$.ofType(treasureHuntActions.TREASURE_CLAIM).mergeMap(action => {
-    const {
-      receiverEthAdd,
-      treasure: { genesisHash, numChunks, sectorIdx, ethAddr, ethKey }
-    } = action.payload;
-    return Observable.fromPromise(
-      brokerNode.treasures(
-        receiverEthAdd,
-        genesisHash,
-        numChunks,
-        sectorIdx,
-        ethAddr,
-        ethKey
-      )
-    ).mergeMap(({ data }) => {
-      const from = "";
-      const to = "";
-      Observable.fromPromise(ethereum.subsribeToClaim(from, to)).map(result => {
-        return treasureHuntActions.treasureClaimComplete();
-      });
+const unlockTreasureEpic = (action$, store) => {
+  return action$
+    .ofType(treasureHuntActions.TREASURE_HUNT_UNLOCK_TREASURE)
+    .mergeMap(action => {
+      const { address, chainIdx } = action.payload;
     });
-  });
 };
-
-export default combineEpics(performPowEpic, treasureClaimEpic);
+export default combineEpics(performPowEpic, unlockTreasureEpic);
