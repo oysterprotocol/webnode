@@ -9,7 +9,6 @@ const initState = {
   address: null,
   genesisHash: null,
   message: null,
-  chainIdx: 0,
   chunkIdx: 0,
   numberOfChunks: 1,
   sectorIndex: 0,
@@ -45,18 +44,9 @@ export default (state = initState, action) => {
           sectorIndex,
           numberOfChunks,
           treasureFound: false,
-          chunkIdx: sectorStartingIdx,
-          chainIdx: 0
+          chunkIdx: sectorStartingIdx
         };
       }
-
-    case TREASURE_HUNT_UNLOCK_TREASURE:
-      const chainIdx = action.payload;
-      return {
-        ...state,
-        address,
-        chainIdx
-      };
 
     default:
       return { ...state };

@@ -23,9 +23,9 @@ const ACTIONS = Object.freeze({
     type: TREASURE_HUNT_PERFORM_POW,
     payload: { address, message, genesisHash, sectorIndex, numberOfChunks }
   }),
-  unlockTreasure: ({ address, chainIdx, numberOfChunks }) => ({
+  unlockTreasure: ({ address, numberOfChunks }) => ({
     type: TREASURE_HUNT_UNLOCK_TREASURE,
-    payload: { address, chainIdx, numberOfChunks }
+    payload: { address, numberOfChunks }
   }),
   treasureClaim: () => ({
     type: TREASURE_CLAIM

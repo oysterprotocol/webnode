@@ -18,7 +18,6 @@ const performPowEpic = (action$, store) => {
         message,
         treasureFound,
         chunkIdx,
-        chainIdx,
         numberOfChunks
       } = treasureHunt;
 
@@ -56,7 +55,6 @@ const performPowEpic = (action$, store) => {
             Observable.of(
               treasureHuntActions.unlockTreasure({
                 address,
-                chainIdx,
                 numberOfChunks
               })
             )
@@ -73,11 +71,12 @@ const unlockTreasureEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_UNLOCK_TREASURE)
     .mergeMap(action => {
-      const { address, chainIdx, numberOfChunks } = action.payload;
+      const { address, numberOfChunks } = action.payload;
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
       ).mergeMap(transaction => {
         const message = transaction.signatureMessageFragment;
+        const treasure = Encryption.decrypt(message, address);
       });
     });
 };
