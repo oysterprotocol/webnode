@@ -1,5 +1,6 @@
 export const TREASURE_CLAIM = "directories/treasure_hunt/claim_treasure";
-export const TREASURE_CLAIM_COMPLETE = "directories/treasure_hunt/complete_claim_treasure";
+export const TREASURE_CLAIM_COMPLETE =
+  "directories/treasure_hunt/complete_claim_treasure";
 export const TREASURE_HUNT_PERFORM_POW =
   "directories/treasure_hunt/perform_pow";
 export const TREASURE_HUNT_UNLOCK_TREASURE =
@@ -10,7 +11,7 @@ const ACTIONS = Object.freeze({
   TREASURE_HUNT_PERFORM_POW,
   TREASURE_CLAIM,
   TREASURE_CLAIM_COMPLETE,
-    
+
   // actionCreators
   performPow: ({
     address,
@@ -22,10 +23,9 @@ const ACTIONS = Object.freeze({
     type: TREASURE_HUNT_PERFORM_POW,
     payload: { address, message, genesisHash, sectorIndex, numberOfChunks }
   }),
-  unlockTreasure: ({ address, chainIdx }) => ({
+  unlockTreasure: ({ address, chainIdx, numberOfChunks }) => ({
     type: TREASURE_HUNT_UNLOCK_TREASURE,
-    payload: { address, chainIdx }
-    
+    payload: { address, chainIdx, numberOfChunks }
   }),
   treasureClaim: () => ({
     type: TREASURE_CLAIM
@@ -34,7 +34,6 @@ const ACTIONS = Object.freeze({
   treasureClaimComplete: () => ({
     type: TREASURE_CLAIM_COMPLETE
   })
-
 });
 
 export default ACTIONS;

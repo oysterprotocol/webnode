@@ -1,6 +1,6 @@
 import {
   TREASURE_HUNT_PERFORM_POW,
-  TREASURE_HUNT_UPDATE_CHUNK_IDX
+  TREASURE_HUNT_UNLOCK_TREASURE
 } from "../actions/treasure-hunt-actions";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
@@ -9,6 +9,7 @@ const initState = {
   address: null,
   genesisHash: null,
   message: null,
+  chainIdx: 0,
   chunkIdx: 0,
   numberOfChunks: 1,
   sectorIndex: 0,
@@ -44,9 +45,19 @@ export default (state = initState, action) => {
           sectorIndex,
           numberOfChunks,
           treasureFound: false,
-          chunkIdx: sectorStartingIdx
+          chunkIdx: sectorStartingIdx,
+          chainIdx: 0
         };
       }
+
+    case TREASURE_HUNT_UNLOCK_TREASURE:
+      const chainIdx = action.payload;
+      return {
+        ...state,
+        address,
+        chainIdx
+      };
+
     default:
       return { ...state };
   }

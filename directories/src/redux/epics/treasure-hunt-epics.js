@@ -1,27 +1,26 @@
 import { Observable } from "rxjs";
 import { combineEpics } from "redux-observable";
-import moment from "moment";
 import _ from "lodash";
 
 import treasureHuntActions from "../actions/treasure-hunt-actions";
-import nodeSelectors from "../selectors/node-selectors";
-import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
 
 import Datamap from "../../utils/datamap";
-import AppUtils from "../../utils/app";
-
-// TODO remove this when we get the Go API done
-import powActions from "../actions/pow-actions";
-
-import { SECTOR_STATUS, CHUNKS_PER_SECTOR } from "../../config/";
+import Encryption from "../../utils/encryption";
 
 const performPowEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_PERFORM_POW)
     .mergeMap(action => {
       const { treasureHunt } = store.getState();
-      const { address, message, treasureFound, chunkIdx } = treasureHunt;
+      const {
+        address,
+        message,
+        treasureFound,
+        chunkIdx,
+        chainIdx,
+        numberOfChunks
+      } = treasureHunt;
 
       // TODO: change this
       const value = 0;
@@ -55,7 +54,11 @@ const performPowEpic = (action$, store) => {
           Observable.if(
             () => !treasureFound,
             Observable.of(
-              treasureHuntActions.unlockTreasure({ address, chainIdx: 0 })
+              treasureHuntActions.unlockTreasure({
+                address,
+                chainIdx,
+                numberOfChunks
+              })
             )
           )
         )
@@ -70,7 +73,14 @@ const unlockTreasureEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_UNLOCK_TREASURE)
     .mergeMap(action => {
-      const { address, chainIdx } = action.payload;
+      const { address, chainIdx, numberOfChunks } = action.payload;
+      return Observable.fromPromise(
+        iota.findMostRecentTransaction(address)
+      ).mergeMap(transaction => {
+        const message = transaction.signatureMessageFragment;
+      });
     });
 };
-export default combineEpics(performPowEpic, unlockTreasureEpic);
+
+export default combineEpics(performPowEpic);
+// export default combineEpics(performPowEpic, unlockTreasureEpic);
