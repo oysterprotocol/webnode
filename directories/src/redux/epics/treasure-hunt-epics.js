@@ -6,6 +6,7 @@ import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
 
 import Datamap from "../../utils/datamap";
+import Sidechain from "../../utils/sidechain";
 import Encryption from "../../utils/encryption";
 
 const performPowEpic = (action$, store) => {
@@ -16,7 +17,7 @@ const performPowEpic = (action$, store) => {
       const {
         address,
         message,
-        treasureFound,
+        treasure,
         chunkIdx,
         numberOfChunks
       } = treasureHunt;
@@ -51,11 +52,11 @@ const performPowEpic = (action$, store) => {
         )
         .mergeMap(() =>
           Observable.if(
-            () => !treasureFound,
+            () => !treasure,
             Observable.of(
-              treasureHuntActions.unlockTreasure({
+              treasureHuntActions.findTreasure({
                 address,
-                numberOfChunks
+                chunkIdx
               })
             )
           )
@@ -67,19 +68,34 @@ const performPowEpic = (action$, store) => {
     });
 };
 
-const unlockTreasureEpic = (action$, store) => {
+const findTreasureEpic = (action$, store) => {
   return action$
-    .ofType(treasureHuntActions.TREASURE_HUNT_UNLOCK_TREASURE)
+    .ofType(treasureHuntActions.TREASURE_HUNT_FIND_TREASURE)
     .mergeMap(action => {
-      const { address, numberOfChunks } = action.payload;
+      const { address, chunkIdx } = action.payload;
+
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
       ).mergeMap(transaction => {
         const message = transaction.signatureMessageFragment;
-        const treasure = Encryption.decrypt(message, address);
+        const sideChain = Sidechain.generate(address);
+        const treasure = _.find(
+          sideChain,
+          hashedAddress => !!Encryption.decrypt(message, hashedAddress)
+        );
+
+        return Observable.if(
+          () => !!treasure,
+          Observable.of(
+            treasureHuntActions.saveTreasure({
+              treasure,
+              nextChunkIdx: chunkIdx + 1
+            })
+          )
+        );
       });
     });
 };
 
 export default combineEpics(performPowEpic);
-// export default combineEpics(performPowEpic, unlockTreasureEpic);
+// export default combineEpics(performPowEpic, findTreasureEpic);
