@@ -3,10 +3,10 @@ import iota from "redux/services/iota";
 import Encryption from "utils/encryption";
 
 const generate = address => {
-  const keys = _.range(0, 1000);
+  const range = _.range(0, 1000);
 
   const sidechain = _.reduce(
-    keys,
+    range,
     (chain, n) => {
       const lastValue = chain[n];
       const nextValue = Encryption.sideChain(lastValue);
