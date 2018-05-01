@@ -41,8 +41,13 @@ const sideChain = address => CryptoJS.SHA512(address).toString();
 const encrypt = (text, secretKey) =>
   CryptoJS.AES.encrypt(text, secretKey).toString();
 
-const decrypt = (text, secretKey) =>
-  CryptoJS.AES.decrypt(text, secretKey).toString(CryptoJS.enc.Utf8);
+const decrypt = (text, secretKey) => {
+  try {
+    return CryptoJS.AES.decrypt(text, secretKey).toString(CryptoJS.enc.Utf8);
+  } catch (e) {
+    return "";
+  }
+};
 
 export default {
   decrypt,

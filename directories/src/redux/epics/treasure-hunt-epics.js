@@ -77,7 +77,7 @@ const findTreasureEpic = (action$, store) => {
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
       ).mergeMap(transaction => {
-        const message = transaction.signatureMessageFragment;
+        const message = iota.parseMessage(transaction.signatureMessageFragment);
         const sideChain = Sidechain.generate(address);
         const treasure = _.find(
           sideChain,
@@ -97,5 +97,4 @@ const findTreasureEpic = (action$, store) => {
     });
 };
 
-export default combineEpics(performPowEpic);
-// export default combineEpics(performPowEpic, findTreasureEpic);
+export default combineEpics(performPowEpic, findTreasureEpic);
