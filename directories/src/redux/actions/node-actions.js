@@ -60,14 +60,14 @@ const ACTIONS = Object.freeze({
     payload: { id, lastResetAt }
   }),
 
-  checkIfSectorClaimed: ({ genesisHash, sectorIndex, numberOfChunks }) => ({
+  checkIfSectorClaimed: ({ genesisHash, sectorIdx, numberOfChunks }) => ({
     type: NODE_CHECK_IF_SECTOR_CLAIMED,
-    payload: { genesisHash, sectorIndex, numberOfChunks }
+    payload: { genesisHash, sectorIdx, numberOfChunks }
   }),
 
-  markSectorAsClaimedByOtherNode: ({ genesisHash, sectorIndex }) => ({
+  markSectorAsClaimedByOtherNode: ({ genesisHash, sectorIdx }) => ({
     type: NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE,
-    payload: { genesisHash, sectorIndex }
+    payload: { genesisHash, sectorIdx }
   })
 });
 

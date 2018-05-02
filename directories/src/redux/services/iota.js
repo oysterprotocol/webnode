@@ -25,6 +25,19 @@ const checkIfClaimed = transaction => {
 
 const toAddress = string => string.substr(0, IOTA_ADDRESS_LENGTH);
 
+const parseMessage = message => {
+  const characters = message.split("");
+  const notNineIndex = _.findLastIndex(characters, c => c !== "9");
+
+  const choppedArray = characters.slice(0, notNineIndex + 1);
+  const choppedMessage = choppedArray.join("");
+
+  const evenChars =
+    choppedMessage.length % 2 === 0 ? choppedMessage : choppedMessage + "9";
+
+  return iota.utils.fromTrytes(evenChars);
+};
+
 const findMostRecentTransaction = address =>
   new Promise((resolve, reject) => {
     iotaProvider.api.findTransactionObjects(
@@ -242,6 +255,7 @@ const attachToTangleOnTask = data => {
 };
 
 export default {
+  parseMessage,
   prepareTransfers,
   localPow,
   checkIfClaimed,

@@ -23,8 +23,8 @@ const brokerNodeGenerator = address => {
 
 const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
   const numberOfSectors = Math.ceil(numberOfChunks / CHUNKS_PER_SECTOR);
-  const sectorIndexes = _.range(numberOfSectors);
-  const sectors = _.map(sectorIndexes, index => {
+  const sectorIdxes = _.range(numberOfSectors);
+  const sectors = _.map(sectorIdxes, index => {
     return {
       index,
       status: SECTOR_STATUS.NOT_STARTED
@@ -64,13 +64,13 @@ export default (state = initState, action) => {
       };
 
     case NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE:
-      const { genesisHash: gh, sectorIndex } = action.payload;
+      const { genesisHash: gh, sectorIdx } = action.payload;
       const updatedGenesisHashes = _.map(
         state.newGenesisHashes,
         newGenesisHash => {
           if (newGenesisHash.genesisHash === gh) {
             const updatedSectors = _.map(newGenesisHash.sectors, sector => {
-              if (sector.index === sectorIndex) {
+              if (sector.index === sectorIdx) {
                 return {
                   ...sector,
                   status: SECTOR_STATUS.CLAIMED_BY_OTHER_NODE

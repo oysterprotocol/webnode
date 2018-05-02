@@ -1,6 +1,7 @@
 import {
   TREASURE_HUNT_PERFORM_POW,
-  TREASURE_HUNT_UPDATE_CHUNK_IDX
+  TREASURE_HUNT_FIND_TREASURE,
+  TREASURE_HUNT_SAVE_TREASURE
 } from "../actions/treasure-hunt-actions";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
@@ -11,8 +12,8 @@ const initState = {
   message: null,
   chunkIdx: 0,
   numberOfChunks: 1,
-  sectorIndex: 0,
-  treasureFound: false
+  sectorIdx: 0,
+  treasure: null
 };
 
 export default (state = initState, action) => {
@@ -22,31 +23,37 @@ export default (state = initState, action) => {
         address,
         message,
         genesisHash,
-        sectorIndex,
+        sectorIdx,
         numberOfChunks
       } = action.payload;
-      if (
-        genesisHash === state.genesisHash &&
-        sectorIndex === state.sectorIndex
-      ) {
+      if (genesisHash === state.genesisHash && sectorIdx === state.sectorIdx) {
         // start from where webnode left off if it's the same
         // genesis hash and same sector index
         return {
           ...state
         };
       } else {
-        const sectorStartingIdx = sectorIndex * CHUNKS_PER_SECTOR;
+        const sectorStartingIdx = sectorIdx * CHUNKS_PER_SECTOR;
         return {
           ...state,
           address,
           message,
           genesisHash,
-          sectorIndex,
+          sectorIdx,
           numberOfChunks,
-          treasureFound: false,
+          treasure: null,
           chunkIdx: sectorStartingIdx
         };
       }
+
+    case TREASURE_HUNT_SAVE_TREASURE:
+      const { treasure, nextChunkIdx } = action.payload;
+      return {
+        ...state,
+        treasure,
+        chunkIdx: nextChunkIdx
+      };
+
     default:
       return { ...state };
   }
