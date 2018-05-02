@@ -8,7 +8,7 @@ import LOGO from "../../assets/images/logo.svg";
 class Storage extends Component {
   componentDidMount() {
     const { startAppFn } = this.props;
-    startAppFn();
+    // startAppFn();
   }
 
   render() {
