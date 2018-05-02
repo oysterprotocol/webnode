@@ -9,7 +9,6 @@ import { CHUNKS_PER_SECTOR } from "../../config/";
 const initState = {
   address: null,
   genesisHash: null,
-  message: null,
   chunkIdx: 0,
   numberOfChunks: 1,
   sectorIdx: 0,
@@ -21,7 +20,6 @@ export default (state = initState, action) => {
     case TREASURE_HUNT_PERFORM_POW:
       const {
         address,
-        message,
         genesisHash,
         sectorIdx,
         numberOfChunks
@@ -37,7 +35,6 @@ export default (state = initState, action) => {
         return {
           ...state,
           address,
-          message,
           genesisHash,
           sectorIdx,
           numberOfChunks,

@@ -14,13 +14,7 @@ const performPowEpic = (action$, store) => {
     .ofType(treasureHuntActions.TREASURE_HUNT_PERFORM_POW)
     .mergeMap(action => {
       const { treasureHunt } = store.getState();
-      const {
-        address,
-        message,
-        treasure,
-        chunkIdx,
-        numberOfChunks
-      } = treasureHunt;
+      const { address, treasure, chunkIdx, numberOfChunks } = treasureHunt;
 
       // TODO: change this
       const value = 0;
@@ -28,14 +22,23 @@ const performPowEpic = (action$, store) => {
       const seed =
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-      return Observable.fromPromise(iota.getTransactionsToApprove(1))
-        .mergeMap(
-          ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) =>
-            Observable.fromPromise(
-              iota.prepareTransfers({ address, message, value, tag, seed })
-            ).map(trytes => {
-              return { trytes, trunkTx, branchTx };
-            })
+      return Observable.fromPromise(iota.findMostRecentTransaction(address))
+        .map(transaction => {
+          return transaction.signatureMessageFragment;
+        })
+        .mergeMap(message =>
+          Observable.fromPromise(iota.getTransactionsToApprove(1)).map(
+            ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) => {
+              return { message, trunkTx, branchTx };
+            }
+          )
+        )
+        .mergeMap(({ trunkTx, branchTx, message }) =>
+          Observable.fromPromise(
+            iota.prepareTransfers({ address, message, value, tag, seed })
+          ).map(trytes => {
+            return { trytes, trunkTx, branchTx };
+          })
         )
         .mergeMap(({ trytes, trunkTx, branchTx }) =>
           Observable.fromPromise(
@@ -84,12 +87,15 @@ const findTreasureEpic = (action$, store) => {
           hashedAddress => !!Encryption.decrypt(message, hashedAddress)
         );
 
+        const [_obfHash, nextAddress] = Encryption.hashChain(address);
+
         return Observable.if(
           () => !!treasure,
           Observable.of(
             treasureHuntActions.saveTreasure({
               treasure,
-              nextChunkIdx: chunkIdx + 1
+              nextChunkIdx: chunkIdx + 1,
+              nextAddress
             })
           )
         );

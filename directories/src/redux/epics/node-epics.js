@@ -220,7 +220,6 @@ const checkIfSectorClaimedEpic = (action$, store) => {
         } else {
           return treasureHuntActions.performPow({
             address,
-            message: transaction.signatureMessageFragment,
             genesisHash,
             numberOfChunks,
             sectorIdx
