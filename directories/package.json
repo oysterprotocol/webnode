@@ -6,6 +6,7 @@
     "axios": "^0.18.0",
     "bootstrap": "^3.3.7",
     "curl.lib.js": "^1.0.22",
+    "datamap-generator": "^1.0.3",
     "iota.lib.js": "^0.4.7",
     "lodash": "^4.17.5",
     "moment": "^2.22.1",
