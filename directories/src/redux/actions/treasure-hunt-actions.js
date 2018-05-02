@@ -7,6 +7,8 @@ export const TREASURE_HUNT_FIND_TREASURE =
   "directories/treasure_hunt/find_treasure";
 export const TREASURE_HUNT_SAVE_TREASURE =
   "directories/treasure_hunt/save_treasure";
+export const TREASURE_HUNT_INCREMENT_CHUNK =
+  "directories/treasure_hunt/increment_chunk";
 
 const ACTIONS = Object.freeze({
   // actions
@@ -15,6 +17,7 @@ const ACTIONS = Object.freeze({
   TREASURE_HUNT_CLAIM_COMPLETE,
   TREASURE_HUNT_FIND_TREASURE,
   TREASURE_HUNT_SAVE_TREASURE,
+  TREASURE_HUNT_INCREMENT_CHUNK,
 
   // actionCreators
   performPow: ({
@@ -31,9 +34,13 @@ const ACTIONS = Object.freeze({
     type: TREASURE_HUNT_FIND_TREASURE,
     payload: { address, chunkIdx }
   }),
-  saveTreasure: ({ treasure, nextChunkIdx }) => ({
+  saveTreasure: ({ treasure, nextChunkIdx, nextAddress }) => ({
     type: TREASURE_HUNT_SAVE_TREASURE,
-    payload: { treasure, nextChunkIdx }
+    payload: { treasure, nextChunkIdx, nextAddress }
+  }),
+  incrementChunk: ({ nextChunkIdx, nextAddress }) => ({
+    type: TREASURE_HUNT_INCREMENT_CHUNK,
+    payload: { nextChunkIdx, nextAddress }
   }),
   treasureClaim: () => ({
     type: TREASURE_HUNT_CLAIM

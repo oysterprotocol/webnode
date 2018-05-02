@@ -97,6 +97,13 @@ const findTreasureEpic = (action$, store) => {
               nextChunkIdx: chunkIdx + 1,
               nextAddress
             })
+          ),
+          Observable.of(
+            treasureHuntActions.incrementChunk({
+              treasure,
+              nextChunkIdx: chunkIdx + 1,
+              nextAddress
+            })
           )
         );
       });
