@@ -21,11 +21,11 @@ const ACTIONS = Object.freeze({
     address,
     message,
     genesisHash,
-    sectorIndex,
+    sectorIdx,
     numberOfChunks
   }) => ({
     type: TREASURE_HUNT_PERFORM_POW,
-    payload: { address, message, genesisHash, sectorIndex, numberOfChunks }
+    payload: { address, message, genesisHash, sectorIdx, numberOfChunks }
   }),
   findTreasure: ({ address, chunkIdx }) => ({
     type: TREASURE_HUNT_FIND_TREASURE,

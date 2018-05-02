@@ -74,7 +74,7 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
           nodeActions.checkIfSectorClaimed({
             genesisHash: genesisHash,
             numberOfChunks: numberOfChunks,
-            sectorIndex: index
+            sectorIdx: index
           })
         );
       }
@@ -202,8 +202,8 @@ const checkIfSectorClaimedEpic = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_CHECK_IF_SECTOR_CLAIMED)
     .mergeMap(action => {
-      const { genesisHash, numberOfChunks, sectorIndex } = action.payload;
-      const specialChunkIdx = sectorIndex * CHUNKS_PER_SECTOR;
+      const { genesisHash, numberOfChunks, sectorIdx } = action.payload;
+      const specialChunkIdx = sectorIdx * CHUNKS_PER_SECTOR;
       const dataMap = Datamap.generate(genesisHash, numberOfChunks);
       // const address = dataMap[specialChunkIdx];
       const address =
@@ -215,7 +215,7 @@ const checkIfSectorClaimedEpic = (action$, store) => {
         if (iota.checkIfClaimed(transaction)) {
           return nodeActions.markSectorAsClaimedByOtherNode({
             genesisHash,
-            sectorIndex
+            sectorIdx
           });
         } else {
           return treasureHuntActions.performPow({
@@ -223,7 +223,7 @@ const checkIfSectorClaimedEpic = (action$, store) => {
             message: transaction.signatureMessageFragment,
             genesisHash,
             numberOfChunks,
-            sectorIndex
+            sectorIdx
           });
         }
       });
