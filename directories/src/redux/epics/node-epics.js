@@ -204,8 +204,9 @@ const checkIfSectorClaimedEpic = (action$, store) => {
     .mergeMap(action => {
       const { genesisHash, numberOfChunks, sectorIdx } = action.payload;
       const specialChunkIdx = sectorIdx * CHUNKS_PER_SECTOR;
-      const dataMap = Datamap.generate(genesisHash, numberOfChunks);
-      // const address = dataMap[specialChunkIdx];
+      const dataMap = Datamap.rawGenerate(genesisHash, numberOfChunks);
+      // const rawHash = dataMap[specialChunkIdx];
+      // const address = Datamap.obfuscate(rawHash);
       const address =
         "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
