@@ -1,7 +1,8 @@
 import {
   TREASURE_HUNT_PERFORM_POW,
   TREASURE_HUNT_FIND_TREASURE,
-  TREASURE_HUNT_SAVE_TREASURE
+  TREASURE_HUNT_SAVE_TREASURE,
+  TREASURE_HUNT_INCREMENT_CHUNK
 } from "../actions/treasure-hunt-actions";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
@@ -42,6 +43,14 @@ export default (state = initState, action) => {
           chunkIdx: sectorStartingIdx
         };
       }
+
+    case TREASURE_HUNT_INCREMENT_CHUNK:
+      const { nextChunkIdx: nxtChunkIdx, nextAddr } = action.payload;
+      return {
+        ...state,
+        chunkIdx: nxtChunkIdx,
+        address: nextAddr
+      };
 
     case TREASURE_HUNT_SAVE_TREASURE:
       const { treasure, nextChunkIdx, nextAddress } = action.payload;

@@ -9,6 +9,8 @@ import Datamap from "../../utils/datamap";
 import Sidechain from "../../utils/sidechain";
 import Encryption from "../../utils/encryption";
 
+import { CHUNKS_PER_SECTOR } from "../../config/";
+
 const performPowEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_PERFORM_POW)
@@ -100,7 +102,6 @@ const findTreasureEpic = (action$, store) => {
           ),
           Observable.of(
             treasureHuntActions.incrementChunk({
-              treasure,
               nextChunkIdx: chunkIdx + 1,
               nextAddress
             })
@@ -110,4 +111,24 @@ const findTreasureEpic = (action$, store) => {
     });
 };
 
-export default combineEpics(performPowEpic, findTreasureEpic);
+const nextChunkEpic = (action$, store) => {
+  return action$
+    .ofType(
+      treasureHuntActions.TREASURE_HUNT_SAVE_TREASURE,
+      treasureHuntActions.TREASURE_HUNT_INCREMENT_CHUNK
+    )
+    .mergeMap(() => {
+      const { treasureHunt } = store.getState();
+      const { chunkIdx, numberOfChunks, sectorIdx } = treasureHunt;
+
+      const endOfFile = chunkIdx > numberOfChunks;
+      const endOfSector = chunkIdx > CHUNKS_PER_SECTOR * (sectorIdx + 1);
+      return Observable.if(
+        () => endOfFile || endOfSector,
+        Observable.of(treasureHuntActions.claim()),
+        Observable.of(treasureHuntActions.claim())
+      );
+    });
+};
+
+export default combineEpics(performPowEpic, findTreasureEpic, nextChunkEpic);

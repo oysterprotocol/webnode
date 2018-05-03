@@ -1,6 +1,6 @@
-export const TREASURE_HUNT_CLAIM = "directories/treasure_hunt/claim_treasure";
-export const TREASURE_HUNT_CLAIM_COMPLETE =
-  "directories/treasure_hunt/complete_claim_treasure";
+export const TREASURE_HUNT_CLAIM = "directories/treasure_hunt/claim";
+export const TREASURE_HUNT_CLAIM_SUCCESS =
+  "directories/treasure_hunt/claim_success";
 export const TREASURE_HUNT_PERFORM_POW =
   "directories/treasure_hunt/perform_pow";
 export const TREASURE_HUNT_FIND_TREASURE =
@@ -14,7 +14,7 @@ const ACTIONS = Object.freeze({
   // actions
   TREASURE_HUNT_PERFORM_POW,
   TREASURE_HUNT_CLAIM,
-  TREASURE_HUNT_CLAIM_COMPLETE,
+  TREASURE_HUNT_CLAIM_SUCCESS,
   TREASURE_HUNT_FIND_TREASURE,
   TREASURE_HUNT_SAVE_TREASURE,
   TREASURE_HUNT_INCREMENT_CHUNK,
@@ -42,12 +42,12 @@ const ACTIONS = Object.freeze({
     type: TREASURE_HUNT_INCREMENT_CHUNK,
     payload: { nextChunkIdx, nextAddress }
   }),
-  treasureClaim: () => ({
+  claim: () => ({
     type: TREASURE_HUNT_CLAIM
   }),
 
-  treasureClaimComplete: () => ({
-    type: TREASURE_HUNT_CLAIM_COMPLETE
+  claimSuccess: () => ({
+    type: TREASURE_HUNT_CLAIM_SUCCESS
   })
 });
 
