@@ -218,7 +218,7 @@ const checkIfSectorClaimedEpic = (action$, store) => {
             sectorIdx
           });
         } else {
-          return treasureHuntActions.performPow({
+          return treasureHuntActions.startSector({
             address,
             genesisHash,
             numberOfChunks,

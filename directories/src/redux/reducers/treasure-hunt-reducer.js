@@ -1,5 +1,5 @@
 import {
-  TREASURE_HUNT_PERFORM_POW,
+  TREASURE_HUNT_START_SECTOR,
   TREASURE_HUNT_FIND_TREASURE,
   TREASURE_HUNT_SAVE_TREASURE,
   TREASURE_HUNT_INCREMENT_CHUNK
@@ -18,7 +18,7 @@ const initState = {
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case TREASURE_HUNT_PERFORM_POW:
+    case TREASURE_HUNT_START_SECTOR:
       const {
         address,
         genesisHash,

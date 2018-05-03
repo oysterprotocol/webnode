@@ -1,6 +1,8 @@
 export const TREASURE_HUNT_CLAIM = "directories/treasure_hunt/claim";
 export const TREASURE_HUNT_CLAIM_SUCCESS =
   "directories/treasure_hunt/claim_success";
+export const TREASURE_HUNT_START_SECTOR =
+  "directories/treasure_hunt/start_sector";
 export const TREASURE_HUNT_PERFORM_POW =
   "directories/treasure_hunt/perform_pow";
 export const TREASURE_HUNT_FIND_TREASURE =
@@ -12,6 +14,7 @@ export const TREASURE_HUNT_INCREMENT_CHUNK =
 
 const ACTIONS = Object.freeze({
   // actions
+  TREASURE_HUNT_START_SECTOR,
   TREASURE_HUNT_PERFORM_POW,
   TREASURE_HUNT_CLAIM,
   TREASURE_HUNT_CLAIM_SUCCESS,
@@ -20,15 +23,18 @@ const ACTIONS = Object.freeze({
   TREASURE_HUNT_INCREMENT_CHUNK,
 
   // actionCreators
-  performPow: ({
+  startSector: ({
     address,
     message,
     genesisHash,
     sectorIdx,
     numberOfChunks
   }) => ({
-    type: TREASURE_HUNT_PERFORM_POW,
+    type: TREASURE_HUNT_START_SECTOR,
     payload: { address, genesisHash, sectorIdx, numberOfChunks }
+  }),
+  performPow: () => ({
+    type: TREASURE_HUNT_PERFORM_POW
   }),
   findTreasure: ({ address, chunkIdx }) => ({
     type: TREASURE_HUNT_FIND_TREASURE,
@@ -45,7 +51,6 @@ const ACTIONS = Object.freeze({
   claim: () => ({
     type: TREASURE_HUNT_CLAIM
   }),
-
   claimSuccess: () => ({
     type: TREASURE_HUNT_CLAIM_SUCCESS
   })

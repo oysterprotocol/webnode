@@ -114,6 +114,7 @@ const findTreasureEpic = (action$, store) => {
 const nextChunkEpic = (action$, store) => {
   return action$
     .ofType(
+      treasureHuntActions.TREASURE_HUNT_START_SECTOR,
       treasureHuntActions.TREASURE_HUNT_SAVE_TREASURE,
       treasureHuntActions.TREASURE_HUNT_INCREMENT_CHUNK
     )
@@ -123,10 +124,11 @@ const nextChunkEpic = (action$, store) => {
 
       const endOfFile = chunkIdx > numberOfChunks;
       const endOfSector = chunkIdx > CHUNKS_PER_SECTOR * (sectorIdx + 1);
+
       return Observable.if(
         () => endOfFile || endOfSector,
         Observable.of(treasureHuntActions.claim()),
-        Observable.of(treasureHuntActions.claim())
+        Observable.of(treasureHuntActions.performPow())
       );
     });
 };
