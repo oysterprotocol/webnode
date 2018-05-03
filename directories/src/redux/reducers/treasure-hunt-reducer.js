@@ -45,7 +45,10 @@ export default (state = initState, action) => {
       }
 
     case TREASURE_HUNT_INCREMENT_CHUNK:
-      const { nextChunkIdx: nxtChunkIdx, nextAddr } = action.payload;
+      const {
+        nextChunkIdx: nxtChunkIdx,
+        nextAddress: nextAddr
+      } = action.payload;
       return {
         ...state,
         chunkIdx: nxtChunkIdx,
