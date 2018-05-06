@@ -88,13 +88,12 @@ const findTreasureEpic = (action$, store) => {
           sideChain,
           hashedAddress => !!Encryption.decrypt(message, hashedAddress)
         );
-        console.log("Treasure: ", treasure);
 
         return Observable.if(
           () => !!treasure,
           Observable.of(
             treasureHuntActions.saveTreasure({
-              treasure: Encryption.decryptTest(message, treasure),
+              treasure: Encryption.decryptTest(message, treasure), //TODO: Fix decryption
               nextChunkIdx: chunkIdx + 1
             })
           )

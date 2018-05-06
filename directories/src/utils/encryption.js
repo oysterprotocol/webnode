@@ -50,7 +50,7 @@ const decrypt = (text, secretKey) => {
 };
 
 const decryptTest = (text, secretKey) => {
-  //TODO ali
+  //TODO temporary for debugging
   try {
     return CryptoJS.AES.decrypt(text, secretKey).toString();
   } catch (e) {
@@ -60,7 +60,7 @@ const decryptTest = (text, secretKey) => {
 
 export default {
   decrypt,
-  decryptTest,
+  decryptTest, //TODO
   encrypt,
   genesisHash,
   getPrimordialHash,

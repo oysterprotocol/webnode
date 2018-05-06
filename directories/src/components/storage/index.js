@@ -1,13 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  Input,
-  Button,
-  Container,
-  Header,
-  Image,
-  Progress
-} from "semantic-ui-react";
+import { Input, Button, Container, Header, Image } from "semantic-ui-react";
 import _ from "lodash";
 
 import appActions from "../../redux/actions/app-actions";
@@ -45,9 +38,6 @@ class Storage extends Component {
   constructor(props) {
     super(props);
     this.state = { genesisHash: "", numberOfChunks: 0 };
-
-    //this.handleChange = this.handleChange.bind(this);
-    //  this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   onGenesisHashChange = (e, data) => {
@@ -57,8 +47,6 @@ class Storage extends Component {
   onNumberOfChunksChange = (e, data) => {
     this.setState({ numberOfChunks: parseInt(data.value) });
   };
-
-  componentDidMount() {}
 
   renderProgress(current, max) {
     if (current > -1) {
@@ -87,12 +75,11 @@ class Storage extends Component {
       }))
       .map(obj => findTreasure(obj));
 
-    Promise.all(transformedMap);
+    Promise.all(transformedMap); //TODO better implementation
   }
 
   render() {
     const { statuses, treasures, numberOfCalls } = this.props;
-    console.log("Rendered!");
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
         <div style={{ padding: 50 }}>
@@ -116,7 +103,7 @@ class Storage extends Component {
 const mapStateToProps = state => ({
   statuses: state.pow.statuses,
   treasures: state.test.treasures,
-  numberOfCalls: state.test.numberOfCalls
+  numberOfCalls: state.test.numberOfCalls //TODO remove for production
 });
 
 const mapDispatchToProps = dispatch => ({
