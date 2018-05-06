@@ -93,7 +93,7 @@ const findTreasureEpic = (action$, store) => {
           () => !!treasure,
           Observable.of(
             treasureHuntActions.saveTreasure({
-              treasure: Encryption.decryptTest(message, treasure), //TODO: Fix decryption
+              treasure: Encryption.decrypt(message, treasure), //TODO: Fix decryption
               nextChunkIdx: chunkIdx + 1
             })
           )

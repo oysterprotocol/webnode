@@ -108,7 +108,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   startAppFn: () => dispatch(appActions.startApp()),
-  startNode: () => dispatch(nodeActions.addBrokerNode("asdasd")),
   findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj))
 });
 
