@@ -1,5 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import {
+  Input,
+  Button,
+  Container,
+  Header,
+  Image,
+  Progress
+} from "semantic-ui-react";
+import _ from "lodash";
+
 import appActions from "../../redux/actions/app-actions";
 import nodeActions from "../../redux/actions/node-actions";
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
@@ -7,46 +17,112 @@ import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 import iota from "../../redux/services/iota";
 import datamap from "../../utils/datamap";
 
+import TreasureTable from "./toolbox/TreasureTable";
+
 import LOGO from "../../assets/images/logo.svg";
 
+const GenesisHashInput = onChange => (
+  <Input
+    style={{ width: 1000, paddingBottom: 20 }}
+    onChange={onChange}
+    label={{ tag: true, content: "Genesis Hash" }}
+    labelPosition="right"
+    placeholder=""
+  />
+);
+
+const NumberofChunksInput = onChange => (
+  <Input
+    onChange={onChange}
+    style={{ paddingRight: 50, paddingBottom: 50 }}
+    label={{ tag: true, content: "Number of Chunks" }}
+    labelPosition="right"
+    placeholder=""
+  />
+);
+
 class Storage extends Component {
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+    this.state = { genesisHash: "", numberOfChunks: 0 };
+
+    //this.handleChange = this.handleChange.bind(this);
+    //  this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  onGenesisHashChange = (e, data) => {
+    this.setState({ genesisHash: data.value });
+  };
+
+  onNumberOfChunksChange = (e, data) => {
+    this.setState({ numberOfChunks: parseInt(data.value) });
+  };
+
+  componentDidMount() {}
+
+  renderProgress(current, max) {
+    if (current > -1) {
+      return (
+        <div>
+          {current}/{max}
+        </div>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  async onClick() {
     const { startAppFn, startNode, findTreasure } = this.props;
-    //startAppFn();
-    findTreasure(
-      "VAAB9BVABBTCTCTCCBXAQCQCWAXAXAXAVAQCUAUAPCBBPCUCBBUAZAWAUAPCZA9BRCZAZACB9BSCQCCBX",
-      0
+
+    const generatedMap = datamap.generate(
+      this.state.genesisHash,
+      this.state.numberOfChunks
     );
+
+    const transformedMap = _.toArray(generatedMap)
+      .map((value, index) => ({
+        address: value,
+        chunkIdx: index
+      }))
+      .map(obj => findTreasure(obj));
+
+    Promise.all(transformedMap);
   }
 
   render() {
-    console.log(
-      "Datamap: ",
-      datamap.generate(
-        "e4987a0828147beb155a39e59dfe6b1f439566ec89c23a224ed57a10c9beef8d",
-        55
-      )
-    );
-
-    const { statuses } = this.props;
+    const { statuses, treasures, numberOfCalls } = this.props;
+    console.log("Rendered!");
     return (
-      <div className="container">
-        <img src={LOGO} width="100" />
-        <div className="status-container">{statuses.map(s => <p>{s}</p>)}</div>
-      </div>
+      <Container style={{ backgroundColor: "#0267ea" }}>
+        <div style={{ padding: 50 }}>
+          <Header as="h1" style={{ color: "#ffffff" }}>
+            <Image src={LOGO} /> Oyster Toolbox{" "}
+            {this.renderProgress(numberOfCalls, this.state.numberOfChunks)}
+          </Header>{" "}
+          <div style={{ paddingTop: 50 }}>
+            {" "}
+            {GenesisHashInput(this.onGenesisHashChange)}
+            {NumberofChunksInput(this.onNumberOfChunksChange)}
+            <Button onClick={() => this.onClick()}>Look for treasures</Button>
+          </div>
+          {treasures.length != 0 ? TreasureTable(treasures) : null}
+        </div>
+      </Container>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  statuses: state.pow.statuses
+  statuses: state.pow.statuses,
+  treasures: state.test.treasures,
+  numberOfCalls: state.test.numberOfCalls
 });
 
 const mapDispatchToProps = dispatch => ({
   startAppFn: () => dispatch(appActions.startApp()),
   startNode: () => dispatch(nodeActions.addBrokerNode("asdasd")),
-  findTreasure: (address, chunkIdx) =>
-    dispatch(treasureHuntActions.findTreasure({ address, chunkIdx }))
+  findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Storage);

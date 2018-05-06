@@ -13,7 +13,7 @@ const generate = (handle, size) => {
 
       return [dataM, nextHash];
     },
-    //[{}, Encryption.genesisHash(handle)]
+    //TODO [{}, Encryption.genesisHash(handle)]
     [{}, handle]
   );
 

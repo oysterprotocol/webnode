@@ -1,5 +1,6 @@
 import { Observable } from "rxjs";
-import { combineEpics } from "redux-observable";
+import { combineEpics, store } from "redux-observable"; //TODO remove store as dependency
+
 import _ from "lodash";
 
 import treasureHuntActions from "../actions/treasure-hunt-actions";
@@ -79,16 +80,21 @@ const findTreasureEpic = (action$, store) => {
       ).mergeMap(transaction => {
         const message = iota.parseMessage(transaction.signatureMessageFragment);
         const sideChain = Sidechain.generate(address);
+        store.dispatch({
+          //TODO Remove this dispatch
+          type: "IOTA_RETURN"
+        });
         const treasure = _.find(
           sideChain,
           hashedAddress => !!Encryption.decrypt(message, hashedAddress)
         );
+        console.log("Treasure: ", treasure);
 
         return Observable.if(
           () => !!treasure,
           Observable.of(
             treasureHuntActions.saveTreasure({
-              treasure,
+              treasure: Encryption.decryptTest(message, treasure),
               nextChunkIdx: chunkIdx + 1
             })
           )
