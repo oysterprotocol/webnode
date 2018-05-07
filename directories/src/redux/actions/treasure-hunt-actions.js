@@ -24,29 +24,29 @@ const ACTIONS = Object.freeze({
 
   // actionCreators
   startSector: ({
-    address,
+    dataMapHash,
     message,
     genesisHash,
     sectorIdx,
     numberOfChunks
   }) => ({
     type: TREASURE_HUNT_START_SECTOR,
-    payload: { address, genesisHash, sectorIdx, numberOfChunks }
+    payload: { dataMapHash, genesisHash, sectorIdx, numberOfChunks }
   }),
   performPow: () => ({
     type: TREASURE_HUNT_PERFORM_POW
   }),
-  findTreasure: ({ address, chunkIdx }) => ({
+  findTreasure: ({ dataMapHash, chunkIdx }) => ({
     type: TREASURE_HUNT_FIND_TREASURE,
-    payload: { address, chunkIdx }
+    payload: { dataMapHash, chunkIdx }
   }),
-  saveTreasure: ({ treasure, nextChunkIdx, nextAddress }) => ({
+  saveTreasure: ({ treasure, nextChunkIdx, nextDataMapHash }) => ({
     type: TREASURE_HUNT_SAVE_TREASURE,
-    payload: { treasure, nextChunkIdx, nextAddress }
+    payload: { treasure, nextChunkIdx, nextDataMapHash }
   }),
-  incrementChunk: ({ nextChunkIdx, nextAddress }) => ({
+  incrementChunk: ({ nextChunkIdx, nextDataMapHash }) => ({
     type: TREASURE_HUNT_INCREMENT_CHUNK,
-    payload: { nextChunkIdx, nextAddress }
+    payload: { nextChunkIdx, nextDataMapHash }
   }),
   claim: () => ({
     type: TREASURE_HUNT_CLAIM

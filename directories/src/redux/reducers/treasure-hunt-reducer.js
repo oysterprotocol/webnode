@@ -8,7 +8,7 @@ import {
 import { CHUNKS_PER_SECTOR } from "../../config/";
 
 const initState = {
-  address: null,
+  dataMapHash: null,
   genesisHash: null,
   chunkIdx: 0,
   numberOfChunks: 1,
@@ -20,7 +20,7 @@ export default (state = initState, action) => {
   switch (action.type) {
     case TREASURE_HUNT_START_SECTOR:
       const {
-        address,
+        dataMapHash,
         genesisHash,
         sectorIdx,
         numberOfChunks
@@ -35,7 +35,7 @@ export default (state = initState, action) => {
         const sectorStartingIdx = sectorIdx * CHUNKS_PER_SECTOR;
         return {
           ...state,
-          address,
+          dataMapHash,
           genesisHash,
           sectorIdx,
           numberOfChunks,
@@ -47,21 +47,21 @@ export default (state = initState, action) => {
     case TREASURE_HUNT_INCREMENT_CHUNK:
       const {
         nextChunkIdx: nxtChunkIdx,
-        nextAddress: nextAddr
+        nextDataMapHash: nextDataMapHsh
       } = action.payload;
       return {
         ...state,
         chunkIdx: nxtChunkIdx,
-        address: nextAddr
+        dataMapHash: nextDataMapHsh
       };
 
     case TREASURE_HUNT_SAVE_TREASURE:
-      const { treasure, nextChunkIdx, nextAddress } = action.payload;
+      const { treasure, nextChunkIdx, nextDataMapHash } = action.payload;
       return {
         ...state,
         treasure,
         chunkIdx: nextChunkIdx,
-        address: nextAddress
+        dataMapHash: nextDataMapHash
       };
 
     default:

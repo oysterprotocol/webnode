@@ -15,8 +15,13 @@ const performPowEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_PERFORM_POW)
     .mergeMap(action => {
+      console.log("pppppppppppppppp");
       const { treasureHunt } = store.getState();
-      const { address, treasure, chunkIdx, numberOfChunks } = treasureHunt;
+      const { dataMapHash, treasure, chunkIdx, numberOfChunks } = treasureHunt;
+
+      // const address = Encryption.obfuscate(dataMapHash);
+      const address =
+        "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
       // TODO: change this
       const value = 0;
@@ -60,7 +65,7 @@ const performPowEpic = (action$, store) => {
             () => !treasure,
             Observable.of(
               treasureHuntActions.findTreasure({
-                address,
+                dataMapHash,
                 chunkIdx
               })
             )
@@ -77,7 +82,11 @@ const findTreasureEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_FIND_TREASURE)
     .mergeMap(action => {
-      const { address, chunkIdx } = action.payload;
+      const { dataMapHash, chunkIdx } = action.payload;
+
+      // const address = Encryption.obfuscate(dataMapHash);
+      const address =
+        "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
@@ -89,7 +98,7 @@ const findTreasureEpic = (action$, store) => {
           hashedAddress => !!Encryption.decrypt(message, hashedAddress)
         );
 
-        const [_obfHash, nextAddress] = Encryption.hashChain(address);
+        const [_obfHash, nextDataMapHash] = Encryption.hashChain(dataMapHash);
 
         return Observable.if(
           () => !!treasure,
@@ -97,13 +106,13 @@ const findTreasureEpic = (action$, store) => {
             treasureHuntActions.saveTreasure({
               treasure,
               nextChunkIdx: chunkIdx + 1,
-              nextAddress
+              nextDataMapHash
             })
           ),
           Observable.of(
             treasureHuntActions.incrementChunk({
               nextChunkIdx: chunkIdx + 1,
-              nextAddress
+              nextDataMapHash
             })
           )
         );
