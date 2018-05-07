@@ -1,15 +1,15 @@
 import {
-  TREASURE_HUNT_PERFORM_POW,
+  TREASURE_HUNT_START_SECTOR,
   TREASURE_HUNT_FIND_TREASURE,
-  TREASURE_HUNT_SAVE_TREASURE
+  TREASURE_HUNT_SAVE_TREASURE,
+  TREASURE_HUNT_INCREMENT_CHUNK
 } from "../actions/treasure-hunt-actions";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
 
 const initState = {
-  address: null,
+  dataMapHash: null,
   genesisHash: null,
-  message: null,
   chunkIdx: 0,
   numberOfChunks: 1,
   sectorIdx: 0,
@@ -18,10 +18,9 @@ const initState = {
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case TREASURE_HUNT_PERFORM_POW:
+    case TREASURE_HUNT_START_SECTOR:
       const {
-        address,
-        message,
+        dataMapHash,
         genesisHash,
         sectorIdx,
         numberOfChunks
@@ -36,8 +35,7 @@ export default (state = initState, action) => {
         const sectorStartingIdx = sectorIdx * CHUNKS_PER_SECTOR;
         return {
           ...state,
-          address,
-          message,
+          dataMapHash,
           genesisHash,
           sectorIdx,
           numberOfChunks,
@@ -46,12 +44,24 @@ export default (state = initState, action) => {
         };
       }
 
+    case TREASURE_HUNT_INCREMENT_CHUNK:
+      const {
+        nextChunkIdx: nxtChunkIdx,
+        nextDataMapHash: nextDataMapHsh
+      } = action.payload;
+      return {
+        ...state,
+        chunkIdx: nxtChunkIdx,
+        dataMapHash: nextDataMapHsh
+      };
+
     case TREASURE_HUNT_SAVE_TREASURE:
-      const { treasure, nextChunkIdx } = action.payload;
+      const { treasure, nextChunkIdx, nextDataMapHash } = action.payload;
       return {
         ...state,
         treasure,
-        chunkIdx: nextChunkIdx
+        chunkIdx: nextChunkIdx,
+        dataMapHash: nextDataMapHash
       };
 
     default:
