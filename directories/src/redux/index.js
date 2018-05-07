@@ -29,9 +29,11 @@ const persistConfig = {
   whitelist: []
 };
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 export const store = createStore(
   persistReducer(persistConfig, reducer),
-  compose(...storeEnhancer)
+  composeEnhancers(...storeEnhancer)
 );
 
 export const persistor = persistStore(store);

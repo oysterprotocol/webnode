@@ -1,5 +1,6 @@
 import { Observable } from "rxjs";
-import { combineEpics } from "redux-observable";
+import { combineEpics, store } from "redux-observable"; //TODO remove store as dependency
+
 import _ from "lodash";
 
 import treasureHuntActions from "../actions/treasure-hunt-actions";
@@ -33,7 +34,9 @@ const performPowEpic = (action$, store) => {
           return transaction.signatureMessageFragment;
         })
         .mergeMap(message =>
-          Observable.fromPromise(iota.getTransactionsToApprove(1)).map(
+          Observable.fromPromise(
+            iota.getTransactionsToApprove(1)
+          ).map(
             ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) => {
               return { message, trunkTx, branchTx };
             }
@@ -83,15 +86,19 @@ const findTreasureEpic = (action$, store) => {
     .mergeMap(action => {
       const { dataMapHash, chunkIdx } = action.payload;
 
-      // const address = Encryption.obfuscate(dataMapHash);
-      const address =
-        "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
+      const address = dataMapHash;
+      //  const address =
+      //    "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
       ).mergeMap(transaction => {
         const message = iota.parseMessage(transaction.signatureMessageFragment);
         const sideChain = Sidechain.generate(address);
+        store.dispatch({
+          //TODO Remove this dispatch
+          type: "IOTA_RETURN"
+        });
         const treasure = _.find(
           sideChain,
           hashedAddress => !!Encryption.decrypt(message, hashedAddress)
@@ -103,7 +110,7 @@ const findTreasureEpic = (action$, store) => {
           () => !!treasure,
           Observable.of(
             treasureHuntActions.saveTreasure({
-              treasure,
+              treasure: Encryption.decrypt(message, treasure), //TODO: Fix decryption
               nextChunkIdx: chunkIdx + 1,
               nextDataMapHash
             })

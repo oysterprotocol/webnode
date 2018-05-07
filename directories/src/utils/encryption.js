@@ -51,8 +51,18 @@ const decrypt = (text, secretKey) => {
   }
 };
 
+const decryptTest = (text, secretKey) => {
+  //TODO temporary for debugging
+  try {
+    return CryptoJS.AES.decrypt(text, secretKey).toString();
+  } catch (e) {
+    return "";
+  }
+};
+
 export default {
   decrypt,
+  decryptTest, //TODO
   encrypt,
   genesisHash,
   getPrimordialHash,
