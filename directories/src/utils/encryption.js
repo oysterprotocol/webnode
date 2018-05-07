@@ -21,6 +21,8 @@ const getPrimordialHash = () => {
   return CryptoJS.SHA256(entropy).toString();
 };
 
+const obfuscate = hash => CryptoJS.SHA384(hash).toString();
+
 // Returns [obfuscatedHash, nextHash]
 const hashChain = hash => {
   const obfuscatedHash = CryptoJS.SHA384(hash).toString();
@@ -66,6 +68,7 @@ export default {
   getPrimordialHash,
   getSalt,
   hashChain,
+  obfuscate,
   parseEightCharsOfFilename,
   sideChain
 };

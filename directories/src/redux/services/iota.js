@@ -43,8 +43,9 @@ const findMostRecentTransaction = address =>
     iotaProvider.api.findTransactionObjects(
       { addresses: [address] },
       (error, transactionObjects) => {
-        if (error) {
+        if (error || !transactionObjects) {
           console.log("IOTA ERROR: ", error);
+          reject(new Error("No transaction found"));
         }
         const settledTransactions = transactionObjects || [];
         const recentTransaction = _.maxBy(

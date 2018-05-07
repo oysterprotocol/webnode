@@ -10,18 +10,18 @@ import Datamap from "../../utils/datamap";
 import Sidechain from "../../utils/sidechain";
 import Encryption from "../../utils/encryption";
 
+import { CHUNKS_PER_SECTOR } from "../../config/";
+
 const performPowEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_PERFORM_POW)
     .mergeMap(action => {
       const { treasureHunt } = store.getState();
-      const {
-        address,
-        message,
-        treasure,
-        chunkIdx,
-        numberOfChunks
-      } = treasureHunt;
+      const { dataMapHash, treasure, chunkIdx, numberOfChunks } = treasureHunt;
+
+      // const address = Encryption.obfuscate(dataMapHash);
+      const address =
+        "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
       // TODO: change this
       const value = 0;
@@ -29,14 +29,25 @@ const performPowEpic = (action$, store) => {
       const seed =
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-      return Observable.fromPromise(iota.getTransactionsToApprove(1))
-        .mergeMap(
-          ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) =>
-            Observable.fromPromise(
-              iota.prepareTransfers({ address, message, value, tag, seed })
-            ).map(trytes => {
-              return { trytes, trunkTx, branchTx };
-            })
+      return Observable.fromPromise(iota.findMostRecentTransaction(address))
+        .map(transaction => {
+          return transaction.signatureMessageFragment;
+        })
+        .mergeMap(message =>
+          Observable.fromPromise(
+            iota.getTransactionsToApprove(1)
+          ).map(
+            ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) => {
+              return { message, trunkTx, branchTx };
+            }
+          )
+        )
+        .mergeMap(({ trunkTx, branchTx, message }) =>
+          Observable.fromPromise(
+            iota.prepareTransfers({ address, message, value, tag, seed })
+          ).map(trytes => {
+            return { trytes, trunkTx, branchTx };
+          })
         )
         .mergeMap(({ trytes, trunkTx, branchTx }) =>
           Observable.fromPromise(
@@ -56,7 +67,7 @@ const performPowEpic = (action$, store) => {
             () => !treasure,
             Observable.of(
               treasureHuntActions.findTreasure({
-                address,
+                dataMapHash,
                 chunkIdx
               })
             )
@@ -73,7 +84,11 @@ const findTreasureEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_FIND_TREASURE)
     .mergeMap(action => {
-      const { address, chunkIdx } = action.payload;
+      const { dataMapHash, chunkIdx } = action.payload;
+
+      // const address = Encryption.obfuscate(dataMapHash);
+      const address =
+        "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
@@ -89,12 +104,21 @@ const findTreasureEpic = (action$, store) => {
           hashedAddress => !!Encryption.decrypt(message, hashedAddress)
         );
 
+        const [_obfHash, nextDataMapHash] = Encryption.hashChain(dataMapHash);
+
         return Observable.if(
           () => !!treasure,
           Observable.of(
             treasureHuntActions.saveTreasure({
               treasure: Encryption.decrypt(message, treasure), //TODO: Fix decryption
-              nextChunkIdx: chunkIdx + 1
+              nextChunkIdx: chunkIdx + 1,
+              nextDataMapHash
+            })
+          ),
+          Observable.of(
+            treasureHuntActions.incrementChunk({
+              nextChunkIdx: chunkIdx + 1,
+              nextDataMapHash
             })
           )
         );
@@ -102,4 +126,26 @@ const findTreasureEpic = (action$, store) => {
     });
 };
 
-export default combineEpics(performPowEpic, findTreasureEpic);
+const nextChunkEpic = (action$, store) => {
+  return action$
+    .ofType(
+      treasureHuntActions.TREASURE_HUNT_START_SECTOR,
+      treasureHuntActions.TREASURE_HUNT_SAVE_TREASURE,
+      treasureHuntActions.TREASURE_HUNT_INCREMENT_CHUNK
+    )
+    .mergeMap(() => {
+      const { treasureHunt } = store.getState();
+      const { chunkIdx, numberOfChunks, sectorIdx } = treasureHunt;
+
+      const endOfFile = chunkIdx > numberOfChunks;
+      const endOfSector = chunkIdx > CHUNKS_PER_SECTOR * (sectorIdx + 1);
+
+      return Observable.if(
+        () => endOfFile || endOfSector,
+        Observable.of(treasureHuntActions.claimTreasure()),
+        Observable.of(treasureHuntActions.performPow())
+      );
+    });
+};
+
+export default combineEpics(performPowEpic, findTreasureEpic, nextChunkEpic);

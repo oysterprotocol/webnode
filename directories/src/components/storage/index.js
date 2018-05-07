@@ -9,6 +9,7 @@ import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 
 import iota from "../../redux/services/iota";
 import datamap from "../../utils/datamap";
+import Encryption from "../../utils/encryption";
 
 import TreasureTable from "./toolbox/TreasureTable";
 
@@ -63,7 +64,7 @@ class Storage extends Component {
   async onClick() {
     const { startAppFn, startNode, findTreasure } = this.props;
 
-    const generatedMap = datamap.generate(
+    const generatedMap = datamap.rawGenerate(
       this.state.genesisHash,
       this.state.numberOfChunks
     );
@@ -79,6 +80,12 @@ class Storage extends Component {
   }
 
   render() {
+    console.log(
+      "Side Chain: " +
+        Encryption.hashChain(
+          "140fd7f7ae3c2442788926bc0be309ec8ebdb36507b0f9eb2b3b4586f013eb48"
+        )
+    );
     const { statuses, treasures, numberOfCalls } = this.props;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
