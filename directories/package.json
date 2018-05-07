@@ -7,10 +7,8 @@
     "bootstrap": "^3.3.7",
     "curl.lib.js": "^1.0.22",
     "iota.lib.js": "^0.4.7",
-    "js-sha3": "^0.7.0",
     "lodash": "^4.17.5",
     "moment": "^2.22.1",
-    "node-forge": "^0.7.5",
     "peerjs": "^0.3.14",
     "prop-types": "^15.6.0",
     "rc-progress": "^2.2.5",
@@ -53,14 +51,11 @@
     "build": "cross-env NODE_PATH=src react-scripts build"
   },
   "jest": {
-    "roots": [
-      "<rootDir>/src"
-    ],
-    "modulePaths": [
-      "<rootDir>/src"
-    ],
+    "roots": ["<rootDir>/src"],
+    "modulePaths": ["<rootDir>/src"],
     "moduleNameMapper": {
-      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "identity-obj-proxy"
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$":
+        "identity-obj-proxy"
     }
   }
 }

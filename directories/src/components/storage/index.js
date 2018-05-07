@@ -13,6 +13,7 @@ import datamap from "../../utils/datamap";
 import Encryption from "../../utils/encryption";
 
 import TreasureTable from "./toolbox/TreasureTable";
+import ConsentOverlay from "./oysterconsent/ConsentOverlay";
 
 import LOGO from "../../assets/images/logo.svg";
 
@@ -97,6 +98,7 @@ class Storage extends Component {
           </div>
           {treasures.length != 0 ? TreasureTable(treasures) : null}
         </div>
+        <ConsentOverlay />
       </Container>
     );
   }
