@@ -64,14 +64,14 @@ class Storage extends Component {
   async onClick() {
     const { startAppFn, startNode, findTreasure } = this.props;
 
-    const generatedMap = datamap.rawGenerate(
+    const generatedMap = datamap.generate(
       this.state.genesisHash,
       this.state.numberOfChunks
     );
 
     const transformedMap = _.toArray(generatedMap)
       .map((value, index) => ({
-        address: value,
+        dataMapHash: value,
         chunkIdx: index
       }))
       .map(obj => findTreasure(obj));
