@@ -15,7 +15,6 @@ const performPowEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_PERFORM_POW)
     .mergeMap(action => {
-      console.log("pppppppppppppppp");
       const { treasureHunt } = store.getState();
       const { dataMapHash, treasure, chunkIdx, numberOfChunks } = treasureHunt;
 
@@ -136,7 +135,7 @@ const nextChunkEpic = (action$, store) => {
 
       return Observable.if(
         () => endOfFile || endOfSector,
-        Observable.of(treasureHuntActions.claim()),
+        Observable.of(treasureHuntActions.claimTreasure()),
         Observable.of(treasureHuntActions.performPow())
       );
     });

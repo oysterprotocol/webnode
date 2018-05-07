@@ -1,6 +1,7 @@
-export const TREASURE_HUNT_CLAIM = "directories/treasure_hunt/claim";
-export const TREASURE_HUNT_CLAIM_SUCCESS =
-  "directories/treasure_hunt/claim_success";
+export const TREASURE_HUNT_CLAIM_TREASURE =
+  "directories/treasure_hunt/claim_treasure";
+export const TREASURE_HUNT_CLAIM_TREASURE_SUCCESS =
+  "directories/treasure_hunt/claim_treasure_success";
 export const TREASURE_HUNT_START_SECTOR =
   "directories/treasure_hunt/start_sector";
 export const TREASURE_HUNT_PERFORM_POW =
@@ -16,8 +17,8 @@ const ACTIONS = Object.freeze({
   // actions
   TREASURE_HUNT_START_SECTOR,
   TREASURE_HUNT_PERFORM_POW,
-  TREASURE_HUNT_CLAIM,
-  TREASURE_HUNT_CLAIM_SUCCESS,
+  TREASURE_HUNT_CLAIM_TREASURE,
+  TREASURE_HUNT_CLAIM_TREASURE_SUCCESS,
   TREASURE_HUNT_FIND_TREASURE,
   TREASURE_HUNT_SAVE_TREASURE,
   TREASURE_HUNT_INCREMENT_CHUNK,
@@ -48,11 +49,11 @@ const ACTIONS = Object.freeze({
     type: TREASURE_HUNT_INCREMENT_CHUNK,
     payload: { nextChunkIdx, nextDataMapHash }
   }),
-  claim: () => ({
-    type: TREASURE_HUNT_CLAIM
+  claimTreasure: () => ({
+    type: TREASURE_HUNT_CLAIM_TREASURE
   }),
-  claimSuccess: () => ({
-    type: TREASURE_HUNT_CLAIM_SUCCESS
+  claimTreasureSuccess: () => ({
+    type: TREASURE_HUNT_CLAIM_TREASURE_SUCCESS
   })
 });
 
