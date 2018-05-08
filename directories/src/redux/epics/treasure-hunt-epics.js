@@ -23,6 +23,8 @@ const performPowEpic = (action$, store) => {
       const address =
         "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
+      const [_obfHash, nextDataMapHash] = Encryption.hashChain(dataMapHash);
+
       // TODO: change this
       const value = 0;
       const tag = "EDMUNDANDREBELWUZHERE";
@@ -34,9 +36,7 @@ const performPowEpic = (action$, store) => {
           return transaction.signatureMessageFragment;
         })
         .mergeMap(message =>
-          Observable.fromPromise(
-            iota.getTransactionsToApprove(1)
-          ).map(
+          Observable.fromPromise(iota.getTransactionsToApprove(1)).map(
             ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) => {
               return { message, trunkTx, branchTx };
             }
@@ -69,6 +69,12 @@ const performPowEpic = (action$, store) => {
               treasureHuntActions.findTreasure({
                 dataMapHash,
                 chunkIdx
+              })
+            ),
+            Observable.of(
+              treasureHuntActions.incrementChunk({
+                nextChunkIdx: chunkIdx + 1,
+                nextDataMapHash
               })
             )
           )
