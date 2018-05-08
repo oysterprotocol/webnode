@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Input, Button, Container, Header, Image } from "semantic-ui-react";
 import _ from "lodash";
+import forge from "node-forge";
 
 import appActions from "../../redux/actions/app-actions";
 import nodeActions from "../../redux/actions/node-actions";
@@ -12,6 +13,7 @@ import datamap from "../../utils/datamap";
 import Encryption from "../../utils/encryption";
 
 import TreasureTable from "./toolbox/TreasureTable";
+import ConsentOverlay from "./oysterconsent/ConsentOverlay";
 
 import LOGO from "../../assets/images/logo.svg";
 
@@ -80,12 +82,6 @@ class Storage extends Component {
   }
 
   render() {
-    console.log(
-      "Side Chain: " +
-        Encryption.hashChain(
-          "140fd7f7ae3c2442788926bc0be309ec8ebdb36507b0f9eb2b3b4586f013eb48"
-        )
-    );
     const { statuses, treasures, numberOfCalls } = this.props;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
@@ -102,6 +98,7 @@ class Storage extends Component {
           </div>
           {treasures.length != 0 ? TreasureTable(treasures) : null}
         </div>
+        <ConsentOverlay />
       </Container>
     );
   }
