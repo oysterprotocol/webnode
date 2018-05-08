@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import ButtonGroup from "./ButtonGroup";
+
 class ConsentOverlay extends Component {
   constructor(props) {
     super(props);
@@ -10,7 +12,7 @@ class ConsentOverlay extends Component {
     return (
       <div style={ConsentOverlayStyle}>
         <div style={{ padding: 15 }}>
-          <h2>Consent Overlay!</h2>
+          <h2>Consent Overlay!</h2> <ButtonGroup />
         </div>
       </div>
     );
@@ -22,7 +24,8 @@ const ConsentOverlayStyle = {
   left: 0,
   right: 0,
   position: "fixed",
-  backgroundColor: "#ffffff"
+  backgroundColor: "#ffffff",
+  textAlign: "center"
 };
 
 export default ConsentOverlay;
