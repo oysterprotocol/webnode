@@ -62,7 +62,7 @@ const styles = {
     listStyleType: "none",
     display: "inline-block",
     verticalAlign: "middle",
-    right: 5
+    float: "right"
   }
 };
 
