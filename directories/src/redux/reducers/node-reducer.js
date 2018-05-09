@@ -4,7 +4,7 @@ import {
   NODE_ADD_BROKER_NODE,
   NODE_ADD_NEW_GENESIS_HASH,
   NODE_RESET,
-  NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE
+  NODE_MARK_SECTOR_AS_CLAIMED
 } from "../actions/node-actions";
 
 import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
@@ -63,7 +63,7 @@ export default (state = initState, action) => {
         oldGenesisHashes: []
       };
 
-    case NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE:
+    case NODE_MARK_SECTOR_AS_CLAIMED:
       const { genesisHash: gh, sectorIdx } = action.payload;
       const updatedGenesisHashes = _.map(
         state.newGenesisHashes,
@@ -73,7 +73,7 @@ export default (state = initState, action) => {
               if (sector.index === sectorIdx) {
                 return {
                   ...sector,
-                  status: SECTOR_STATUS.CLAIMED_BY_OTHER_NODE
+                  status: SECTOR_STATUS.CLAIMED
                 };
               } else {
                 return { ...sector };

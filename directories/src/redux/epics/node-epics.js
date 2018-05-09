@@ -28,10 +28,12 @@ const registerWebnodeEpic = (action$, store) => {
     return Observable.fromPromise(brokerNode.registerWebnode(id))
       .map(({ data }) => {
         console.log("/api/v1/supply/webnodes response:", data);
+        // return nodeActions.determineBrokerNodeOrGenesisHash();
         return nodeActions.determineGenesisHashOrTreasureHunt();
       })
       .catch(error => {
         console.log("/api/v1/supply/webnodes error:", error);
+        // return nodeActions.determineBrokerNodeOrGenesisHash();
         return nodeActions.determineGenesisHashOrTreasureHunt();
       });
   });
@@ -214,7 +216,7 @@ const checkIfSectorClaimedEpic = (action$, store) => {
         iota.findMostRecentTransaction(address)
       ).map(transaction => {
         if (iota.checkIfClaimed(transaction)) {
-          return nodeActions.markSectorAsClaimedByOtherNode({
+          return nodeActions.markSectorAsClaimed({
             genesisHash,
             sectorIdx
           });

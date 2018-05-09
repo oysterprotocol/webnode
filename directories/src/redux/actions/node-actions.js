@@ -13,8 +13,8 @@ export const NODE_ADD_NEW_GENESIS_HASH =
 export const NODE_RESET = "directories/node/reset";
 export const NODE_CHECK_IF_SECTOR_CLAIMED =
   "directories/node/check_if_sector_claimed";
-export const NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE =
-  "directories/node/mark_sector_as_claimed_by_other_node";
+export const NODE_MARK_SECTOR_AS_CLAIMED =
+  "directories/node/mark_sector_as_claimed";
 
 const ACTIONS = Object.freeze({
   // actions
@@ -26,7 +26,7 @@ const ACTIONS = Object.freeze({
   NODE_ADD_NEW_GENESIS_HASH,
   NODE_RESET,
   NODE_CHECK_IF_SECTOR_CLAIMED,
-  NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE,
+  NODE_MARK_SECTOR_AS_CLAIMED,
 
   // actionCreators
   determineBrokerNodeOrGenesisHash: () => ({
@@ -65,8 +65,8 @@ const ACTIONS = Object.freeze({
     payload: { genesisHash, sectorIdx, numberOfChunks }
   }),
 
-  markSectorAsClaimedByOtherNode: ({ genesisHash, sectorIdx }) => ({
-    type: NODE_MARK_SECTOR_AS_CLAIMED_BY_OTHER_NODE,
+  markSectorAsClaimed: ({ genesisHash, sectorIdx }) => ({
+    type: NODE_MARK_SECTOR_AS_CLAIMED,
     payload: { genesisHash, sectorIdx }
   })
 });

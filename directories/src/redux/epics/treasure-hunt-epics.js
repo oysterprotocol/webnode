@@ -3,6 +3,7 @@ import { combineEpics, store } from "redux-observable"; //TODO remove store as d
 
 import _ from "lodash";
 
+import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
@@ -181,12 +182,16 @@ const claimTreasureEpic = (action$, store) => {
     .ofType(treasureHuntActions.TREASURE_HUNT_CLAIM_TREASURE)
     .mergeMap(action => {
       const {
-        receiverEthAdd,
-        treasure: { genesisHash, numChunks, sectorIdx, ethAddr, ethKey }
+        receiverEthAddr,
+        genesisHash,
+        numChunks,
+        sectorIdx,
+        ethAddr,
+        ethKey
       } = action.payload;
       return Observable.fromPromise(
         BrokerNode.claimTreasure({
-          receiverEthAdd,
+          receiverEthAddr,
           genesisHash,
           numChunks,
           sectorIdx,
@@ -204,4 +209,18 @@ const claimTreasureEpic = (action$, store) => {
     });
 };
 
-export default combineEpics(performPowEpic, findTreasureEpic, nextChunkEpic);
+const completeSectorEpic = (action$, store) => {
+  return action$
+    .ofType(treasureHuntActions.TREASURE_HUNT_CLAIM_TREASURE_SUCCESS)
+    .map(action => {
+      const { genesisHash, sectorIdx } = action.payload;
+      return nodeActions.markSectorAsClaimed({ genesisHash, sectorIdx });
+    });
+};
+
+export default combineEpics(
+  performPowEpic,
+  findTreasureEpic,
+  nextChunkEpic,
+  claimTreasureEpic
+);
