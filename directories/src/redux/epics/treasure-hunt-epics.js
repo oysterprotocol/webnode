@@ -154,7 +154,7 @@ const nextChunkEpic = (action$, store) => {
       const receiverEthAddr = "0xakj1123i";
 
       const endOfFile = chunkIdx > numberOfChunks;
-      const endOfSector = chunkIdx > CHUNKS_PER_SECTOR * (sectorIdx + 1);
+      const endOfSector = chunkIdx > CHUNKS_PER_SECTOR * (sectorIdx + 1) - 1;
 
       return Observable.if(
         () => endOfFile || endOfSector,
