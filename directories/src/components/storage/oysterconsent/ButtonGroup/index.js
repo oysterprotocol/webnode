@@ -60,14 +60,14 @@ const styles = {
     }
   },
   container: {
-    paddingRight: 35,
+    marginRight: 250,
     listStyleType: "none",
     display: "inline-block",
     verticalAlign: "middle",
     float: "right",
     position: "relative",
-    //  top: "50%"
-    transform: "translateY(-25%)"
+    top: "50%",
+    transform: "translateY(35%)"
   }
 };
 
