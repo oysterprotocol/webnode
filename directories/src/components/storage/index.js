@@ -3,15 +3,12 @@ import { connect } from "react-redux";
 import { Input, Button, Container, Header, Image } from "semantic-ui-react";
 import _ from "lodash";
 
-import appActions from "../../redux/actions/app-actions";
-import nodeActions from "../../redux/actions/node-actions";
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 
-import iota from "../../redux/services/iota";
 import datamap from "../../utils/datamap";
-import Encryption from "../../utils/encryption";
 
 import TreasureTable from "./toolbox/TreasureTable";
+import ConsentOverlay from "./oysterconsent/ConsentOverlay";
 
 import LOGO from "../../assets/images/logo.svg";
 
@@ -46,7 +43,7 @@ class Storage extends Component {
   };
 
   onNumberOfChunksChange = (e, data) => {
-    this.setState({ numberOfChunks: parseInt(data.value) });
+    this.setState({ numberOfChunks: parseInt(data.value, 10) });
   };
 
   renderProgress(current, max) {
@@ -62,7 +59,7 @@ class Storage extends Component {
   }
 
   async onClick() {
-    const { startAppFn, startNode, findTreasure } = this.props;
+    const { findTreasure } = this.props;
 
     const generatedMap = datamap.generate(
       this.state.genesisHash,
@@ -80,13 +77,7 @@ class Storage extends Component {
   }
 
   render() {
-    console.log(
-      "Side Chain: " +
-        Encryption.hashChain(
-          "140fd7f7ae3c2442788926bc0be309ec8ebdb36507b0f9eb2b3b4586f013eb48"
-        )
-    );
-    const { statuses, treasures, numberOfCalls } = this.props;
+    const { treasures, numberOfCalls } = this.props;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
         <div style={{ padding: 50 }}>
@@ -100,8 +91,9 @@ class Storage extends Component {
             {NumberofChunksInput(this.onNumberOfChunksChange)}
             <Button onClick={() => this.onClick()}>Look for treasures</Button>
           </div>
-          {treasures.length != 0 ? TreasureTable(treasures) : null}
+          {treasures.length !== 0 ? TreasureTable(treasures) : null}
         </div>
+        <ConsentOverlay />
       </Container>
     );
   }
@@ -114,7 +106,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  startAppFn: () => dispatch(appActions.startApp()),
   findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj))
 });
 

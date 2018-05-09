@@ -1,5 +1,4 @@
 import _ from "lodash";
-import iota from "redux/services/iota";
 import Encryption from "utils/encryption";
 
 const generate = address => {
