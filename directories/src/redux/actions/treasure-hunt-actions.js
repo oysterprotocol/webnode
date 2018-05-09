@@ -49,11 +49,25 @@ const ACTIONS = Object.freeze({
     type: TREASURE_HUNT_INCREMENT_CHUNK,
     payload: { nextChunkIdx, nextDataMapHash }
   }),
-  claimTreasure: () => ({
-    type: TREASURE_HUNT_CLAIM_TREASURE
+  claimTreasure: ({
+    treasure,
+    genesisHash,
+    numberOfChunks,
+    receiverEthAddr,
+    sectorIdx
+  }) => ({
+    type: TREASURE_HUNT_CLAIM_TREASURE,
+    payload: {
+      treasure,
+      genesisHash,
+      numberOfChunks,
+      receiverEthAddr,
+      sectorIdx
+    }
   }),
-  claimTreasureSuccess: () => ({
-    type: TREASURE_HUNT_CLAIM_TREASURE_SUCCESS
+  claimTreasureSuccess: ({ genesisHash, sectorIdx }) => ({
+    type: TREASURE_HUNT_CLAIM_TREASURE_SUCCESS,
+    payload: { genesisHash, sectorIdx }
   })
 });
 

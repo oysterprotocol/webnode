@@ -36,27 +36,24 @@ const completeGenesisHashPoW = (txid, trytes) =>
     data: { trytes }
   });
 
-const claimTreasure = (seed, genesisHash, numberOfChunks) =>
-  axios({
-    method: "POST",
-    url: `${API_ROOT_URL}/${API_VERSION}/supply/claim_treasure`,
-    data: { seed, genesisHash, numberOfChunks }
-  });
-
-const treasures = (
-  receiverEthAdd,
-  genesisHash,
-  numberOfChunks,
-  sectorIdx,
+const claimTreasure = ({
   ethAddr,
-  ethKey
-) =>
+  ethKey,
+  genesisHash,
+  numChunks,
+  receiverEthAddr,
+  sectorIdx
+}) =>
   axios({
     method: "POST",
     url: `${API_ROOT_URL}/${API_VERSION}/supply/treasures`,
     data: {
-      receiverEthAdd,
-      treasure: { genesisHash, numberOfChunks, sectorIdx, ethAddr, ethKey }
+      ethAddr,
+      ethKey,
+      genesisHash,
+      numChunks,
+      receiverEthAddr,
+      sectorIdx
     }
   });
 
@@ -66,6 +63,5 @@ export default {
   completeBrokerNodeAddressPoW,
   requestGenesisHashPoW,
   completeGenesisHashPoW,
-  claimTreasure,
-  treasures
+  claimTreasure
 };
