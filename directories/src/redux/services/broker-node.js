@@ -37,23 +37,23 @@ const completeGenesisHashPoW = (txid, trytes) =>
   });
 
 const claimTreasure = ({
-  receiverEthAddr,
+  ethAddr,
+  ethKey,
   genesisHash,
   numChunks,
-  sectorIdx,
-  ethAddr,
-  ethKey
+  receiverEthAddr,
+  sectorIdx
 }) =>
   axios({
     method: "POST",
     url: `${API_ROOT_URL}/${API_VERSION}/supply/treasures`,
     data: {
-      receiverEthAddr,
+      ethAddr,
+      ethKey,
       genesisHash,
       numChunks,
-      sectorIdx,
-      ethAddr,
-      ethKey
+      receiverEthAddr,
+      sectorIdx
     }
   });
 

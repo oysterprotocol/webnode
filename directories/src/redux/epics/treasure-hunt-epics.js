@@ -5,6 +5,7 @@ import _ from "lodash";
 
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
+import BrokerNode from "../services/broker-node";
 
 import Datamap from "../../utils/datamap";
 import Sidechain from "../../utils/sidechain";
@@ -142,16 +143,64 @@ const nextChunkEpic = (action$, store) => {
     )
     .mergeMap(() => {
       const { treasureHunt } = store.getState();
-      const { chunkIdx, numberOfChunks, sectorIdx } = treasureHunt;
+      const {
+        treasure,
+        genesisHash,
+        chunkIdx,
+        numberOfChunks,
+        sectorIdx
+      } = treasureHunt;
+
+      // TODO: QA this
+      const { ethAddr, ethKey } = treasure;
+      // TODO: replace with real address
+      const receiverEthAddr = "0xakj1123i";
 
       const endOfFile = chunkIdx > numberOfChunks;
       const endOfSector = chunkIdx > CHUNKS_PER_SECTOR * (sectorIdx + 1);
 
       return Observable.if(
         () => endOfFile || endOfSector,
-        Observable.of(treasureHuntActions.claimTreasure()),
+        Observable.of(
+          treasureHuntActions.claimTreasure({
+            ethAddr,
+            ethKey,
+            genesisHash,
+            numberOfChunks,
+            receiverEthAddr,
+            sectorIdx
+          })
+        ),
         Observable.of(treasureHuntActions.performPow())
       );
+    });
+};
+
+const claimTreasureEpic = (action$, store) => {
+  return action$
+    .ofType(treasureHuntActions.TREASURE_HUNT_CLAIM_TREASURE)
+    .mergeMap(action => {
+      const {
+        receiverEthAdd,
+        treasure: { genesisHash, numChunks, sectorIdx, ethAddr, ethKey }
+      } = action.payload;
+      return Observable.fromPromise(
+        BrokerNode.claimTreasure({
+          receiverEthAdd,
+          genesisHash,
+          numChunks,
+          sectorIdx,
+          ethAddr,
+          ethKey
+        })
+      )
+        .map(() =>
+          treasureHuntActions.treasureClaimComplete({ genesisHash, sectorIdx })
+        )
+        .catch(error => {
+          console.log("CLAIM TREASURE ERROR: ", error);
+          return Observable.empty();
+        });
     });
 };
 
