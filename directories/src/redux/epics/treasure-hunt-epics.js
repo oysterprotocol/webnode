@@ -105,7 +105,8 @@ const findTreasureEpic = (action$, store) => {
           //TODO Remove this dispatch
           type: "IOTA_RETURN"
         });
-        const treasure = _.find(
+
+        const chainWithTreasure = _.find(
           sideChain,
           hashedAddress => !!Encryption.decrypt(message, hashedAddress)
         );
@@ -113,10 +114,10 @@ const findTreasureEpic = (action$, store) => {
         const [_obfHash, nextDataMapHash] = Encryption.hashChain(dataMapHash);
 
         return Observable.if(
-          () => !!treasure,
+          () => !!chainWithTreasure,
           Observable.of(
             treasureHuntActions.saveTreasure({
-              treasure: Encryption.decrypt(message, treasure), //TODO: Fix decryption
+              treasure: Encryption.decrypt(message, chainWithTreasure), //TODO: Fix decryption
               nextChunkIdx: chunkIdx + 1,
               nextDataMapHash
             })
