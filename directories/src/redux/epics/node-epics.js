@@ -232,14 +232,18 @@ const checkIfSectorClaimedEpic = (action$, store) => {
     });
 };
 
+const markSectorAsClaimedEpic = (action$, store) => {
+  return action$
+    .ofType(nodeActions.NODE_MARK_SECTOR_AS_CLAIMED)
+    .map(nodeActions.determineGenesisHashOrTreasureHunt);
+};
+
 export default combineEpics(
   registerWebnodeEpic,
-  // brokerNodeOrGenesisHashEpic,
+  brokerNodeOrGenesisHashEpic,
   genesisHashOrTreasureHuntEpic,
-  // findMoreWorkEpic,
-  // collectBrokersEpic,
-  // collectGenesisHashesEpic,
-  // requestBrokerEpic,
+  requestBrokerEpic,
   requestGenesisHashEpic,
-  checkIfSectorClaimedEpic
+  checkIfSectorClaimedEpic,
+  markSectorAsClaimedEpic
 );
