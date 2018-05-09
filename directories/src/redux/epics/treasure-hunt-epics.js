@@ -34,9 +34,7 @@ const performPowEpic = (action$, store) => {
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
       return Observable.fromPromise(iota.findMostRecentTransaction(address))
-        .map(transaction => {
-          return transaction.signatureMessageFragment;
-        })
+        .map(transaction => transaction.signatureMessageFragment)
         .mergeMap(message =>
           Observable.fromPromise(iota.getTransactionsToApprove(1)).map(
             ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) => {
@@ -94,9 +92,9 @@ const findTreasureEpic = (action$, store) => {
     .mergeMap(action => {
       const { dataMapHash, chunkIdx } = action.payload;
 
-      const address = dataMapHash;
-      //  const address =
-      //    "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
+      // const address = dataMapHash;
+      const address =
+        "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
@@ -152,8 +150,6 @@ const nextChunkEpic = (action$, store) => {
         sectorIdx
       } = treasureHunt;
 
-      // TODO: QA this
-      const { ethAddr, ethKey } = treasure;
       // TODO: replace with real address
       const receiverEthAddr = "0xakj1123i";
 
@@ -164,8 +160,7 @@ const nextChunkEpic = (action$, store) => {
         () => endOfFile || endOfSector,
         Observable.of(
           treasureHuntActions.claimTreasure({
-            ethAddr,
-            ethKey,
+            treasure,
             genesisHash,
             numberOfChunks,
             receiverEthAddr,
@@ -186,17 +181,18 @@ const claimTreasureEpic = (action$, store) => {
         genesisHash,
         numChunks,
         sectorIdx,
-        ethAddr,
-        ethKey
+        treasure
       } = action.payload;
+      const { ethKey, ethAddr } = treasure;
+
       return Observable.fromPromise(
         BrokerNode.claimTreasure({
           receiverEthAddr,
           genesisHash,
           numChunks,
           sectorIdx,
-          ethAddr,
-          ethKey
+          ethKey,
+          ethAddr
         })
       )
         .map(() =>

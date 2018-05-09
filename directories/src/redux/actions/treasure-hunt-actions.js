@@ -50,8 +50,7 @@ const ACTIONS = Object.freeze({
     payload: { nextChunkIdx, nextDataMapHash }
   }),
   claimTreasure: ({
-    ethAddr,
-    ethKey,
+    treasure,
     genesisHash,
     numberOfChunks,
     receiverEthAddr,
@@ -59,8 +58,7 @@ const ACTIONS = Object.freeze({
   }) => ({
     type: TREASURE_HUNT_CLAIM_TREASURE,
     payload: {
-      ethAddr,
-      ethKey,
+      treasure,
       genesisHash,
       numberOfChunks,
       receiverEthAddr,
