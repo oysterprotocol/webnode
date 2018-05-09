@@ -25,7 +25,8 @@ const ConsentOverlayStyle = {
   right: 0,
   position: "fixed",
   backgroundColor: "#ffffff",
-  textAlign: "center"
+  textAlign: "center",
+  height: 200
 };
 
 export default ConsentOverlay;

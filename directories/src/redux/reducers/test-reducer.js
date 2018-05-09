@@ -8,7 +8,7 @@ const initState = {
 export default (state = initState, action) => {
   switch (action.type) {
     case TREASURE_HUNT_SAVE_TREASURE: //
-      const { treasure, nextChunkIdx } = action.payload;
+      const { treasure, nextChunkIdx, nextDataMapHash } = action.payload;
       return {
         ...state,
         treasures: [...state.treasures, { treasure, nextChunkIdx }]

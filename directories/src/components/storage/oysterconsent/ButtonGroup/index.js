@@ -36,7 +36,8 @@ const styles = {
     fontWeight: 600,
     border: "none",
     width: 350,
-    height: 50
+    height: 50,
+    margin: 15
   },
 
   continue: {
@@ -59,10 +60,14 @@ const styles = {
     }
   },
   container: {
+    paddingRight: 35,
     listStyleType: "none",
     display: "inline-block",
     verticalAlign: "middle",
-    float: "right"
+    float: "right",
+    position: "relative",
+    //  top: "50%"
+    transform: "translateY(-25%)"
   }
 };
 

@@ -106,7 +106,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj))
+  findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
+  startSector: obj => dispatch(treasureHuntActions.startSector(obj))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Storage);
