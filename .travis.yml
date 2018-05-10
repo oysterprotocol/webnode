@@ -20,4 +20,4 @@ cache:
     - "node_modules"
 
 script:
-  - cd directories; yarn && yarn test; cd ..;
+  - cd webnode; yarn && yarn test; cd ..;
