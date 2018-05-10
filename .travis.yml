@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - "8"
+  - "9"
 
 sudo: false
 
@@ -20,4 +20,4 @@ cache:
     - "node_modules"
 
 script:
-  - yarn # && yarn test
+  - cd directories; yarn && yarn test; cd ..;
