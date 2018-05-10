@@ -1,4 +1,4 @@
-const spawnWorker = () => new Worker("./_worker");
+export const spawnWorker = () => new Worker("./_worker");
 
 /**
  * Performs a the function in a background worker. The worker param is optional.
@@ -7,7 +7,7 @@ const spawnWorker = () => new Worker("./_worker");
  * workers which could bog down the system with context switching overhead.
  * @returns promise that will resolve once the task is complete.
  */
-const performTask = (taskFn, worker) =>
+export const performTask = (taskFn, worker) =>
   new Promise((resolve, reject) => {
     if (!worker) worker = new Worker("./_worker");
 
@@ -21,3 +21,6 @@ const performTask = (taskFn, worker) =>
       return resolve(result);
     };
   });
+
+// Simple wrapper
+export const terminate = worker => worker.terminate();

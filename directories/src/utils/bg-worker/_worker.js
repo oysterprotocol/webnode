@@ -1,7 +1,12 @@
 this.onmessage = ({ data: { taskFn, taskId } }) => {
   try {
-    const result = taskFn();
-    this.postMessage({ taskId, result });
+    Promise.resolve(taskFn())
+      .then(result => {
+        this.postMessage({ taskId, result });
+      })
+      .catch(err => {
+        throw err;
+      });
   } catch (error) {
     this.postMessage({ taskId, error });
   }
