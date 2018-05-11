@@ -61,13 +61,7 @@ const styles = {
   },
   container: {
     marginRight: 250,
-    listStyleType: "none",
-    display: "inline-block",
-    verticalAlign: "middle",
-    float: "right",
-    position: "relative",
-    top: "50%",
-    transform: "translateY(35%)"
+    listStyleType: "none"
   }
 };
 

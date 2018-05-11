@@ -22,14 +22,7 @@ const MiddleGroup = () => (
 
 const styles = {
   container: {
-    listStyleType: "none",
-    display: "inline-block",
-    verticalAlign: "middle",
-    float: "middle",
-    position: "relative",
-    width: 1100,
-    top: "50%",
-    transform: "translateY(35%)"
+    width: 1100
   },
   text: {
     color: "#778291",

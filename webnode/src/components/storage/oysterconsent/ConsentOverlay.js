@@ -2,8 +2,7 @@ import React, { Component } from "react";
 
 import ButtonGroup from "./ButtonGroup";
 import MiddleGroup from "./MiddleGroup";
-
-import Logo from "../../../assets/images/logo.png";
+import LogoGroup from "./LogoGroup";
 
 class ConsentOverlay extends Component {
   constructor(props) {
@@ -14,8 +13,16 @@ class ConsentOverlay extends Component {
   render() {
     return (
       <div style={ConsentOverlayStyle}>
-        <div style={{ padding: 15 }}>
-          <img src={Logo} style={{ height: 50 }} />
+        <div
+          style={{
+            flexDirection: "row",
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            height: 350
+          }}
+        >
+          <LogoGroup />
           <MiddleGroup />
           <ButtonGroup />
         </div>
