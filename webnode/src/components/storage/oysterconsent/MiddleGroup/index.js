@@ -32,7 +32,7 @@ const styles = {
     lineHeight: 1.5
   },
   headline: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: "Poppins",
     fontWeight: 600,
     color: "#088ffc",

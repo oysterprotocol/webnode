@@ -10,9 +10,14 @@ class ConsentOverlay extends Component {
     this.state = { genesisHash: "", numberOfChunks: 0 };
   }
 
+  blueBar() {
+    return <div style={style.blueBar} />;
+  }
+
   render() {
     return (
-      <div style={ConsentOverlayStyle}>
+      <div style={style.ConsentOverlayStyle}>
+        {this.blueBar()}
         <div
           style={{
             flexDirection: "row",
@@ -31,14 +36,22 @@ class ConsentOverlay extends Component {
   }
 }
 
-const ConsentOverlayStyle = {
-  bottom: 0,
-  left: 0,
-  right: 0,
-  position: "fixed",
-  backgroundColor: "#ffffff",
-  textAlign: "center",
-  height: 350
+const style = {
+  ConsentOverlayStyle: {
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: "fixed",
+    backgroundColor: "#ffffff",
+    textAlign: "center",
+    height: 350
+  },
+  blueBar: {
+    top: 0,
+    height: 6,
+    width: "100%",
+    borderBottom: "solid 6px #088ffc"
+  }
 };
 
 export default ConsentOverlay;

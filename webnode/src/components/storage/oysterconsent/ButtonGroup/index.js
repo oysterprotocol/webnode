@@ -60,7 +60,7 @@ const styles = {
     }
   },
   container: {
-    marginRight: 250,
+    marginRight: 0,
     listStyleType: "none"
   }
 };
