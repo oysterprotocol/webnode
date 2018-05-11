@@ -43,6 +43,7 @@
     "husky": "^0.14.3",
     "identity-obj-proxy": "^3.0.0",
     "jest-enzyme": "^4.2.0",
+    "jsdom-worker": "^0.1.0",
     "nock": "^9.1.6",
     "react-scripts": "1.0.17",
     "regenerator-runtime": "^0.11.1",
@@ -50,14 +51,19 @@
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src react-scripts start",
-    "build": "cross-env NODE_PATH=src react-scripts build"
+    "build": "cross-env NODE_PATH=src react-scripts build",
+    "test": "cross-env NODE_PATH=src jest",
+    "watch-test": "cross-env NODE_PATH=src jest --watch --colors"
   },
   "jest": {
-    "roots": ["<rootDir>/src"],
-    "modulePaths": ["<rootDir>/src"],
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "modulePaths": [
+      "<rootDir>/src"
+    ],
     "moduleNameMapper": {
-      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$":
-        "identity-obj-proxy"
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "identity-obj-proxy"
     }
   }
 }
