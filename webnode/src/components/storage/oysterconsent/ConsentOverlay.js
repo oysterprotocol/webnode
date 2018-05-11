@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 
 import ButtonGroup from "./ButtonGroup";
+import MiddleGroup from "./MiddleGroup";
+import LogoGroup from "./LogoGroup";
 
 class ConsentOverlay extends Component {
   constructor(props) {
@@ -8,24 +10,48 @@ class ConsentOverlay extends Component {
     this.state = { genesisHash: "", numberOfChunks: 0 };
   }
 
+  blueBar() {
+    return <div style={style.blueBar} />;
+  }
+
   render() {
     return (
-      <div style={ConsentOverlayStyle}>
-        <div style={{ padding: 15 }}>
-          <h2>Consent Overlay!</h2> <ButtonGroup />
+      <div style={style.ConsentOverlayStyle}>
+        {this.blueBar()}
+        <div
+          style={{
+            flexDirection: "row",
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            height: 350
+          }}
+        >
+          <LogoGroup />
+          <MiddleGroup />
+          <ButtonGroup />
         </div>
       </div>
     );
   }
 }
 
-const ConsentOverlayStyle = {
-  bottom: 0,
-  left: 0,
-  right: 0,
-  position: "fixed",
-  backgroundColor: "#ffffff",
-  textAlign: "center"
+const style = {
+  ConsentOverlayStyle: {
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: "fixed",
+    backgroundColor: "#ffffff",
+    textAlign: "center",
+    height: 350
+  },
+  blueBar: {
+    top: 0,
+    height: 6,
+    width: "100%",
+    borderBottom: "solid 6px #088ffc"
+  }
 };
 
 export default ConsentOverlay;
