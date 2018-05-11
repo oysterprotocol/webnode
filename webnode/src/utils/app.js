@@ -20,6 +20,6 @@ const randomArray = (min, max) => {
   }
 
   return newArray;
-};
+}
 
 export default { randomNumber, randomArray };
