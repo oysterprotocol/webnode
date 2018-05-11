@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 
 import ButtonGroup from "./ButtonGroup";
+import MiddleGroup from "./MiddleGroup";
+
+import Logo from "../../../assets/images/logo.png";
 
 class ConsentOverlay extends Component {
   constructor(props) {
@@ -12,7 +15,9 @@ class ConsentOverlay extends Component {
     return (
       <div style={ConsentOverlayStyle}>
         <div style={{ padding: 15 }}>
-          <h2>Consent Overlay!</h2> <ButtonGroup />
+          <img src={Logo} style={{ height: 50 }} />
+          <MiddleGroup />
+          <ButtonGroup />
         </div>
       </div>
     );
@@ -25,7 +30,8 @@ const ConsentOverlayStyle = {
   right: 0,
   position: "fixed",
   backgroundColor: "#ffffff",
-  textAlign: "center"
+  textAlign: "center",
+  height: 350
 };
 
 export default ConsentOverlay;
