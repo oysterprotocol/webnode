@@ -1,5 +1,8 @@
 import CryptoJS from "crypto-js";
 import uuidv4 from "uuid/v4";
+import { sha3_256 } from "js-sha3";
+import forge from "node-forge";
+import _ from "lodash";
 
 const parseEightCharsOfFilename = fileName => {
   fileName = fileName + "________";
@@ -38,7 +41,7 @@ const genesisHash = handle => {
   return genHash;
 };
 
-const sideChain = address => CryptoJS.SHA512(address).toString();
+const sideChain = address => sha3_256(address).toString();
 
 const encrypt = (text, secretKey) =>
   CryptoJS.AES.encrypt(text, secretKey).toString();
@@ -60,6 +63,55 @@ const decryptTest = (text, secretKey) => {
   }
 };
 
+const forgeEncrypt = (key, secret, nonce) => {
+  let nonceInBytes = forge.util.hexToBytes(nonce.substring(0, 24));
+  const cipher = forge.cipher.createCipher(
+    "AES-GCM",
+    forge.util.hexToBytes(key)
+  );
+
+  cipher.start({
+    iv: nonceInBytes,
+    output: null
+  });
+
+  cipher.update(forge.util.createBuffer(forge.util.hexToBytes(secret)));
+
+  cipher.finish();
+
+  const encrypted = cipher.output;
+
+  const tag = cipher.mode.tag;
+
+  return encrypted.toHex() + tag.toHex();
+};
+
+const forgeDecrypt = (key, secret, nonce) => {
+  let nonceInBytes = forge.util.hexToBytes(nonce.substring(0, 24));
+  const decipher = forge.cipher.createDecipher(
+    "AES-GCM",
+    forge.util.hexToBytes(key)
+  );
+
+  decipher.start({
+    iv: nonceInBytes,
+    output: null,
+    tag: forge.util.hexToBytes(secret.substring(64, 96))
+  });
+  // an eth private seed key is 64 characters and our tags are 32 characters
+
+  decipher.update(
+    forge.util.createBuffer(forge.util.hexToBytes(secret.substring(0, 64)))
+  );
+  if (!decipher.finish()) {
+    // it failed, do something
+  }
+
+  const decrypted = decipher.output;
+
+  return decrypted.toHex();
+};
+
 export default {
   decrypt,
   decryptTest, //TODO
@@ -70,5 +122,7 @@ export default {
   hashChain,
   obfuscate,
   parseEightCharsOfFilename,
-  sideChain
+  sideChain,
+  forgeEncrypt,
+  forgeDecrypt
 };
