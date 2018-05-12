@@ -21,9 +21,9 @@ const performPowEpic = (action$, store) => {
       const { treasureHunt } = store.getState();
       const { dataMapHash, treasure, chunkIdx, numberOfChunks } = treasureHunt;
 
-      // const address = Encryption.obfuscate(dataMapHash);
-      const address =
-        "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
+      const address = Encryption.obfuscate(dataMapHash);
+      // const address =
+      //   "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
       const [_obfHash, nextDataMapHash] = Encryption.hashChain(dataMapHash);
 
@@ -36,9 +36,7 @@ const performPowEpic = (action$, store) => {
       return Observable.fromPromise(iota.findMostRecentTransaction(address))
         .map(transaction => transaction.signatureMessageFragment)
         .mergeMap(message =>
-          Observable.fromPromise(
-            iota.getTransactionsToApprove(1)
-          ).map(
+          Observable.fromPromise(iota.getTransactionsToApprove(1)).map(
             ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) => {
               return { message, trunkTx, branchTx };
             }
@@ -94,7 +92,9 @@ const findTreasureEpic = (action$, store) => {
     .mergeMap(action => {
       const { dataMapHash, chunkIdx } = action.payload;
 
-      const address = dataMapHash;
+      const address = iota.toAddress(
+        iota.utils.toTrytes(Encryption.obfuscate(dataMapHash))
+      );
       //    const address =
       //      "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
@@ -102,35 +102,42 @@ const findTreasureEpic = (action$, store) => {
         iota.findMostRecentTransaction(address)
       ).mergeMap(transaction => {
         const message = iota.parseMessage(transaction.signatureMessageFragment);
-        const sideChain = Sidechain.generate(address);
+        const sideChain = Sidechain.generate(dataMapHash);
         store.dispatch({
           //TODO Remove this dispatch
           type: "IOTA_RETURN"
         });
 
-        const chainWithTreasure = _.find(
-          sideChain,
-          hashedAddress => !!Encryption.decrypt(message, hashedAddress)
-        );
+        const chainWithTreasure = _.find(sideChain, hashedAddress => {
+          return !!Encryption.decryptTreasure(
+            hashedAddress,
+            transaction.signatureMessageFragment,
+            dataMapHash
+          );
+        });
 
         const [_obfHash, nextDataMapHash] = Encryption.hashChain(dataMapHash);
 
-        return Observable.if(
-          () => !!chainWithTreasure,
-          Observable.of(
+        if (!!chainWithTreasure) {
+          return Observable.of(
             treasureHuntActions.saveTreasure({
-              treasure: Encryption.decrypt(message, chainWithTreasure), //TODO: Fix decryption
+              treasure: Encryption.decryptTreasure(
+                chainWithTreasure,
+                transaction.signatureMessageFragment,
+                dataMapHash
+              ),
               nextChunkIdx: chunkIdx + 1,
               nextDataMapHash
             })
-          ),
-          Observable.of(
+          );
+        } else {
+          return Observable.of(
             treasureHuntActions.incrementChunk({
               nextChunkIdx: chunkIdx + 1,
               nextDataMapHash
             })
-          )
-        );
+          );
+        }
       });
     });
 };

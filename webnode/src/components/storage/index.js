@@ -61,7 +61,7 @@ class Storage extends Component {
   async onClick() {
     const { findTreasure } = this.props;
 
-    const generatedMap = datamap.generate(
+    const generatedMap = datamap.rawGenerate(
       this.state.genesisHash,
       this.state.numberOfChunks
     );
