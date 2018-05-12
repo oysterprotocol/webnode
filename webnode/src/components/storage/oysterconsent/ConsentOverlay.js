@@ -24,7 +24,7 @@ class ConsentOverlay extends Component {
             display: "flex",
             justifyContent: "space-evenly",
             alignItems: "center",
-            height: 350
+            height: 300
           }}
         >
           <LogoGroup />
@@ -44,7 +44,7 @@ const style = {
     position: "fixed",
     backgroundColor: "#ffffff",
     textAlign: "center",
-    height: 350
+    height: 300
   },
   blueBar: {
     top: 0,
