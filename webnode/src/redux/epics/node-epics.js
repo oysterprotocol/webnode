@@ -113,7 +113,7 @@ const requestBrokerEpic = (action$, store) => {
           iota.localPow({
             branchTx,
             trunkTx,
-            mwm: 14,
+            mwm: 9,
             trytes
           })
         ).map(trytesArray => {
@@ -170,7 +170,7 @@ const requestGenesisHashEpic = (action$, store) => {
             iota.localPow({
               branchTx,
               trunkTx,
-              mwm: 14,
+              mwm: 9,
               trytes
             })
           ).map(trytesArray => {

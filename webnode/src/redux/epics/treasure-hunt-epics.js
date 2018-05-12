@@ -54,7 +54,7 @@ const performPowEpic = (action$, store) => {
             iota.localPow({
               trunkTx,
               branchTx,
-              mwm: 14,
+              mwm: 9,
               trytes
             })
           )
