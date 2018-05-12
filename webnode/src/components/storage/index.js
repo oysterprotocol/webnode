@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Input, Button, Container, Header, Image } from "semantic-ui-react";
 import _ from "lodash";
+import { forEach as chilloutForEach } from "chillout";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 
@@ -73,7 +74,29 @@ class Storage extends Component {
       }))
       .map(obj => findTreasure(obj));
 
-    Promise.all(transformedMap); //TODO better implementation
+    chilloutForEach([1], () => {
+      Promise.all(transformedMap); //TODO better implementation
+    }).then(() => {});
+  }
+
+  async onClickWorker() {
+    const { workerFindTreasure } = this.props;
+
+    const generatedMap = datamap.generate(
+      this.state.genesisHash,
+      this.state.numberOfChunks
+    );
+
+    const transformedMap = _.toArray(generatedMap)
+      .map((value, index) => ({
+        dataMapHash: value,
+        chunkIdx: index
+      }))
+      .map(obj => workerFindTreasure(obj));
+
+    chilloutForEach([1], () => {
+      Promise.all(transformedMap); //TODO better implementation
+    }).then(() => {});
   }
 
   render() {
@@ -90,6 +113,9 @@ class Storage extends Component {
             {GenesisHashInput(this.onGenesisHashChange)}
             {NumberofChunksInput(this.onNumberOfChunksChange)}
             <Button onClick={() => this.onClick()}>Look for treasures</Button>
+            <Button onClick={() => this.onClickWorker()}>
+              Worker treasures
+            </Button>
           </div>
           {treasures.length !== 0 ? TreasureTable(treasures) : null}
         </div>
@@ -107,7 +133,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
-  startSector: obj => dispatch(treasureHuntActions.startSector(obj))
+  workerFindTreasure: obj =>
+    dispatch(treasureHuntActions.workerFindTreasure(obj))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Storage);
