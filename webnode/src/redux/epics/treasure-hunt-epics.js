@@ -36,9 +36,7 @@ const performPowEpic = (action$, store) => {
       return Observable.fromPromise(iota.findMostRecentTransaction(address))
         .map(transaction => transaction.signatureMessageFragment)
         .mergeMap(message =>
-          Observable.fromPromise(
-            iota.getTransactionsToApprove(1)
-          ).map(
+          Observable.fromPromise(iota.getTransactionsToApprove(1)).map(
             ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) => {
               return { message, trunkTx, branchTx };
             }
@@ -88,15 +86,25 @@ const performPowEpic = (action$, store) => {
     });
 };
 
+const workerfindTreasureEpic = (action$, store) => {
+  return action$
+    .ofType(treasureHuntActions.TREASURE_HUNT_WORKER_FIND_TREASURE)
+    .mergeMap(action => {
+      const { dataMapHash, chunkIdx } = action.payload;
+      console.log("workerfindTreasureEpic");
+      return Observable.empty();
+    });
+};
+
 const findTreasureEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_FIND_TREASURE)
     .mergeMap(action => {
       const { dataMapHash, chunkIdx } = action.payload;
 
-      const address = dataMapHash;
-      //    const address =
-      //      "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
+      // const address = dataMapHash;
+      const address =
+        "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
@@ -220,5 +228,6 @@ export default combineEpics(
   performPowEpic,
   findTreasureEpic,
   nextChunkEpic,
-  claimTreasureEpic
+  claimTreasureEpic,
+  workerfindTreasureEpic
 );

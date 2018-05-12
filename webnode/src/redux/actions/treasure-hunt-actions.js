@@ -12,6 +12,8 @@ export const TREASURE_HUNT_SAVE_TREASURE =
   "directories/treasure_hunt/save_treasure";
 export const TREASURE_HUNT_INCREMENT_CHUNK =
   "directories/treasure_hunt/increment_chunk";
+export const TREASURE_HUNT_WORKER_FIND_TREASURE =
+  "directories/treasure_hunt/worker_find_treasure";
 
 const ACTIONS = Object.freeze({
   // actions
@@ -22,6 +24,7 @@ const ACTIONS = Object.freeze({
   TREASURE_HUNT_FIND_TREASURE,
   TREASURE_HUNT_SAVE_TREASURE,
   TREASURE_HUNT_INCREMENT_CHUNK,
+  TREASURE_HUNT_WORKER_FIND_TREASURE,
 
   // actionCreators
   startSector: ({
@@ -68,6 +71,13 @@ const ACTIONS = Object.freeze({
   claimTreasureSuccess: ({ genesisHash, sectorIdx }) => ({
     type: TREASURE_HUNT_CLAIM_TREASURE_SUCCESS,
     payload: { genesisHash, sectorIdx }
+  }),
+  workerFindTreasure: ({ dataMapHash, chunkIdx }) => ({
+    type: TREASURE_HUNT_WORKER_FIND_TREASURE,
+    meta: {
+      WebWorker: true
+    },
+    payload: { dataMapHash, chunkIdx }
   })
 });
 
