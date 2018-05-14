@@ -118,26 +118,22 @@ const findTreasureEpic = (action$, store) => {
 
         const [_obfHash, nextDataMapHash] = Encryption.hashChain(dataMapHash);
 
-        if (!!chainWithTreasure) {
-          return Observable.of(
-            treasureHuntActions.saveTreasure({
-              treasure: Encryption.decryptTreasure(
-                chainWithTreasure,
-                transaction.signatureMessageFragment,
-                dataMapHash
-              ),
-              nextChunkIdx: chunkIdx + 1,
-              nextDataMapHash
-            })
-          );
-        } else {
-          return Observable.of(
-            treasureHuntActions.incrementChunk({
-              nextChunkIdx: chunkIdx + 1,
-              nextDataMapHash
-            })
-          );
-        }
+        return Observable.of(
+          !!chainWithTreasure
+            ? treasureHuntActions.saveTreasure({
+                treasure: Encryption.decryptTreasure(
+                  chainWithTreasure,
+                  transaction.signatureMessageFragment,
+                  dataMapHash
+                ),
+                nextChunkIdx: chunkIdx + 1,
+                nextDataMapHash
+              })
+            : treasureHuntActions.incrementChunk({
+                nextChunkIdx: chunkIdx + 1,
+                nextDataMapHash
+              })
+        );
       });
     });
 };

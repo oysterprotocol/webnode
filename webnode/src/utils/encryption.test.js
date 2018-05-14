@@ -50,6 +50,7 @@ test("decrypt should produce the expected results", done => {
 });
 
 test("decryptTreasure should decrypt a treasure", done => {
+  // these values came from a real upload
   const sha256 =
     "06273d8075c59a45f3b0962ff307763d049b843ada1b5948509274b5e3b8ffd9";
   const signatureMessageFragment =
