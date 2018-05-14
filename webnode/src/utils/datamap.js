@@ -2,8 +2,8 @@ import _ from "lodash";
 import iota from "redux/services/iota";
 import Encryption from "utils/encryption";
 
-const rawGenerate = (handle, size) => {
-  const keys = _.range(0, size + 1);
+const rawGenerate = (genesisHash, size) => {
+  const keys = _.range(1, size);
 
   const [dataMap, _hash] = _.reduce(
     keys,
@@ -13,9 +13,10 @@ const rawGenerate = (handle, size) => {
 
       return [dataM, nextHash];
     },
-    //TODO [{}, Encryption.genesisHash(handle)]
-    [{}, handle]
+    [{}, genesisHash]
   );
+
+  dataMap[0] = genesisHash;
 
   return dataMap;
 };

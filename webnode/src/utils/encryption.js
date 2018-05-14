@@ -2,7 +2,21 @@ import CryptoJS from "crypto-js";
 import uuidv4 from "uuid/v4";
 import { sha3_256 } from "js-sha3";
 import forge from "node-forge";
+// can't import iota from services/iota because the iota.lib.js tries to run
+// curl.init() during the unit tests
+import iotaUtils from "iota.lib.js/lib/utils/asciiToTrytes";
 import _ from "lodash";
+
+// an eth private seed key is 64 characters, the treasure prefix is 20 characters,
+// and our tags are 32 characters
+const PAYLOAD_LENGTH = 64;
+const NONCE_LENGTH = 24;
+const TAG_LENGTH = 32;
+const TREASURE_PREFIX = _.split("Treasure: ", "")
+  .map(char => {
+    return char.charCodeAt(char).toString(16);
+  })
+  .join("");
 
 const parseEightCharsOfFilename = fileName => {
   fileName = fileName + "________";
@@ -43,17 +57,6 @@ const genesisHash = handle => {
 
 const sideChain = address => sha3_256(address).toString();
 
-const encrypt = (text, secretKey) =>
-  CryptoJS.AES.encrypt(text, secretKey).toString();
-
-const decrypt = (text, secretKey) => {
-  try {
-    return CryptoJS.AES.decrypt(text, secretKey).toString(CryptoJS.enc.Utf8);
-  } catch (e) {
-    return "";
-  }
-};
-
 const decryptTest = (text, secretKey) => {
   //TODO temporary for debugging
   try {
@@ -63,8 +66,8 @@ const decryptTest = (text, secretKey) => {
   }
 };
 
-const forgeEncrypt = (key, secret, nonce) => {
-  let nonceInBytes = forge.util.hexToBytes(nonce.substring(0, 24));
+const encrypt = (key, secret, nonce) => {
+  let nonceInBytes = forge.util.hexToBytes(nonce.substring(0, NONCE_LENGTH));
   const cipher = forge.cipher.createCipher(
     "AES-GCM",
     forge.util.hexToBytes(key)
@@ -86,8 +89,29 @@ const forgeEncrypt = (key, secret, nonce) => {
   return encrypted.toHex() + tag.toHex();
 };
 
-const forgeDecrypt = (key, secret, nonce) => {
-  let nonceInBytes = forge.util.hexToBytes(nonce.substring(0, 24));
+const decryptTreasure = (
+  sideChainHash,
+  signatureMessageFragment,
+  sha256Hash
+) => {
+  const hexMessage = forge.util.bytesToHex(
+    iotaUtils.fromTrytes(
+      signatureMessageFragment.substring(
+        0,
+        PAYLOAD_LENGTH + TAG_LENGTH + TREASURE_PREFIX.length
+      )
+    )
+  );
+
+  const decryptedValue = decrypt(sideChainHash, hexMessage, sha256Hash);
+
+  return _.startsWith(decryptedValue, TREASURE_PREFIX)
+    ? _.replace(decryptedValue, TREASURE_PREFIX, "")
+    : false;
+};
+
+const decrypt = (key, secret, nonce) => {
+  let nonceInBytes = forge.util.hexToBytes(nonce.substring(0, NONCE_LENGTH));
   const decipher = forge.cipher.createDecipher(
     "AES-GCM",
     forge.util.hexToBytes(key)
@@ -96,20 +120,21 @@ const forgeDecrypt = (key, secret, nonce) => {
   decipher.start({
     iv: nonceInBytes,
     output: null,
-    tag: forge.util.hexToBytes(secret.substring(64, 96))
+    tag: forge.util.hexToBytes(
+      secret.substring(secret.length - TAG_LENGTH, secret.length)
+    )
   });
-  // an eth private seed key is 64 characters and our tags are 32 characters
 
   decipher.update(
-    forge.util.createBuffer(forge.util.hexToBytes(secret.substring(0, 64)))
+    forge.util.createBuffer(
+      forge.util.hexToBytes(secret.substring(0, secret.length - TAG_LENGTH))
+    )
   );
   if (!decipher.finish()) {
-    // it failed, do something
+    return false;
   }
 
-  const decrypted = decipher.output;
-
-  return decrypted.toHex();
+  return decipher.output.toHex();
 };
 
 export default {
@@ -123,6 +148,5 @@ export default {
   obfuscate,
   parseEightCharsOfFilename,
   sideChain,
-  forgeEncrypt,
-  forgeDecrypt
+  decryptTreasure
 };

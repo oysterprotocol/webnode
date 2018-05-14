@@ -91,7 +91,10 @@ const requestBrokerEpic = (action$, store) => {
       brokerNode.requestBrokerNodeAddressPoW(currentList)
     )
       .mergeMap(({ data }) => {
-        const { id: txid, pow: { message, address, branchTx, trunkTx } } = data;
+        const {
+          id: txid,
+          pow: { message, address, branchTx, trunkTx }
+        } = data;
 
         // TODO: change this
         const value = 0;
@@ -110,7 +113,7 @@ const requestBrokerEpic = (action$, store) => {
           iota.localPow({
             branchTx,
             trunkTx,
-            mwm: 14,
+            mwm: 9,
             trytes
           })
         ).map(trytesArray => {
@@ -167,7 +170,7 @@ const requestGenesisHashEpic = (action$, store) => {
             iota.localPow({
               branchTx,
               trunkTx,
-              mwm: 14,
+              mwm: 9,
               trytes
             })
           ).map(trytesArray => {
@@ -208,9 +211,9 @@ const checkIfSectorClaimedEpic = (action$, store) => {
       const specialChunkIdx = sectorIdx * CHUNKS_PER_SECTOR;
       const dataMap = Datamap.rawGenerate(genesisHash, numberOfChunks);
       const dataMapHash = dataMap[specialChunkIdx];
-      // const address = Datamap.obfuscate(rawHash);
-      const address =
-        "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
+      const address = Datamap.obfuscate(dataMapHash);
+      // const address =
+      //   "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
