@@ -9,7 +9,7 @@ const MiddleGroup = () => (
       This website is revolutionizing the way content is monetized on the
       internet. We use the Oyster Protocol as a way to generate revenue, whilst
       you can experience our site ad-free. By consenting, you agree to exchange
-      a fraction of CPU and CPU power. This amounts much less than if we served
+      a fraction of CPU and GPU power. This amounts much less than if we served
       Ads on our site. If you choose to continue, we'll assume that you are
       happy to receive the Oyster Protocol on our website. The Oyster Protocol
       does not share the data it collects about you with advertisers, and will
