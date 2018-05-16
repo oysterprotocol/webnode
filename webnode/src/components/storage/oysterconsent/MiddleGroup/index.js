@@ -5,7 +5,7 @@ import color from "color";
 const MiddleGroup = () => (
   <div style={styles.container}>
     <div style={styles.headline}>Consent to an Ad-Free Experience</div>
-    <div style={styles.text}>
+    <div style={styles.textDesktop}>
       This website is revolutionizing the way content is monetized on the
       internet. We use the Oyster Protocol as a way to generate revenue, whilst
       you can experience our site ad-free. By consenting, you agree to exchange
@@ -17,19 +17,41 @@ const MiddleGroup = () => (
       consent for the Oyster Protocol's use, the website owner may block you
       from viewing certain content.
     </div>
+    <div style={styles.textMobile}>
+      This website is using the Oyster protocol to generate revenue. By using a
+      small portion of your unused device resources, this website generates
+      revenue without the use of intrusive ads. Choosing to deny consent may
+      result in the web owner blocking certain content from view. Learn more...
+    </div>
   </div>
 );
 
 const styles = {
   container: {
-    width: "45%"
+    width: "45%",
+    "@media (max-width: 1200px)": {
+      width: "90%"
+    }
   },
-  text: {
+  textDesktop: {
     color: "#778291",
     fontSize: 16,
     fontFamily: "Open Sans",
     textAlign: "justify",
-    lineHeight: 1.5
+    lineHeight: 1.5,
+    "@media (max-width: 1200px)": {
+      display: "none"
+    }
+  },
+  textMobile: {
+    color: "#778291",
+    fontSize: 12,
+    fontFamily: "Open Sans",
+    textAlign: "justify",
+    lineHeight: 1.5,
+    "@media (min-width: 1201px)": {
+      display: "none"
+    }
   },
   headline: {
     fontSize: 18,
@@ -37,8 +59,11 @@ const styles = {
     fontWeight: 600,
     color: "#088ffc",
     textAlign: "left",
-    paddingBottom: 10
+    paddingBottom: 10,
+    "@media (max-width: 1200px)": {
+      fontSize: 12
+    }
   }
 };
 
-export default MiddleGroup;
+export default Radium(MiddleGroup);

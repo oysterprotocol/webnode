@@ -3,15 +3,21 @@ import Radium from "radium";
 import color from "color";
 
 const ButtonGroup = () => (
-  <div style={styles.container}>
-    <li>
-      {" "}
+  <div>
+    <div style={styles.containerDesktop}>
+      <li>
+        {" "}
+        <Button kind="continue">Continue Ad-Free</Button>
+      </li>
+      <li>
+        {" "}
+        <Button kind="deny">Deny Consent</Button>
+      </li>
+    </div>
+    <div style={styles.containerMobile}>
       <Button kind="continue">Continue Ad-Free</Button>
-    </li>
-    <li>
-      {" "}
       <Button kind="deny">Deny Consent</Button>
-    </li>
+    </div>
   </div>
 );
 
@@ -34,10 +40,17 @@ const styles = {
     fontFamily: "Poppins",
     fontSize: 23,
     fontWeight: 600,
-    minWidth: 210,
+    minWidth: 300,
     width: "100%",
     height: 50,
-    margin: 15
+    margin: 15,
+    "@media (max-width: 1200px)": {
+      fontSize: 16,
+      margin: 5,
+      borderRadius: 8,
+      height: 40,
+      minWidth: 180
+    }
   },
 
   continue: {
@@ -65,12 +78,25 @@ const styles = {
         .hexString()
     }
   },
-  container: {
+  containerDesktop: {
     marginRight: 0,
     listStyleType: "none",
     width: "15%",
-    minWidth: 200
+    minWidth: 200,
+    "@media (max-width: 1200px)": {
+      display: "none"
+    }
+  },
+  containerMobile: {
+    marginRight: 0,
+    flexDirection: "row",
+    display: "flex",
+    width: "90%",
+    minWidth: 200,
+    "@media (min-width: 1201px)": {
+      display: "none"
+    }
   }
 };
 
-export default ButtonGroup;
+export default Radium(ButtonGroup);

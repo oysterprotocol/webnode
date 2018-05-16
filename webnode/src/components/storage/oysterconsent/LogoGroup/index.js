@@ -15,7 +15,10 @@ const style = {
   container: {
     width: "20%",
     flexDirection: "column",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
+    "@media (max-width: 1200px)": {
+      display: "none"
+    }
   },
   text: {
     fontFamily: "Poppins",
@@ -30,4 +33,4 @@ const style = {
   }
 };
 
-export default LogoGroup;
+export default Radium(LogoGroup);
