@@ -22,7 +22,7 @@ const MiddleGroup = () => (
 
 const styles = {
   container: {
-    width: 1100
+    width: "45%"
   },
   text: {
     color: "#778291",

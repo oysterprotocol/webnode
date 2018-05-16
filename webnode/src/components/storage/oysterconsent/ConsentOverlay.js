@@ -38,6 +38,7 @@ class ConsentOverlay extends Component {
 
 const style = {
   ConsentOverlayStyle: {
+    overflow: "hidden",
     bottom: 0,
     left: 0,
     right: 0,

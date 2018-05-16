@@ -34,8 +34,8 @@ const styles = {
     fontFamily: "Poppins",
     fontSize: 23,
     fontWeight: 600,
-
-    width: 350,
+    minWidth: 210,
+    width: "100%",
     height: 50,
     margin: 15
   },
@@ -67,7 +67,9 @@ const styles = {
   },
   container: {
     marginRight: 0,
-    listStyleType: "none"
+    listStyleType: "none",
+    width: "15%",
+    minWidth: 200
   }
 };
 
