@@ -3,6 +3,7 @@ import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
 import curl from "curl.lib.js";
 import _ from "lodash";
 import moment from "moment";
+import { till as chilloutTill } from "chillout";
 
 const iota = new IOTA();
 
@@ -106,24 +107,34 @@ export const localPow = data => {
     if (!iota.valid.isValue(minWeightMagnitude)) {
       return callback(new Error("Invalid minWeightMagnitude"));
     }
+
     let finalBundleTrytes = [];
     let previousTxHash;
     let i = 0;
 
-    function loopTrytes() {
-      getBundleTrytes(trytes[i], function(error) {
-        if (error) {
-          return callback(error);
-        } else {
+    const loopTrytes = () => {
+      return chilloutTill(() => {
+        getBundleTrytes(trytes[i], function(error) {
           i++;
-          if (i < trytes.length) {
-            loopTrytes();
-          } else {
-            return callback(null, finalBundleTrytes.reverse());
-          }
-        }
-      });
-    }
+          return i < trytes.length ? false : true;
+        });
+      }).then(() => callback(null, finalBundleTrytes.reverse()));
+    };
+
+    // function loopTrytes() {
+    // getBundleTrytes(trytes[i], function(error) {
+    // if (error) {
+    // return callback(error);
+    // } else {
+    // i++;
+    // if (i < trytes.length) {
+    // loopTrytes();
+    // } else {
+    // return callback(null, finalBundleTrytes.reverse());
+    // }
+    // }
+    // });
+    // }
 
     function getBundleTrytes(thisTrytes, callback) {
       let txObject = iota.utils.transactionObject(thisTrytes);
@@ -166,6 +177,7 @@ export const localPow = data => {
 
     loopTrytes();
   };
+
   return new Promise((resolve, reject) => {
     curlHashing(
       trunkTransaction,
