@@ -21,7 +21,9 @@ const performPowEpic = (action$, store) => {
       const { treasureHunt } = store.getState();
       const { dataMapHash, treasure, chunkIdx, numberOfChunks } = treasureHunt;
 
-      const address = Encryption.obfuscate(dataMapHash);
+      const address = iota.toAddress(
+        iota.utils.toTrytes(Encryption.obfuscate(dataMapHash))
+      );
       // const address =
       //   "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
@@ -63,20 +65,16 @@ const performPowEpic = (action$, store) => {
           Observable.fromPromise(iota.broadcastTransactions(trytesArray))
         )
         .mergeMap(() =>
-          Observable.if(
-            () => !treasure,
-            Observable.of(
-              treasureHuntActions.findTreasure({
-                dataMapHash,
-                chunkIdx
-              })
-            ),
-            Observable.of(
-              treasureHuntActions.incrementChunk({
-                nextChunkIdx: chunkIdx + 1,
-                nextDataMapHash
-              })
-            )
+          Observable.of(
+            !treasure
+              ? treasureHuntActions.findTreasure({
+                  dataMapHash,
+                  chunkIdx
+                })
+              : treasureHuntActions.incrementChunk({
+                  nextChunkIdx: chunkIdx + 1,
+                  nextDataMapHash
+                })
           )
         )
         .catch(error => {
@@ -161,18 +159,16 @@ const nextChunkEpic = (action$, store) => {
       const endOfFile = chunkIdx > numberOfChunks;
       const endOfSector = chunkIdx > CHUNKS_PER_SECTOR * (sectorIdx + 1) - 1;
 
-      return Observable.if(
-        () => endOfFile || endOfSector,
-        Observable.of(
-          treasureHuntActions.claimTreasure({
-            treasure,
-            genesisHash,
-            numberOfChunks,
-            receiverEthAddr,
-            sectorIdx
-          })
-        ),
-        Observable.of(treasureHuntActions.performPow())
+      return Observable.of(
+        endOfFile || endOfSector
+          ? treasureHuntActions.claimTreasure({
+              treasure,
+              genesisHash,
+              numberOfChunks,
+              receiverEthAddr,
+              sectorIdx
+            })
+          : treasureHuntActions.performPow()
       );
     });
 };
