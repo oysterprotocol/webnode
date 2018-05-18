@@ -21,7 +21,9 @@ const performPowEpic = (action$, store) => {
       const { treasureHunt } = store.getState();
       const { dataMapHash, treasure, chunkIdx, numberOfChunks } = treasureHunt;
 
-      const address = Encryption.obfuscate(dataMapHash);
+      const address = iota.toAddress(
+        iota.utils.toTrytes(Encryption.obfuscate(dataMapHash))
+      );
       // const address =
       //   "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 

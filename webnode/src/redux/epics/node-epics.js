@@ -21,6 +21,7 @@ import {
   SECTOR_STATUS,
   CHUNKS_PER_SECTOR
 } from "../../config/";
+import Encryption from "../../utils/encryption";
 
 const registerWebnodeEpic = (action$, store) => {
   return action$.ofType(nodeActions.NODE_RESET).mergeMap(action => {
@@ -211,7 +212,11 @@ const checkIfSectorClaimedEpic = (action$, store) => {
       const specialChunkIdx = sectorIdx * CHUNKS_PER_SECTOR;
       const dataMap = Datamap.rawGenerate(genesisHash, numberOfChunks);
       const dataMapHash = dataMap[specialChunkIdx];
-      const address = Datamap.obfuscate(dataMapHash);
+
+      // NOT positive this is correct but it worked in the treasure hunt epic
+      const address = iota.toAddress(
+        iota.utils.toTrytes(Encryption.obfuscate(dataMapHash))
+      );
       // const address =
       //   "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
