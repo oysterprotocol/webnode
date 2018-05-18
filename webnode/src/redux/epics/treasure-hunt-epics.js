@@ -65,20 +65,16 @@ const performPowEpic = (action$, store) => {
           Observable.fromPromise(iota.broadcastTransactions(trytesArray))
         )
         .mergeMap(() =>
-          Observable.if(
-            () => !treasure,
-            Observable.of(
-              treasureHuntActions.findTreasure({
-                dataMapHash,
-                chunkIdx
-              })
-            ),
-            Observable.of(
-              treasureHuntActions.incrementChunk({
-                nextChunkIdx: chunkIdx + 1,
-                nextDataMapHash
-              })
-            )
+          Observable.of(
+            !treasure
+              ? treasureHuntActions.findTreasure({
+                  dataMapHash,
+                  chunkIdx
+                })
+              : treasureHuntActions.incrementChunk({
+                  nextChunkIdx: chunkIdx + 1,
+                  nextDataMapHash
+                })
           )
         )
         .catch(error => {
@@ -163,18 +159,16 @@ const nextChunkEpic = (action$, store) => {
       const endOfFile = chunkIdx > numberOfChunks;
       const endOfSector = chunkIdx > CHUNKS_PER_SECTOR * (sectorIdx + 1) - 1;
 
-      return Observable.if(
-        () => endOfFile || endOfSector,
-        Observable.of(
-          treasureHuntActions.claimTreasure({
-            treasure,
-            genesisHash,
-            numberOfChunks,
-            receiverEthAddr,
-            sectorIdx
-          })
-        ),
-        Observable.of(treasureHuntActions.performPow())
+      return Observable.of(
+        endOfFile || endOfSector
+          ? treasureHuntActions.claimTreasure({
+              treasure,
+              genesisHash,
+              numberOfChunks,
+              receiverEthAddr,
+              sectorIdx
+            })
+          : treasureHuntActions.performPow()
       );
     });
 };

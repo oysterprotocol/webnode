@@ -45,10 +45,10 @@ const brokerNodeOrGenesisHashEpic = (action$, store) => {
     .ofType(nodeActions.NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH)
     .mergeMap(() => {
       const { node } = store.getState();
-      return Observable.if(
-        () => node.brokerNodes.length <= MIN_BROKER_NODES,
-        Observable.of(nodeActions.requestBrokerNodes()),
-        Observable.of(nodeActions.determineGenesisHashOrTreasureHunt())
+      return Observable.of(
+        node.brokerNodes.length <= MIN_BROKER_NODES
+          ? nodeActions.requestBrokerNodes()
+          : nodeActions.determineGenesisHashOrTreasureHunt()
       );
     });
 };
