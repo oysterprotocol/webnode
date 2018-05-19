@@ -4,8 +4,10 @@ import { Table, Header } from "semantic-ui-react";
 const TreasureTable = treasures => (
   <Table celled padded>
     <Table.Header>
-      <Table.HeaderCell>Chunk Index</Table.HeaderCell>
-      <Table.HeaderCell>Treasure Content</Table.HeaderCell>
+      <Table.Row>
+        <Table.HeaderCell>Chunk Index</Table.HeaderCell>
+        <Table.HeaderCell>Treasure Content</Table.HeaderCell>
+      </Table.Row>
     </Table.Header>
     <Table.Body>
       {treasures.map(s => (
