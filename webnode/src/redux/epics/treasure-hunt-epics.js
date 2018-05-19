@@ -184,7 +184,7 @@ const claimTreasureEpic = (action$, store) => {
         sectorIdx,
         treasure
       } = action.payload;
-      const { ethKey, ethAddr } = treasure;
+      const ethKey = treasure;
 
       return Observable.fromPromise(
         BrokerNode.claimTreasure({
@@ -192,8 +192,7 @@ const claimTreasureEpic = (action$, store) => {
           genesisHash,
           numChunks,
           sectorIdx,
-          ethKey,
-          ethAddr
+          ethKey
         })
       )
         .map(() =>
