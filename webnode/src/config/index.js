@@ -29,8 +29,8 @@ export const DEFAULT_CONSTANT = Object.freeze({
   EXCHANGES_NEED_REQUESTED: ""
 });
 
-export const MIN_BROKER_NODES = 5;
-export const MIN_GENESIS_HASHES = 5;
+export const MIN_BROKER_NODES = 2;
+export const MIN_GENESIS_HASHES = 1;
 
 export const SECTOR_STATUS = {
   CLAIMED: "CLAIMED",
