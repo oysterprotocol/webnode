@@ -102,7 +102,8 @@ class Storage extends Component {
 const mapStateToProps = state => ({
   statuses: state.pow.statuses,
   treasures: state.test.treasures,
-  numberOfCalls: state.test.numberOfCalls //TODO remove for production
+  numberOfCalls: state.test.numberOfCalls, //TODO remove for production
+  consent: state.pow.consent
 });
 
 const mapDispatchToProps = dispatch => ({
