@@ -30,13 +30,12 @@ const registerWebnodeEpic = (action$, store) => {
     return Observable.fromPromise(brokerNode.registerWebnode(id))
       .map(({ data }) => {
         console.log("/api/v1/supply/webnodes response:", data);
-        // return nodeActions.determineBrokerNodeOrGenesisHash();
-        return nodeActions.determineGenesisHashOrTreasureHunt();
+        return nodeActions.determineBrokerNodeOrGenesisHash();
       })
       .catch(error => {
         console.log("/api/v1/supply/webnodes error:", error);
-        // return nodeActions.determineBrokerNodeOrGenesisHash();
-        return nodeActions.determineGenesisHashOrTreasureHunt();
+        // TODO: fire a generic error action
+        return nodeActions.determineBrokerNodeOrGenesisHash();
       });
   });
 };
@@ -47,7 +46,7 @@ const brokerNodeOrGenesisHashEpic = (action$, store) => {
     .mergeMap(() => {
       const { node } = store.getState();
       return Observable.if(
-        () => node.brokerNodes.length <= MIN_BROKER_NODES,
+        () => node.brokerNodes.length < MIN_BROKER_NODES,
         Observable.of(nodeActions.requestBrokerNodes()),
         Observable.of(nodeActions.determineGenesisHashOrTreasureHunt())
       );
@@ -67,7 +66,7 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
       );
 
       if (
-        node.newGenesisHashes.length <= MIN_GENESIS_HASHES &&
+        node.newGenesisHashes.length < MIN_GENESIS_HASHES &&
         !treasureHuntableGenesisHash
       ) {
         return Observable.of(nodeActions.requestGenesisHashes());
