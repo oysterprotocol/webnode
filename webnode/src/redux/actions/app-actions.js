@@ -1,8 +1,8 @@
 export const APP_START = "directories/app/start";
 
-export const CONSENT_GIVEN = "consentGiven"
+export const CONSENT_GIVEN = "consentGiven";
 
-export const CONSENT_DENIED = "consentDenied"
+export const CONSENT_DENIED = "consentDenied";
 
 const ACTIONS = Object.freeze({
   // actions

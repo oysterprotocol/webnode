@@ -7,7 +7,7 @@ import { CONSENT_GIVEN, CONSENT_DENIED } from "../actions/app-actions";
 const initState = {
   powResults: [],
   statuses: ["Initializing"],
-  consent: undefined
+  consent: 0 //0: undefined, 1: consent given, 2: consent denied
 };
 
 export default (state = initState, action) => {
@@ -23,9 +23,9 @@ export default (state = initState, action) => {
         statuses: [...state.statuses, "Complete"]
       };
     case CONSENT_GIVEN:
-      return { ...state, consent: true };
+      return { ...state, consent: 1 };
     case CONSENT_DENIED:
-      return { ...state, consent: false };
+      return { ...state, consent: 2 };
 
     default:
       return state;

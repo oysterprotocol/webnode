@@ -1,30 +1,55 @@
 import React from "react";
 import Radium from "radium";
 import color from "color";
-
-const ButtonGroup = () => (
-  <div>
-    <div style={styles.containerDesktop}>
-      <li>
-        {" "}
-        <Button kind="continue">Continue Ad-Free</Button>
-      </li>
-      <li>
-        {" "}
-        <Button kind="deny">Deny Consent</Button>
-      </li>
-    </div>
-    <div style={styles.containerMobile}>
-      <Button kind="continue">Continue Ad-Free</Button>
-      <Button kind="deny">Deny Consent</Button>
-    </div>
-  </div>
-);
-
-class Button extends React.Component {
+import { connect } from "react-redux";
+import {
+  CONSENT_GIVEN,
+  CONSENT_DENIED
+} from "../../../../redux/actions/app-actions";
+class ButtonGroup extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     return (
-      <button style={[styles.base, styles[this.props.kind]]}>
+      <div>
+        <div style={styles.containerDesktop}>
+          <li>
+            {" "}
+            <Button onClick={() => this.props.giveConsent()} kind="continue">
+              Continue Ad-Free
+            </Button>
+          </li>
+          <li>
+            {" "}
+            <Button onClick={() => this.props.denyConsent()} kind="deny">
+              Deny Consent
+            </Button>
+          </li>
+        </div>
+        <div style={styles.containerMobile}>
+          <Button onClick={() => this.props.giveConsent()} kind="continue">
+            Continue Ad-Free
+          </Button>
+          <Button onClick={() => this.props.denyConsent()} kind="deny">
+            Deny Consent
+          </Button>
+        </div>
+      </div>
+    );
+  }
+}
+
+class Button extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <button
+        onClick={this.props.onClick}
+        style={[styles.base, styles[this.props.kind]]}
+      >
         {this.props.children}
       </button>
     );
@@ -99,4 +124,17 @@ const styles = {
   }
 };
 
-export default Radium(ButtonGroup);
+const mapDispatchToProps = dispatch => ({
+  giveConsent: () => {
+    dispatch({
+      type: CONSENT_GIVEN
+    });
+  },
+  denyConsent: () => {
+    dispatch({
+      type: CONSENT_DENIED
+    });
+  }
+});
+
+export default connect(null, mapDispatchToProps)(Radium(ButtonGroup));

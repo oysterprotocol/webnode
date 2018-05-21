@@ -77,7 +77,7 @@ class Storage extends Component {
   }
 
   render() {
-    const { treasures, numberOfCalls } = this.props;
+    const { treasures, numberOfCalls, consent } = this.props;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
         <div style={{ padding: 50 }}>
@@ -93,7 +93,7 @@ class Storage extends Component {
           </div>
           {treasures.length !== 0 ? TreasureTable(treasures) : null}
         </div>
-        <ConsentOverlay />
+        <ConsentOverlay consent={consent} />
       </Container>
     );
   }
