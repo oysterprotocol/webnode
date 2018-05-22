@@ -23,7 +23,6 @@ import {
   CHUNKS_PER_SECTOR,
   TEST_GENESIS_HASHES
 } from "../../config/";
-import Encryption from "../../utils/encryption";
 
 const registerWebnodeEpic = (action$, store) => {
   return action$.ofType(nodeActions.NODE_RESET).mergeMap(action => {
