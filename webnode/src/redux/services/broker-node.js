@@ -37,7 +37,6 @@ const completeGenesisHashPoW = (txid, trytes) =>
   });
 
 const claimTreasure = ({
-  ethAddr,
   ethKey,
   genesisHash,
   numChunks,
@@ -46,9 +45,8 @@ const claimTreasure = ({
 }) =>
   axios({
     method: "POST",
-    url: `${API_ROOT_URL}/${API_VERSION}/supply/treasures`,
+    url: `${API_ROOT_URL}/${API_VERSION}/treasures`,
     data: {
-      ethAddr,
       ethKey,
       genesisHash,
       numChunks,
