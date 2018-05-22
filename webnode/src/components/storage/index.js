@@ -4,6 +4,7 @@ import { Input, Button, Container, Header, Image } from "semantic-ui-react";
 import _ from "lodash";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
+import appActions from "../../redux/actions/app-actions";
 
 import datamap from "../../utils/datamap";
 
@@ -76,6 +77,11 @@ class Storage extends Component {
     Promise.all(transformedMap); //TODO better implementation
   }
 
+  startApp() {
+    const { startApp } = this.props;
+    startApp();
+  }
+
   render() {
     const { treasures, numberOfCalls } = this.props;
     return (
@@ -90,6 +96,7 @@ class Storage extends Component {
             {GenesisHashInput(this.onGenesisHashChange)}
             {NumberofChunksInput(this.onNumberOfChunksChange)}
             <Button onClick={() => this.onClick()}>Look for treasures</Button>
+            <Button onClick={() => this.startApp()}>Start App</Button>
           </div>
           {treasures.length !== 0 ? TreasureTable(treasures) : null}
         </div>
@@ -107,7 +114,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
-  startSector: obj => dispatch(treasureHuntActions.startSector(obj))
+  startSector: obj => dispatch(treasureHuntActions.startSector(obj)),
+  startApp: () => dispatch(appActions.startApp())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Storage);

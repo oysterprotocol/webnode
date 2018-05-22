@@ -27,7 +27,7 @@ const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
   const sectors = _.map(sectorIdxes, index => {
     return {
       index,
-      status: SECTOR_STATUS.NOT_STARTED
+      status: SECTOR_STATUS.UNCLAIMED
     };
   });
   return { genesisHash, numberOfChunks, sectors };

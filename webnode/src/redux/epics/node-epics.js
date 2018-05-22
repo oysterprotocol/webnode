@@ -10,6 +10,7 @@ import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
 
 import Datamap from "../../utils/datamap";
+import Encryption from "../../utils/encryption";
 import AppUtils from "../../utils/app";
 
 // TODO remove this when we get the Go API done
@@ -19,9 +20,9 @@ import {
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
   SECTOR_STATUS,
-  CHUNKS_PER_SECTOR
+  CHUNKS_PER_SECTOR,
+  TEST_GENESIS_HASHES
 } from "../../config/";
-import Encryption from "../../utils/encryption";
 
 const registerWebnodeEpic = (action$, store) => {
   return action$.ofType(nodeActions.NODE_RESET).mergeMap(action => {
@@ -29,13 +30,12 @@ const registerWebnodeEpic = (action$, store) => {
     return Observable.fromPromise(brokerNode.registerWebnode(id))
       .map(({ data }) => {
         console.log("/api/v1/supply/webnodes response:", data);
-        // return nodeActions.determineBrokerNodeOrGenesisHash();
-        return nodeActions.determineGenesisHashOrTreasureHunt();
+        return nodeActions.determineBrokerNodeOrGenesisHash();
       })
       .catch(error => {
         console.log("/api/v1/supply/webnodes error:", error);
-        // return nodeActions.determineBrokerNodeOrGenesisHash();
-        return nodeActions.determineGenesisHashOrTreasureHunt();
+        // TODO: fire a generic error action
+        return nodeActions.determineBrokerNodeOrGenesisHash();
       });
   });
 };
@@ -46,7 +46,7 @@ const brokerNodeOrGenesisHashEpic = (action$, store) => {
     .mergeMap(() => {
       const { node } = store.getState();
       return Observable.of(
-        node.brokerNodes.length <= MIN_BROKER_NODES
+        node.brokerNodes.length < MIN_BROKER_NODES
           ? nodeActions.requestBrokerNodes()
           : nodeActions.determineGenesisHashOrTreasureHunt()
       );
@@ -66,7 +66,7 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
       );
 
       if (
-        node.newGenesisHashes.length <= MIN_GENESIS_HASHES &&
+        node.newGenesisHashes.length < MIN_GENESIS_HASHES &&
         !treasureHuntableGenesisHash
       ) {
         return Observable.of(nodeActions.requestGenesisHashes());
@@ -92,10 +92,7 @@ const requestBrokerEpic = (action$, store) => {
       brokerNode.requestBrokerNodeAddressPoW(currentList)
     )
       .mergeMap(({ data }) => {
-        const {
-          id: txid,
-          pow: { message, address, branchTx, trunkTx }
-        } = data;
+        const { id: txid, pow: { message, address, branchTx, trunkTx } } = data;
 
         // TODO: change this
         const value = 0;
@@ -223,7 +220,10 @@ const checkIfSectorClaimedEpic = (action$, store) => {
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
       ).map(transaction => {
-        if (iota.checkIfClaimed(transaction)) {
+        if (
+          iota.checkIfClaimed(transaction) &&
+          !TEST_GENESIS_HASHES.includes(genesisHash)
+        ) {
           return nodeActions.markSectorAsClaimed({
             genesisHash,
             sectorIdx

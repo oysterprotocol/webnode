@@ -20,7 +20,8 @@ const checkIfClaimed = transaction => {
   const lastEpoch = moment()
     .subtract(1, "year")
     .valueOf();
-  return lastEpoch > attachedAt;
+
+  return lastEpoch < attachedAt;
 };
 
 const toAddress = string => string.substr(0, IOTA_ADDRESS_LENGTH);
@@ -43,7 +44,7 @@ const findMostRecentTransaction = address =>
     iotaProvider.api.findTransactionObjects(
       { addresses: [address] },
       (error, transactionObjects) => {
-        if (error || !transactionObjects) {
+        if (error || !transactionObjects.length) {
           console.log("IOTA ERROR: ", error);
           reject(new Error("No transaction found"));
         }
