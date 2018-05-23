@@ -32,7 +32,7 @@ const ACTIONS = Object.freeze({
     numberOfChunks
   }) => ({
     type: TREASURE_HUNT_START_SECTOR,
-    payload: { dataMapHash, genesisHash, sectorIdx, numberOfChunks }
+    payload: { dataMapHash, message, genesisHash, sectorIdx, numberOfChunks }
   }),
   performPow: () => ({
     type: TREASURE_HUNT_PERFORM_POW

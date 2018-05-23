@@ -1,9 +1,4 @@
-import {
-  TREASURE_HUNT_START_SECTOR,
-  TREASURE_HUNT_FIND_TREASURE,
-  TREASURE_HUNT_SAVE_TREASURE,
-  TREASURE_HUNT_INCREMENT_CHUNK
-} from "../actions/treasure-hunt-actions";
+import treasureHuntActions from "../actions/treasure-hunt-actions";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
 
@@ -18,7 +13,7 @@ const initState = {
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case TREASURE_HUNT_START_SECTOR:
+    case treasureHuntActions.TREASURE_HUNT_START_SECTOR:
       const {
         dataMapHash,
         genesisHash,
@@ -44,7 +39,7 @@ export default (state = initState, action) => {
         };
       }
 
-    case TREASURE_HUNT_INCREMENT_CHUNK:
+    case treasureHuntActions.TREASURE_HUNT_INCREMENT_CHUNK:
       const {
         nextChunkIdx: nxtChunkIdx,
         nextDataMapHash: nextDataMapHsh
@@ -55,7 +50,7 @@ export default (state = initState, action) => {
         dataMapHash: nextDataMapHsh
       };
 
-    case TREASURE_HUNT_SAVE_TREASURE:
+    case treasureHuntActions.TREASURE_HUNT_SAVE_TREASURE:
       const { treasure, nextChunkIdx, nextDataMapHash } = action.payload;
       return {
         ...state,
