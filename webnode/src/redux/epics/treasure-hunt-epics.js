@@ -218,5 +218,6 @@ export default combineEpics(
   performPowEpic,
   findTreasureEpic,
   nextChunkEpic,
+  completeSectorEpic,
   claimTreasureEpic
 );
