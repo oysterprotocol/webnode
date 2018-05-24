@@ -149,6 +149,8 @@ module.exports = {
               // It enables caching results in ./node_modules/.cache/babel-loader/
               // directory for faster rebuilds.
               cacheDirectory: true,
+              presets: ['react-app'],
+              plugins: ['transform-object-rest-spread']
             },
           },
           // "postcss" loader applies autoprefixer to our CSS.
