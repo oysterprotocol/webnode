@@ -62,15 +62,5 @@
     "watch-test": "cross-env NODE_PATH=src jest --watch --colors"
   },
   "jest": {
-    "roots": [
-      "<rootDir>/src"
-    ],
-    "modulePaths": [
-      "<rootDir>/src"
-    ],
-    "setupTestFrameworkScriptFile": "<rootDir>/src/setup-tests.js",
-    "moduleNameMapper": {
-      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "identity-obj-proxy"
-    }
   }
 }
