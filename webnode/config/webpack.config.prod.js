@@ -149,8 +149,9 @@ module.exports = {
             include: paths.appSrc,
             loader: require.resolve('babel-loader'),
             options: {
-              
               compact: true,
+              presets: ['react-app'],
+              plugins: ['transform-object-rest-spread']
             },
           },
           // The notation here is somewhat confusing.
