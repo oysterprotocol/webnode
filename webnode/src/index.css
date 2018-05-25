@@ -1,0 +1,14 @@
+body {
+  background: #0267ea;
+  padding: 20px;
+}
+
+p {
+  margin: 2px 0 2px 25px;
+  font-size: 20px;
+}
+
+.container {
+  display: flex;
+  align-items: flex-start;
+}
