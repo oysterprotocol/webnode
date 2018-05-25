@@ -21,8 +21,8 @@ const ACTIONS = Object.freeze({
   NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH,
   NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT,
   NODE_REQUEST_BROKER_NODES,
-  NODE_ADD_BROKER_NODE,
   NODE_REQUEST_GENESIS_HASHES,
+  NODE_ADD_BROKER_NODE,
   NODE_ADD_NEW_GENESIS_HASH,
   NODE_RESET,
   NODE_CHECK_IF_SECTOR_CLAIMED,
@@ -41,13 +41,13 @@ const ACTIONS = Object.freeze({
     type: NODE_REQUEST_BROKER_NODES
   }),
 
+  requestGenesisHashes: () => ({
+    type: NODE_REQUEST_GENESIS_HASHES
+  }),
+
   addBrokerNode: ({ address }) => ({
     type: NODE_ADD_BROKER_NODE,
     payload: { address }
-  }),
-
-  requestGenesisHashes: () => ({
-    type: NODE_REQUEST_GENESIS_HASHES
   }),
 
   addNewGenesisHash: ({ genesisHash, numberOfChunks }) => ({
