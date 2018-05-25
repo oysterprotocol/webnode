@@ -1,11 +1,6 @@
 import _ from "lodash";
 
-import {
-  NODE_ADD_BROKER_NODE,
-  NODE_ADD_NEW_GENESIS_HASH,
-  NODE_RESET,
-  NODE_MARK_SECTOR_AS_CLAIMED
-} from "../actions/node-actions";
+import nodeActions from "../actions/node-actions";
 
 import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
 
@@ -35,14 +30,14 @@ const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case NODE_ADD_BROKER_NODE:
+    case nodeActions.NODE_ADD_BROKER_NODE:
       const { address } = action.payload;
       return {
         ...state,
         brokerNodes: [...state.brokerNodes, brokerNodeGenerator(address)]
       };
 
-    case NODE_ADD_NEW_GENESIS_HASH:
+    case nodeActions.NODE_ADD_NEW_GENESIS_HASH:
       const { genesisHash, numberOfChunks } = action.payload;
       return {
         ...state,
@@ -52,7 +47,7 @@ export default (state = initState, action) => {
         ]
       };
 
-    case NODE_RESET:
+    case nodeActions.NODE_RESET:
       const { id, lastResetAt } = action.payload;
       return {
         ...state,
@@ -63,7 +58,7 @@ export default (state = initState, action) => {
         oldGenesisHashes: []
       };
 
-    case NODE_MARK_SECTOR_AS_CLAIMED:
+    case nodeActions.NODE_MARK_SECTOR_AS_CLAIMED:
       const { genesisHash: gh, sectorIdx } = action.payload;
       const updatedGenesisHashes = _.map(
         state.newGenesisHashes,
