@@ -1,5 +1,5 @@
 import _ from "lodash";
-import Encryption from "utils/encryption";
+import Encryption from "./encryption";
 
 const generate = address => {
   const range = _.range(0, 1000);

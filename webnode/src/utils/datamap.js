@@ -1,6 +1,6 @@
 import _ from "lodash";
-import iota from "redux/services/iota";
-import Encryption from "utils/encryption";
+import iota from "../redux/services/iota";
+import Encryption from "../utils/encryption";
 
 const rawGenerate = (genesisHash, size) => {
   const keys = _.range(1, size);
