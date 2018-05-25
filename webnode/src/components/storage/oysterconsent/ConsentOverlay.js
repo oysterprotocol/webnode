@@ -8,7 +8,7 @@ import { StyleRoot } from "radium";
 class ConsentOverlay extends Component {
   constructor(props) {
     super(props);
-    this.state = { genesisHash: "", numberOfChunks: 0 };
+    this.state = { genesisHash: "", numberOfChunks: 0, consent: props.consent };
   }
 
   blueBar() {
@@ -18,7 +18,13 @@ class ConsentOverlay extends Component {
   render() {
     return (
       <StyleRoot>
-        <div style={style.ConsentOverlayStyle}>
+        <div
+          style={
+            this.props.consent === 0
+              ? style.ConsentOverlayStyle
+              : { display: "none" }
+          }
+        >
           {this.blueBar()}
           <div style={style.consentInner}>
             <LogoGroup />

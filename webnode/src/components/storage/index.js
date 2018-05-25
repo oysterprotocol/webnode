@@ -83,7 +83,7 @@ class Storage extends Component {
   }
 
   render() {
-    const { treasures, numberOfCalls } = this.props;
+    const { treasures, numberOfCalls, consent } = this.props;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
         <div style={{ padding: 50 }}>
@@ -100,7 +100,7 @@ class Storage extends Component {
           </div>
           {treasures.length !== 0 ? TreasureTable(treasures) : null}
         </div>
-        <ConsentOverlay />
+        <ConsentOverlay consent={consent} />
       </Container>
     );
   }
@@ -109,7 +109,8 @@ class Storage extends Component {
 const mapStateToProps = state => ({
   statuses: state.pow.statuses,
   treasures: state.test.treasures,
-  numberOfCalls: state.test.numberOfCalls //TODO remove for production
+  numberOfCalls: state.test.numberOfCalls, //TODO remove for production
+  consent: state.pow.consent
 });
 
 const mapDispatchToProps = dispatch => ({

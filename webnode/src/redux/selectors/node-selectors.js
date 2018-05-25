@@ -11,7 +11,7 @@ const treasureHuntableGenesisHash = createSelector(
   newGenesisHashes => {
     return _.find(newGenesisHashes, gh => {
       return _.find(gh.sectors, sector =>
-        _.includes([UNCLAIMED, CLAIMED], sector.status)
+        _.includes([UNCLAIMED], sector.status)
       );
     });
   }

@@ -196,7 +196,7 @@ const claimTreasureEpic = (action$, store) => {
         })
       )
         .map(() =>
-          treasureHuntActions.treasureClaimComplete({ genesisHash, sectorIdx })
+          treasureHuntActions.claimTreasureSuccess({ genesisHash, sectorIdx })
         )
         .catch(error => {
           console.log("CLAIM TREASURE ERROR: ", error);
@@ -218,5 +218,6 @@ export default combineEpics(
   performPowEpic,
   findTreasureEpic,
   nextChunkEpic,
+  completeSectorEpic,
   claimTreasureEpic
 );
