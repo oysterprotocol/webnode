@@ -99,7 +99,7 @@
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src node scripts/start.js",
-    "start2": "NODE_ENV=production webpack-dev-server --config='config/webpack.config.dev.js'",
+    "start2": "NODE_ENV=development webpack-dev-server --config='config/webpack.config.dev.js'",
     "build": "cross-env NODE_PATH=src node scripts/build.js",
     "test": "jest",
     "watch-test": "cross-env NODE_PATH=src jest --watch --colors"
