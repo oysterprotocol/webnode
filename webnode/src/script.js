@@ -7,5 +7,5 @@ import appActions from "./redux/actions/app-actions";
 
 if (!module.parent) {
   console.log("when loaded as a script");
-  store.dispatch(appActions.startApp());
+  // store.dispatch(appActions.startApp());
 }

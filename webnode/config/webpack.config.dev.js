@@ -29,7 +29,7 @@ module.exports = {
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
   devtool: "cheap-module-source-map",
   entry: {
-    app: [
+    development: [
       require.resolve("./polyfills"),
       require.resolve("react-dev-utils/webpackHotDevClient"),
       paths.appIndexJs
