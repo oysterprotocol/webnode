@@ -12,6 +12,7 @@ const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const MinifyPlugin = require("babel-minify-webpack-plugin");
 const ScriptAttrHtmlWebpackPlugin = require("script-attr-html-webpack-plugin");
+const CleanWebpackPlugin = require("clean-webpack-plugin");
 const paths = require("./paths");
 const getClientEnvironment = require("./env");
 
@@ -67,7 +68,7 @@ module.exports = {
     // Generated JS file names (with nested folders).
     // There will be one main bundle, and one file per asynchronous chunk.
     // We don't currently advertise code splitting but Webpack supports it.
-    filename: "static/js/[name].[chunkhash:8].js",
+    filename: "static/js/oyster-webnode.js",
     chunkFilename: "static/js/[name].[chunkhash:8].chunk.js",
     // We inferred the "public path" (such as / or /my-project) from homepage.
     publicPath: publicPath,
@@ -241,6 +242,7 @@ module.exports = {
     // In production, it will be an empty string unless you specify "homepage"
     // in `package.json`, in which case it will be the pathname of that URL.
     new InterpolateHtmlPlugin(env.raw),
+    new CleanWebpackPlugin([paths.appBuild], { allowExternal: true }),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
       inject: true,
