@@ -5,9 +5,9 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/lib/integration/react";
 
 import { store, persistor } from "./redux";
-import Root from "components/root";
+import Root from "./components/root";
 
-import "index.css";
+import "./index.css";
 
 const App = () => (
   <Provider store={store}>

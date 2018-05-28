@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
 
-import node from "redux/reducers/node-reducer";
+import node from "./node-reducer";
 import nodeActions from "../actions/node-actions";
 
 const brokerNodeGenerator = address => {

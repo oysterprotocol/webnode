@@ -1,5 +1,5 @@
 import React from "react";
-import Storage from "components/storage/";
+import Storage from "./storage/index";
 
 class Root extends React.Component {
   render() {

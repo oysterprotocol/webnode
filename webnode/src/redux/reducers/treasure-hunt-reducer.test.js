@@ -1,7 +1,7 @@
 import { CHUNKS_PER_SECTOR } from "../../config/";
 
 import treasureHuntActions from "../actions/treasure-hunt-actions";
-import treasureHunt from "redux/reducers/treasure-hunt-reducer";
+import treasureHunt from "./treasure-hunt-reducer";
 
 test("treasure-hunt-reducer TREASURE_HUNT_START_SECTOR - sectorIdx and genesisHash == store", () => {
   const state = {

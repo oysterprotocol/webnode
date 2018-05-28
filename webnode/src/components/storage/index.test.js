@@ -1,5 +1,5 @@
 import configureStore from 'redux-mock-store'
-import Storage, { onGenesisHashChange, onNumberOfChunksChange } from "components/storage/";
+import Storage, { onGenesisHashChange, onNumberOfChunksChange } from "./index";
 
 const initialState = {}; 
 const mockStore = configureStore();

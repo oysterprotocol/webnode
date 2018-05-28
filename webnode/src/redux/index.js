@@ -5,7 +5,7 @@ import thunk from "redux-thunk";
 import promise from "redux-promise";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import reducer from "redux/reducers";
+import reducer from "./reducers/index";
 import epics from "./epics";
 
 import { DEVELOPED_MODE } from "../config";

@@ -1,4 +1,4 @@
-import Storage from "components/storage/";
+import Storage from "./storage/index";
 import renderer from 'react-test-renderer';
 
 test('renders correctly', () => {

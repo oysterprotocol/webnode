@@ -1,7 +1,7 @@
 import { IOTA_POW, IOTA_POW_SUCCESS } from "../actions/pow-actions";
 
 import nodeActions from "../actions/node-actions";
-import pow from "redux/reducers/pow-reducer";
+import pow from "./pow-reducer";
 
 test("pow-reducer NODE_REQUEST_BROKER_NODES", () => {
   const state = {
