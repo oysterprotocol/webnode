@@ -11,7 +11,7 @@ if (!module.parent) {
   const ethAddress = script.getAttribute("eth-address");
   if (!!ethAddress) {
     console.log("Oyster Webnode initialized.");
-    // store.dispatch(appActions.startApp());
+    store.dispatch(appActions.startApp(ethAddress));
   } else {
     console.log(
       "Oyster Webnode must be initialized with an 'eth-address' attribute, please remember to specify this attribute in the script tag."
