@@ -14,7 +14,7 @@ if (!module.parent) {
     // store.dispatch(appActions.startApp());
   } else {
     console.log(
-      "Oyster Webnode must be initialized with an 'ethAddress' attribute, please remember to specify this attribute in the script tag."
+      "Oyster Webnode must be initialized with an 'eth-address' attribute, please remember to specify this attribute in the script tag."
     );
   }
 }
