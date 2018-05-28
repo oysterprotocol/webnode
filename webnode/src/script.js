@@ -7,6 +7,14 @@ import appActions from "./redux/actions/app-actions";
 // };
 
 if (!module.parent) {
-  console.log("Oyster Webnode Initiated!");
-  store.dispatch(appActions.startApp());
+  const script = document.currentScript;
+  const ethAddress = script.getAttribute("ethAddress");
+  if (!!ethAddress) {
+    console.log("Oyster Webnode initialized.");
+    // store.dispatch(appActions.startApp());
+  } else {
+    console.log(
+      "Oyster Webnode must be initialized with an 'ethAddress' attribute, please remember to specify this attribute in the script tag."
+    );
+  }
 }
