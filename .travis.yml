@@ -1,23 +1,24 @@
 language: node_js
-
 node_js:
-  - "9"
-
-sudo: false
-
-branches:
-   only:
-   - master
-
-before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash
-  - export PATH="$HOME/.yarn/bin:$PATH"
-
+- 8.11.1
 cache:
   yarn: true
   directories:
-    - ".eslintcache"
-    - "node_modules"
-
+  - node_modules
 script:
-  - cd webnode; yarn && yarn test; cd ..;
+- yarn
+deploy:
+  provider: s3
+  access_key_id: AKIAIC6AR25SMS4F66MA
+  secret_access_key:
+    secure: LxJHmm8XF/cPeZLCAVxgrqkDmiReRopNUX3ouJKBl7MT1VvKpuXgpVjagvZMEVu/GPpuPDtF+ZgsXDxqU2jkBulCdtxLsuNINOH2Okjy6XZkcdse0Yn6xQCp7Olqb0lJUhMKuvljo/KKDMG8C2hGw3CEHdJIlWIddloPrielfFDLxo3yRAQrTjJ9iYS+WHtLzRO+CwZ2qA6TZu1ebJzmfQltuiUZw04urEKcTmmQRI/Mty04VoPv5r+kxnr57t7yFpYB9ODXkg4iSDgssdGdp0Dh/eQi3hhMWqXk3GQjQOF0oNsMNdUM59tD6xPjbrv0JJ6M8x1PeAKlkm/BRv4YvCudsr7anMeZQAwich1FdHQbt7vU9kVoR1X1eUEmSMQfgGBzYeEqQKiMml+ONUAqZfy8fxgj5D1qtVutBcGHTKCozmzwrgYWw4mRekt6JXLBiPTABFr/rdFkcXvbML5em7I2oIQiMyVjOVnVaAUC05xUxfqYqmaL+B3+D3MVW5gubE7XcVgqCws4+q17J0ln2JZMme320JDWZ6UBP4PQE3+ccHbuF7SE/THAziN8Bn8/YoDC5k1KyMPmXHkyzxEzLRob1QVm5YGZ+Mb8sIIQQCOGsF48IPYnzaqEo4Sw5YmA5MJ/BpCKySIB9R3pye2h4cvfNrNvVZ704b0Otk0UgFk=
+  bucket: launch-token
+  cache_control: max-age=120
+  local_dir: webnode/build
+  upload-dir: oyster-webnode
+  acl: public_read
+  on:
+    repo: oysterprotocol/webnode
+notifications:
+  slack:
+    secure: j27yPorHobTi77tIk0BI70kfWOuX4Qrh3IDaIqIXCZ5pjqj69Ez7kIPllkXVXj5mpdYOdTwFNdHSXY1lMdtyx2kgMSwhYT1sIiHPD9rB51AaLqe6/TzkBSLrzW7ztp5iKC8aRun9fbyhQatOguDeRIVO0f8UYNZGEdMD9Oov6OXOR4RK283WC3KUnE/+Updq0eQYgRpMfO3Q+xsAqtVt0XmcF1G+lz4d6iVOJakmLRR5nyMaFEmK9qU06f3jv2BRU5e2WgJAsDv5XyOYJSffZbw/aaXiS3484KkXRCkgWeWPcgdDLFFZZ0sjcEN1t+x98M0i5aN976+ViRg+HA42nLwFpMftDJoVxirlSy2rTUkF/LNiQwJijNnRrGiCoqinFlbM6uqdfOVF/61qBn+IKMfvyQVQ4BquweUbFnn3eVXXmZRYwiZs5OeNbP0WecP1h2CzqrhsKxS11jmEV/wx7dsCrqypACvB+Q7k89fMR4OOtbTYiFH1UmnNIAq+VTY/Vp4MNrId8WfNcPWvt4VChmO2syuwSxtTE+ZaQr+SH+KyKkG42K0k5utJALf6jMyPsQtEaYjVMhVetyDpK/+RhsBB7UMDe+r3eigpgb6LC3NyDJ5e5M8xHhI6chF9uJOXrUJ34afaBZAs9hkUlo6KUCsuJ79QOJGM8T4Hpt7HR1Y=
