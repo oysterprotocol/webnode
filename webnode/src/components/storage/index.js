@@ -8,6 +8,8 @@ import appActions from "../../redux/actions/app-actions";
 
 import datamap from "../../utils/datamap";
 
+import { TEST_ETH_ADDRESS } from "../../config";
+
 import TreasureTable from "./toolbox/TreasureTable";
 import ConsentOverlay from "./oysterconsent/ConsentOverlay";
 
@@ -79,7 +81,7 @@ class Storage extends Component {
 
   startApp() {
     const { startApp } = this.props;
-    startApp();
+    startApp(TEST_ETH_ADDRESS);
   }
 
   render() {
@@ -116,7 +118,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
   startSector: obj => dispatch(treasureHuntActions.startSector(obj)),
-  startApp: () => dispatch(appActions.startApp())
+  startApp: ethAddress => dispatch(appActions.startApp(ethAddress))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Storage);

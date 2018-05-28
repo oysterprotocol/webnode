@@ -7382,6 +7382,10 @@ schema-utils@^0.4.0:
     ajv "^6.1.0"
     ajv-keywords "^3.1.0"
 
+script-attr-html-webpack-plugin@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/script-attr-html-webpack-plugin/-/script-attr-html-webpack-plugin-1.0.1.tgz#412af27cdde0be03a8621a9771e82390b744a349"
+
 select-hose@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"

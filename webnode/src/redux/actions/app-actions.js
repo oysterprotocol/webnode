@@ -11,8 +11,9 @@ const ACTIONS = Object.freeze({
   CONSENT_DENIED,
 
   // actionCreators
-  startApp: () => ({
-    type: APP_START
+  startApp: ethAddress => ({
+    type: APP_START,
+    payload: ethAddress
   }),
   consentGiven: () => ({
     type: CONSENT_GIVEN

@@ -144,7 +144,7 @@ const nextChunkEpic = (action$, store) => {
       treasureHuntActions.TREASURE_HUNT_INCREMENT_CHUNK
     )
     .mergeMap(() => {
-      const { treasureHunt } = store.getState();
+      const { treasureHunt, node } = store.getState();
       const {
         treasure,
         genesisHash,
@@ -152,9 +152,7 @@ const nextChunkEpic = (action$, store) => {
         numberOfChunks,
         sectorIdx
       } = treasureHunt;
-
-      // TODO: replace with real address
-      const receiverEthAddr = "0xakj1123i";
+      const { ethAddress } = node;
 
       const endOfFile = chunkIdx > numberOfChunks;
       const endOfSector = chunkIdx > CHUNKS_PER_SECTOR * (sectorIdx + 1) - 1;
@@ -162,11 +160,11 @@ const nextChunkEpic = (action$, store) => {
       return Observable.of(
         endOfFile || endOfSector
           ? treasureHuntActions.claimTreasure({
-              treasure,
               genesisHash,
               numberOfChunks,
-              receiverEthAddr,
-              sectorIdx
+              receiverEthAddr: ethAddress,
+              sectorIdx,
+              treasure
             })
           : treasureHuntActions.performPow()
       );
