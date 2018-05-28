@@ -9,6 +9,7 @@ const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const WatchMissingNodeModulesPlugin = require("react-dev-utils/WatchMissingNodeModulesPlugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
+const ScriptAttrHtmlWebpackPlugin = require("script-attr-html-webpack-plugin");
 const getClientEnvironment = require("./env");
 const paths = require("./paths");
 
@@ -215,6 +216,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.appHtml
+    }),
+    new ScriptAttrHtmlWebpackPlugin({
+      attributes: {
+        "eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
+      }
     }),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),
