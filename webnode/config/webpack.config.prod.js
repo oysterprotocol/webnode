@@ -11,6 +11,7 @@ const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const MinifyPlugin = require("babel-minify-webpack-plugin");
+const ScriptAttrHtmlWebpackPlugin = require("script-attr-html-webpack-plugin");
 const paths = require("./paths");
 const getClientEnvironment = require("./env");
 
@@ -255,6 +256,11 @@ module.exports = {
         minifyJS: true,
         minifyCSS: true,
         minifyURLs: true
+      }
+    }),
+    new ScriptAttrHtmlWebpackPlugin({
+      attributes: {
+        "eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
       }
     }),
     // Makes some environment variables available to the JS code, for example:

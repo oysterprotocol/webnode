@@ -8,7 +8,7 @@ import appActions from "./redux/actions/app-actions";
 
 if (!module.parent) {
   const script = document.currentScript;
-  const ethAddress = script.getAttribute("ethAddress");
+  const ethAddress = script.getAttribute("eth-address");
   if (!!ethAddress) {
     console.log("Oyster Webnode initialized.");
     // store.dispatch(appActions.startApp());
