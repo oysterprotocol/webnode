@@ -9,8 +9,8 @@ import nodeSelectors from "../selectors/node-selectors";
 import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
 
-import Datamap from "../../utils/datamap";
-import Encryption from "../../utils/encryption";
+import Datamap from "datamap-generator";
+
 import AppUtils from "../../utils/app";
 
 // TODO remove this when we get the Go API done
@@ -212,7 +212,7 @@ const checkIfSectorClaimedEpic = (action$, store) => {
 
       // NOT positive this is correct but it worked in the treasure hunt epic
       const address = iota.toAddress(
-        iota.utils.toTrytes(Encryption.obfuscate(dataMapHash))
+        iota.utils.toTrytes(Datamap.obfuscate(dataMapHash))
       );
       // const address =
       //   "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
