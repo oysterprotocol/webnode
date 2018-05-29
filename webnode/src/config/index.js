@@ -1,4 +1,3 @@
-export const DEVELOPED_MODE = true;
 export const API_VERSION = "api/v2";
 export const API_ROOT_URL =
   window.location.href.indexOf("localhost") > 0
@@ -37,3 +36,6 @@ export const TEST_GENESIS_HASHES = [
 ];
 
 export const TEST_ETH_ADDRESS = "0xD1833A50f411432aD38E8374df8Cfff79e743788";
+
+export const SENTRY_DSN =
+  "https://8a7dab982d62492ab5bcf2382df33c9e@sentry.io/1215881";
