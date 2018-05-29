@@ -19,7 +19,7 @@ class ConsentOverlay extends Component {
 
   render() {
     return (
-      <StyleRoot style="{{}}">
+      <StyleRoot>
         <div
           style={
             this.props.consent === 0
