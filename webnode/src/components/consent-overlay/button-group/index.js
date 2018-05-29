@@ -1,11 +1,7 @@
 import React from "react";
 import Radium from "radium";
 import color from "color";
-import { connect } from "react-redux";
-import {
-  CONSENT_GIVEN,
-  CONSENT_DENIED
-} from "../../../../redux/actions/app-actions";
+
 class ButtonGroup extends React.Component {
   constructor(props) {
     super(props);
@@ -124,17 +120,4 @@ const styles = {
   }
 };
 
-const mapDispatchToProps = dispatch => ({
-  giveConsent: () => {
-    dispatch({
-      type: CONSENT_GIVEN
-    });
-  },
-  denyConsent: () => {
-    dispatch({
-      type: CONSENT_DENIED
-    });
-  }
-});
-
-export default connect(null, mapDispatchToProps)(Radium(ButtonGroup));
+export default Radium(ButtonGroup);

@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 
-import ButtonGroup from "./ButtonGroup";
-import MiddleGroup from "./MiddleGroup";
-import LogoGroup from "./LogoGroup";
+import ButtonGroup from "./button-group";
+import MiddleGroup from "./middle-group";
+import LogoGroup from "./logo-group";
 import { StyleRoot } from "radium";
-import './fonts.css';
-
 
 class ConsentOverlay extends Component {
   constructor(props) {
@@ -20,13 +18,7 @@ class ConsentOverlay extends Component {
   render() {
     return (
       <StyleRoot>
-        <div
-          style={
-            this.props.consent === 0
-              ? style.ConsentOverlayStyle
-              : { display: "none" }
-          }
-        >
+        <div style={style.ConsentOverlayStyle}>
           {this.blueBar()}
           <div style={style.consentInner}>
             <LogoGroup />
@@ -48,18 +40,17 @@ const style = {
     position: "fixed",
     backgroundColor: "#ffffff",
     textAlign: "center",
-    height: 250,
+    height: 300,
     "@media (max-width: 1200px)": {
       height: 200
-    },
-    opacity: 0.95
+    }
   },
   consentInner: {
     flexDirection: "row",
     display: "flex",
     justifyContent: "space-evenly",
     alignItems: "center",
-    height: 250,
+    height: 300,
     "@media (max-width: 1200px)": {
       flexDirection: "column",
       height: 200
