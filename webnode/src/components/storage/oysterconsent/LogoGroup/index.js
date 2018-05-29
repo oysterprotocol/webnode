@@ -2,7 +2,7 @@ import React from "react";
 import Radium from "radium";
 import color from "color";
 
-import Logo from "../../../../assets/images/logo.png";
+import Logo from "../../../../assets/images/oyster-logo-with-dot.svg";
 
 const LogoGroup = () => (
   <div style={style.container}>

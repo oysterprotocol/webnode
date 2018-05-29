@@ -48,17 +48,18 @@ const style = {
     position: "fixed",
     backgroundColor: "#ffffff",
     textAlign: "center",
-    height: 300,
+    height: 250,
     "@media (max-width: 1200px)": {
       height: 200
-    }
+    },
+    opacity: 0.95
   },
   consentInner: {
     flexDirection: "row",
     display: "flex",
     justifyContent: "space-evenly",
     alignItems: "center",
-    height: 300,
+    height: 250,
     "@media (max-width: 1200px)": {
       flexDirection: "column",
       height: 200
