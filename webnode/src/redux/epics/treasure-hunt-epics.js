@@ -14,6 +14,12 @@ import Encryption from "../../utils/encryption";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
 
+import IotaWorker from '../workers/iota-worker';
+
+console.log("CREATE WEB WORKER")
+const iotaWorker = new IotaWorker;
+iotaWorker.postMessage("Web worker message");
+
 const performPowEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_PERFORM_POW)
