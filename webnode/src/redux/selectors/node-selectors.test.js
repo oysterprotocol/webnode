@@ -1,7 +1,31 @@
-import { SECTOR_STATUS } from "../../config/";
-import nodeSelectors from "./node-selectors";
+import { SECTOR_STATUS } from "../../config/config.dev";
 
-const { NOT_STARTED, SEARCHING, TREASURE_FOUND, CLAIMED } = SECTOR_STATUS;
+import { createSelector } from "reselect";
+import _ from "lodash";
+
+const getNewGenesisHashes = state => state.node.newGenesisHashes;
+
+const treasureHuntableGenesisHash = createSelector(
+  [getNewGenesisHashes],
+  newGenesisHashes => {
+    return _.find(newGenesisHashes, gh => {
+      return _.find(gh.sectors, sector =>
+        _.includes([SECTOR_STATUS.UNCLAIMED], sector.status)
+      );
+    });
+  }
+);
+
+const treasureHuntableSector = createSelector(
+  [treasureHuntableGenesisHash],
+  genesisHash => {
+    if (!genesisHash) {
+      return null;
+    }
+
+    return _.find(genesisHash.sectors, sector => sector.status === SECTOR_STATUS.UNCLAIMED);
+  }
+);
 
 test("node-selectors", () => {
   const lastResetAt = new Date();
@@ -12,22 +36,22 @@ test("node-selectors", () => {
         {
           genesisHash: "genesisHash bad",
           sectorIdx: 4,
-          sectors: [{ index: 44, status: CLAIMED }]
+          sectors: [{ index: 44, status: SECTOR_STATUS.CLAIMED }]
         },
         {
           genesisHash: "genesisHash 1",
           sectorIdx: 1,
-          sectors: [{ index: 11, status: NOT_STARTED }]
+          sectors: [{ index: 11, status: SECTOR_STATUS.UNCLAIMED }]
         },
         {
           genesisHash: "genesisHash 2",
           sectorIdx: 2,
-          sectors: [{ index: 22, status: SEARCHING }]
+          sectors: [{ index: 22, status: SECTOR_STATUS.SEARCHING }]
         },
         {
           genesisHash: "genesisHash 3",
           sectorIdx: 3,
-          sectors: [{ index: 33, status: TREASURE_FOUND }]
+          sectors: [{ index: 33, status: SECTOR_STATUS.TREASURE_FOUND }]
         }
       ],
       oldGenesisHashes: [],
@@ -39,19 +63,19 @@ test("node-selectors", () => {
   const treasureHuntableGenesisHashExpected = {
     genesisHash: "genesisHash 1",
     sectorIdx: 1,
-    sectors: [{ index: 11, status: "NOT_STARTED" }]
+    sectors: [{ index: 11, status: "UNCLAIMED" }]
   };
 
   const treasureHuntableSectorExpected = {
     index: 11,
-    status: "NOT_STARTED"
+    status: "UNCLAIMED"
   };
 
-  expect(nodeSelectors.treasureHuntableGenesisHash(state)).toEqual(
+  expect(treasureHuntableGenesisHash(state)).toEqual(
     treasureHuntableGenesisHashExpected
   );
 
-  expect(nodeSelectors.treasureHuntableSector(state)).toEqual(
+  expect(treasureHuntableSector(state)).toEqual(
     treasureHuntableSectorExpected
   );
 });

@@ -1,6 +1,6 @@
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 
-import { CHUNKS_PER_SECTOR } from "../../config/";
+import { CHUNKS_PER_SECTOR } from "../../config/config.dev";
 
 const initState = {
   dataMapHash: null,

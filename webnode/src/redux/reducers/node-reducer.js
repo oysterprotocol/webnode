@@ -2,7 +2,7 @@ import _ from "lodash";
 
 import nodeActions from "../actions/node-actions";
 
-import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
+import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/config.dev";
 
 const initState = {
   brokerNodes: [],

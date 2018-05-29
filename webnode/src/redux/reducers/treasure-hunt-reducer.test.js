@@ -1,4 +1,4 @@
-import { CHUNKS_PER_SECTOR } from "../../config/";
+import { CHUNKS_PER_SECTOR } from "../../config/config.dev";
 
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import treasureHunt from "./treasure-hunt-reducer";
