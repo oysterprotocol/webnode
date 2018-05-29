@@ -8,7 +8,6 @@ import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
 
-import Datamap from "../../utils/datamap";
 import Sidechain from "../../utils/sidechain";
 import Encryption from "../../utils/encryption";
 

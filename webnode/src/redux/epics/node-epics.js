@@ -9,7 +9,7 @@ import nodeSelectors from "../selectors/node-selectors";
 import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
 
-import Datamap from "../../utils/datamap";
+import Datamap from "datamap-generator";
 import Encryption from "../../utils/encryption";
 import AppUtils from "../../utils/app";
 

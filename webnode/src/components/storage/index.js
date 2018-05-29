@@ -6,7 +6,7 @@ import _ from "lodash";
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 import appActions from "../../redux/actions/app-actions";
 
-import datamap from "../../utils/datamap";
+import Datamap from "datamap-generator";
 
 import { TEST_ETH_ADDRESS } from "../../config";
 
@@ -63,8 +63,7 @@ class Storage extends Component {
 
   async onClick() {
     const { findTreasure } = this.props;
-
-    const generatedMap = datamap.rawGenerate(
+    const generatedMap = Datamap.rawGenerate(
       this.state.genesisHash,
       this.state.numberOfChunks
     );
