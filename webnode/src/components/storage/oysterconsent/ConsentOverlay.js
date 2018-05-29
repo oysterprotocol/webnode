@@ -4,6 +4,8 @@ import ButtonGroup from "./ButtonGroup";
 import MiddleGroup from "./MiddleGroup";
 import LogoGroup from "./LogoGroup";
 import { StyleRoot } from "radium";
+import './fonts.css';
+
 
 class ConsentOverlay extends Component {
   constructor(props) {
@@ -17,7 +19,7 @@ class ConsentOverlay extends Component {
 
   render() {
     return (
-      <StyleRoot>
+      <StyleRoot style="{{}}">
         <div
           style={
             this.props.consent === 0
