@@ -9,7 +9,7 @@ import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
 
 import Sidechain from "../../utils/sidechain";
-import Encryption from "../../utils/encryption";
+import Datamap from "datamap-generator";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
 
@@ -21,12 +21,12 @@ const performPowEpic = (action$, store) => {
       const { dataMapHash, treasure, chunkIdx, numberOfChunks } = treasureHunt;
 
       const address = iota.toAddress(
-        iota.utils.toTrytes(Encryption.obfuscate(dataMapHash))
+        iota.utils.toTrytes(Datamap.obfuscate(dataMapHash))
       );
       // const address =
       //   "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
-      const [_obfHash, nextDataMapHash] = Encryption.hashChain(dataMapHash);
+      const [_obfHash, nextDataMapHash] = Datamap.hashChain(dataMapHash);
 
       // TODO: change this
       const value = 0;
@@ -90,7 +90,7 @@ const findTreasureEpic = (action$, store) => {
       const { dataMapHash, chunkIdx } = action.payload;
 
       const address = iota.toAddress(
-        iota.utils.toTrytes(Encryption.obfuscate(dataMapHash))
+        iota.utils.toTrytes(Datamap.obfuscate(dataMapHash))
       );
       //    const address =
       //      "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
@@ -106,19 +106,19 @@ const findTreasureEpic = (action$, store) => {
         });
 
         const chainWithTreasure = _.find(sideChain, hashedAddress => {
-          return !!Encryption.decryptTreasure(
+          return !!Datamap.decryptTreasure(
             hashedAddress,
             transaction.signatureMessageFragment,
             dataMapHash
           );
         });
 
-        const [_obfHash, nextDataMapHash] = Encryption.hashChain(dataMapHash);
+        const [_obfHash, nextDataMapHash] = Datamap.hashChain(dataMapHash);
 
         return Observable.of(
           !!chainWithTreasure
             ? treasureHuntActions.saveTreasure({
-                treasure: Encryption.decryptTreasure(
+                treasure: Datamap.decryptTreasure(
                   chainWithTreasure,
                   transaction.signatureMessageFragment,
                   dataMapHash
