@@ -2345,6 +2345,10 @@ data-urls@^1.0.0:
     whatwg-mimetype "^2.0.0"
     whatwg-url "^6.4.0"
 
+"datamap-generator@git+https://github.com/oysterprotocol/datamap-generator.git":
+  version "1.0.4"
+  resolved "git+https://github.com/oysterprotocol/datamap-generator.git#8d0e7bc03727ebcf0d67bb73b07f2383749d463c"
+
 date-now@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/date-now/-/date-now-0.1.4.tgz#eaf439fd4d4848ad74e5cc7dbef200672b9e345b"
