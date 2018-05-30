@@ -5,6 +5,7 @@ import _ from "lodash";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 import nodeActions from "../../redux/actions/node-actions";
+import consentActions from "../../redux/actions/consent-actions";
 
 import Datamap from "datamap-generator";
 
@@ -78,9 +79,14 @@ class Storage extends Component {
     Promise.all(transformedMap); //TODO better implementation
   }
 
-  startApp() {
+  componentDidMount() {
     const { setOwnerEthAddress } = this.props;
     setOwnerEthAddress(TEST_ETH_ADDRESS);
+  }
+
+  startApp() {
+    const { giveConsent } = this.props;
+    giveConsent();
   }
 
   render() {
@@ -116,6 +122,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
   startSector: obj => dispatch(treasureHuntActions.startSector(obj)),
+  giveConsent: () => dispatch(consentActions.giveConsent()),
   setOwnerEthAddress: ethAddress =>
     dispatch(nodeActions.setOwnerEthAddress(ethAddress))
 });
