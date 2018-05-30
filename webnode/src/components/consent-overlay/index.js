@@ -4,7 +4,13 @@ import ButtonGroup from "./button-group";
 import MiddleGroup from "./middle-group";
 import LogoGroup from "./logo-group";
 import { StyleRoot } from "radium";
-import "./fonts.css";
+import WebFont from "webfontloader";
+
+WebFont.load({
+  google: {
+    families: ["Poppins:400,600", "sans-serif"]
+  }
+});
 
 const ConsentOverlay = ({ status, giveConsent, denyConsent }) => {
   return (
@@ -23,6 +29,7 @@ const ConsentOverlay = ({ status, giveConsent, denyConsent }) => {
 
 const style = {
   ConsentOverlayStyle: {
+    fontFamily: "Poppins",
     overflow: "hidden",
     bottom: 0,
     left: 0,
