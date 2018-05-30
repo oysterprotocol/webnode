@@ -6,12 +6,11 @@ import Footer from "./components/footer";
 import Root from "./components/root";
 
 import { store, persistor } from "./redux";
-import appActions from "./redux/actions/app-actions";
 
-const App = () => (
+const App = ({ ethAddress }) => (
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <Footer />
+      <Footer ethAddress={ethAddress} />
     </PersistGate>
   </Provider>
 );
@@ -22,10 +21,9 @@ if (!module.parent) {
   if (!!ethAddress) {
     console.log("Oyster Webnode initialized.");
     ReactDOM.render(
-      <App />,
+      <App ethAddress={ethAddress} />,
       document.body.appendChild(document.createElement("div"))
     );
-    // store.dispatch(appActions.startApp(ethAddress));
   } else {
     console.log(
       "Oyster Webnode must be initialized with an 'eth-address' attribute, please remember to specify this attribute in the script tag."

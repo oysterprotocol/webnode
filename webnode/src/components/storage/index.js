@@ -4,7 +4,7 @@ import { Input, Button, Container, Header, Image } from "semantic-ui-react";
 import _ from "lodash";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
-import appActions from "../../redux/actions/app-actions";
+import nodeActions from "../../redux/actions/node-actions";
 
 import Datamap from "datamap-generator";
 
@@ -79,8 +79,8 @@ class Storage extends Component {
   }
 
   startApp() {
-    const { startApp } = this.props;
-    startApp(TEST_ETH_ADDRESS);
+    const { setOwnerEthAddress } = this.props;
+    setOwnerEthAddress(TEST_ETH_ADDRESS);
   }
 
   render() {
@@ -116,7 +116,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
   startSector: obj => dispatch(treasureHuntActions.startSector(obj)),
-  startApp: ethAddress => dispatch(appActions.startApp(ethAddress))
+  setOwnerEthAddress: ethAddress =>
+    dispatch(nodeActions.setOwnerEthAddress(ethAddress))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Storage);

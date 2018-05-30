@@ -4,6 +4,7 @@ import moment from "moment";
 import _ from "lodash";
 
 import nodeActions from "../actions/node-actions";
+import consentActions from "../actions/consent-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import nodeSelectors from "../selectors/node-selectors";
 import brokerNode from "../services/broker-node";
@@ -12,9 +13,6 @@ import iota from "../services/iota";
 import Datamap from "datamap-generator";
 
 import AppUtils from "../../utils/app";
-
-// TODO remove this when we get the Go API done
-import powActions from "../actions/pow-actions";
 
 import {
   MIN_GENESIS_HASHES,
@@ -25,19 +23,21 @@ import {
 } from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {
-  return action$.ofType(nodeActions.NODE_RESET).mergeMap(action => {
-    const { id } = action.payload;
-    return Observable.fromPromise(brokerNode.registerWebnode(id))
-      .map(({ data }) => {
-        console.log("/api/v1/supply/webnodes response:", data);
-        return nodeActions.determineBrokerNodeOrGenesisHash();
-      })
-      .catch(error => {
-        console.log("/api/v1/supply/webnodes error:", error);
-        // TODO: fire a generic error action
-        return nodeActions.determineBrokerNodeOrGenesisHash();
-      });
-  });
+  return action$
+    .ofType(nodeActions.NODE_INITIALIZE, nodeActions.NODE_RESET)
+    .mergeMap(action => {
+      const { node } = store.getState();
+      return Observable.fromPromise(brokerNode.registerWebnode(node.id))
+        .map(({ data }) => {
+          console.log("/api/v1/supply/webnodes response:", data);
+          return nodeActions.determineBrokerNodeOrGenesisHash();
+        })
+        .catch(error => {
+          console.log("/api/v1/supply/webnodes error:", error);
+          // TODO: fire a generic error action
+          return Observable.of(nodeActions.determineBrokerNodeOrGenesisHash());
+        });
+    });
 };
 
 const brokerNodeOrGenesisHashEpic = (action$, store) => {
