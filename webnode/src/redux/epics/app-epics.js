@@ -23,7 +23,8 @@ const startAppEpic = (action$, store) => {
             .subtract(14, "days")
             .valueOf();
 
-      const p = peer.init();
+      // const p = peer.init();
+      const p = { id: "123" };
       const today = moment().valueOf();
 
       return newWebnode
