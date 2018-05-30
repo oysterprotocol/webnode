@@ -57,6 +57,7 @@ class ButtonGroup extends React.Component {
 
 const styles = {
   base: {
+    cursor: "pointer",
     borderRadius: 12,
     outline: "none",
     padding: 0,
