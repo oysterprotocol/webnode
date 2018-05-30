@@ -8,10 +8,10 @@ const init = () => {
     .replace(/[^a-z]+/g, "")
     .substr(0, 8);
   const peer = new Peer(randomClient, {
-    host: PEER_HOST,
-    port: PEER_PORT,
-    path: PEER_PATH,
-    debug: PEER_DEBUG
+    // host: PEER_HOST,
+    // port: PEER_PORT,
+    // path: PEER_PATH,
+    // debug: PEER_DEBUG
   });
   return peer;
 };
