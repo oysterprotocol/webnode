@@ -3,7 +3,7 @@ export const API_VERSION = "api/v2";
 export const API_ROOT_URL =
   window.location.href.indexOf("localhost") > 0
     ? "http://localhost:3000"
-    : "http://18.188.64.13:3000";
+    : "https://18.188.64.13:3000";
 
 export const ASSET_URL =
   window.location.href.indexOf("localhost") > 0
