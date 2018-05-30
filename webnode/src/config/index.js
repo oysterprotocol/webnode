@@ -5,6 +5,11 @@ export const API_ROOT_URL =
     ? "http://localhost:3000"
     : "http://18.188.64.13:3000";
 
+export const ASSET_URL =
+  window.location.href.indexOf("localhost") > 0
+    ? window.location.href
+    : "https://web.oysternode.com/";
+
 export const PEER_HOST = "localhost";
 export const PEER_PORT = 8000;
 export const PEER_PATH = "/peer";
