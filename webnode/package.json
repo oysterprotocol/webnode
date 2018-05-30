@@ -28,7 +28,6 @@
     "moment": "^2.22.1",
     "node-forge": "^0.7.5",
     "object-assign": "4.1.1",
-    "peerjs": "^0.3.14",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
     "promise": "8.0.1",

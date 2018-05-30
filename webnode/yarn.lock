@@ -3048,10 +3048,6 @@ event-emitter@~0.3.5:
     d "1"
     es5-ext "~0.10.14"
 
-eventemitter3@^0.1.5:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-0.1.6.tgz#8c7ac44b87baab55cd50c828dc38778eac052ea5"
-
 eventemitter3@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.0.tgz#090b4d6cdbd645ed10bf750d4b5407942d7ba163"
@@ -4960,10 +4956,6 @@ js-base64@^2.1.9:
   version "2.4.5"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.4.5.tgz#e293cd3c7c82f070d700fc7a1ca0a2e69f101f92"
 
-js-binarypack@0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/js-binarypack/-/js-binarypack-0.0.9.tgz#454243d3de212961cc1514a2f119dec2faf64035"
-
 js-sha3@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.7.0.tgz#0a5c57b36f79882573b2d84051f8bb85dd1bd63a"
@@ -6243,14 +6235,6 @@ pbkdf2@^3.0.3:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-peerjs@^0.3.14:
-  version "0.3.14"
-  resolved "https://registry.yarnpkg.com/peerjs/-/peerjs-0.3.14.tgz#5f934eb09a04ce237a47d52f4766c9373da2511e"
-  dependencies:
-    eventemitter3 "^0.1.5"
-    js-binarypack "0.0.9"
-    reliable "git+https://github.com/michelle/reliable.git"
-
 performance-now@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
@@ -7119,12 +7103,6 @@ regjsparser@^0.1.4:
 relateurl@0.2.x:
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/relateurl/-/relateurl-0.2.7.tgz#54dbf377e51440aca90a4cd274600d3ff2d888a9"
-
-"reliable@git+https://github.com/michelle/reliable.git":
-  version "0.1.0"
-  resolved "git+https://github.com/michelle/reliable.git#f09ba29d57a05beaa07990171f3fe7b746587aaa"
-  dependencies:
-    js-binarypack "0.0.9"
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"

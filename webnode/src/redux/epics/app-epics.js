@@ -2,9 +2,9 @@ import { Observable } from "rxjs";
 import { combineEpics } from "redux-observable";
 import moment from "moment";
 
+import uuidv1 from "uuid/v1";
 import nodeActions from "../actions/node-actions";
 import consentActions from "../actions/consent-actions";
-import peer from "../services/peer";
 import { CONSENT_STATUS } from "../../config";
 
 const startAppEpic = (action$, store) => {
@@ -23,12 +23,12 @@ const startAppEpic = (action$, store) => {
             .subtract(14, "days")
             .valueOf();
 
-      const p = peer.init();
+      const id = uuidv1();
       const today = moment().valueOf();
 
       return newWebnode
         ? nodeActions.initialize()
-        : nodeActions.resetNode({ id: p.id, lastResetAt: today });
+        : nodeActions.resetNode({ id, lastResetAt: today });
     });
 };
 
