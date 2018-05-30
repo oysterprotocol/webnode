@@ -58,6 +58,7 @@ class ButtonGroup extends React.Component {
 const styles = {
   base: {
     borderRadius: 12,
+    outline: "none",
     padding: 0,
     fontFamily: "Poppins",
     fontSize: 23,
