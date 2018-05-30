@@ -1,3 +1,6 @@
+export const NODE_INITIALIZE = "directories/node/initialize";
+export const NODE_SET_OWNER_ETH_ADDRESS =
+  "directories/node/set_owner_eth_address";
 export const NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH =
   "directories/node/determine_broker_node_or_genesis_hash";
 export const NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT =
@@ -18,6 +21,8 @@ export const NODE_MARK_SECTOR_AS_CLAIMED =
 
 const ACTIONS = Object.freeze({
   // actions
+  NODE_INITIALIZE,
+  NODE_SET_OWNER_ETH_ADDRESS,
   NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH,
   NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT,
   NODE_REQUEST_BROKER_NODES,
@@ -68,6 +73,15 @@ const ACTIONS = Object.freeze({
   markSectorAsClaimed: ({ genesisHash, sectorIdx }) => ({
     type: NODE_MARK_SECTOR_AS_CLAIMED,
     payload: { genesisHash, sectorIdx }
+  }),
+
+  setOwnerEthAddress: ethAddress => ({
+    type: NODE_SET_OWNER_ETH_ADDRESS,
+    payload: ethAddress
+  }),
+
+  initialize: () => ({
+    type: NODE_INITIALIZE
   })
 });
 
