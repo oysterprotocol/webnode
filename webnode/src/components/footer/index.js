@@ -4,20 +4,33 @@ import { connect } from "react-redux";
 import consentActions from "../../redux/actions/consent-actions";
 import ConsentOverlay from "../consent-overlay";
 
+import { CONSENT_STATUS } from "../../config";
+
 class Footer extends Component {
   render() {
-    const { status } = this.props;
-    return <ConsentOverlay status={status} />;
+    const { status, giveConsent, denyConsent } = this.props;
+    if (status === CONSENT_STATUS.APPROVED) {
+      return null;
+    }
+    console.log("Xxxxxxxxxxxxxxx: ", status);
+
+    return (
+      <ConsentOverlay
+        status={status}
+        giveConsent={giveConsent}
+        denyConsent={denyConsent}
+      />
+    );
   }
 }
 
 const mapStateToProps = state => ({
-  consent: state.consent.status
+  status: state.consent.status
 });
 
 const mapDispatchToProps = dispatch => ({
-  consentGiven: obj => dispatch(consentActions.consentGiven()),
-  consentDenied: obj => dispatch(consentActions.consentDenied())
+  giveConsent: obj => dispatch(consentActions.giveConsent()),
+  denyConsent: obj => dispatch(consentActions.denyConsent())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Footer);

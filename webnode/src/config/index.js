@@ -30,6 +30,12 @@ export const SECTOR_STATUS = {
   UNCLAIMED: "UNCLAIMED"
 };
 
+export const CONSENT_STATUS = {
+  PENDING: "PENDING",
+  APPROVED: "APPROVED",
+  DENIED: "DENIED"
+};
+
 export const CHUNKS_PER_SECTOR = 1000000;
 
 export const TEST_GENESIS_HASHES = [

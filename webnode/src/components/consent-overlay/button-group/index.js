@@ -2,32 +2,51 @@ import React from "react";
 import Radium from "radium";
 import color from "color";
 
+class Button extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const { onClick, kind, children } = this.props;
+    return (
+      <button onClick={onClick} style={[styles.base, styles[kind]]}>
+        {children}
+      </button>
+    );
+  }
+}
+
+Button = Radium(Button);
+
 class ButtonGroup extends React.Component {
   constructor(props) {
     super(props);
   }
+
   render() {
+    const { giveConsent, denyConsent } = this.props;
     return (
       <div>
         <div style={styles.containerDesktop}>
           <li>
             {" "}
-            <Button onClick={() => this.props.giveConsent()} kind="continue">
+            <Button onClick={giveConsent} kind="continue">
               Continue Ad-Free
             </Button>
           </li>
           <li>
             {" "}
-            <Button onClick={() => this.props.denyConsent()} kind="deny">
+            <Button onClick={denyConsent} kind="deny">
               Deny Consent
             </Button>
           </li>
         </div>
         <div style={styles.containerMobile}>
-          <Button onClick={() => this.props.giveConsent()} kind="continue">
+          <Button onClick={giveConsent} kind="continue">
             Continue Ad-Free
           </Button>
-          <Button onClick={() => this.props.denyConsent()} kind="deny">
+          <Button onClick={denyConsent} kind="deny">
             Deny Consent
           </Button>
         </div>
@@ -35,24 +54,6 @@ class ButtonGroup extends React.Component {
     );
   }
 }
-
-class Button extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <button
-        onClick={this.props.onClick}
-        style={[styles.base, styles[this.props.kind]]}
-      >
-        {this.props.children}
-      </button>
-    );
-  }
-}
-
-Button = Radium(Button);
 
 const styles = {
   base: {

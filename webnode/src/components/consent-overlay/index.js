@@ -5,31 +5,20 @@ import MiddleGroup from "./middle-group";
 import LogoGroup from "./logo-group";
 import { StyleRoot } from "radium";
 
-class ConsentOverlay extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { consent: props.consent };
-  }
-
-  blueBar() {
-    return <div style={style.blueBar} />;
-  }
-
-  render() {
-    return (
-      <StyleRoot>
-        <div style={style.ConsentOverlayStyle}>
-          {this.blueBar()}
-          <div style={style.consentInner}>
-            <LogoGroup />
-            <MiddleGroup />
-            <ButtonGroup />
-          </div>
+const ConsentOverlay = ({ status, giveConsent, denyConsent }) => {
+  return (
+    <StyleRoot>
+      <div style={style.ConsentOverlayStyle}>
+        <div style={style.blueBar} />
+        <div style={style.consentInner}>
+          <LogoGroup />
+          <MiddleGroup />
+          <ButtonGroup giveConsent={giveConsent} denyConsent={denyConsent} />
         </div>
-      </StyleRoot>
-    );
-  }
-}
+      </div>
+    </StyleRoot>
+  );
+};
 
 const style = {
   ConsentOverlayStyle: {

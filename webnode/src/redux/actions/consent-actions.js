@@ -1,17 +1,17 @@
-export const CONSENT_GIVEN = "directories/app/consent-given";
-export const CONSENT_DENIED = "directories/app/consent-denied";
+export const GIVE_CONSENT = "directories/app/give-consent";
+export const DENY_CONSENT = "directories/app/deny-consent";
 
 const ACTIONS = Object.freeze({
   // actions
-  CONSENT_GIVEN,
-  CONSENT_DENIED,
+  GIVE_CONSENT,
+  DENY_CONSENT,
 
   // actionCreators
-  consentGiven: () => ({
-    type: CONSENT_GIVEN
+  giveConsent: () => ({
+    type: GIVE_CONSENT
   }),
-  consentDenied: () => ({
-    type: CONSENT_DENIED
+  denyConsent: () => ({
+    type: DENY_CONSENT
   })
 });
 

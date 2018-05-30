@@ -1,26 +1,21 @@
 import consentActions from "../actions/consent-actions";
-
-const CONSENT_STATUSES = {
-  PENDING: "PENDING",
-  APPROVED: "APPROVED",
-  DENIED: "DENIED"
-};
+import { CONSENT_STATUS } from "../../config";
 
 const initState = {
-  status: CONSENT_STATUSES.PENDING
+  status: CONSENT_STATUS.PENDING
 };
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case consentActions.CONSENT_GIVEN:
+    case consentActions.GIVE_CONSENT:
       return {
         ...state,
-        status: CONSENT_STATUSES.APPROVED
+        status: CONSENT_STATUS.APPROVED
       };
-    case consentActions.CONSENT_DENIED:
+    case consentActions.DENY_CONSENT:
       return {
         ...state,
-        status: CONSENT_STATUSES.DENIED
+        status: CONSENT_STATUS.DENIED
       };
 
     default:
