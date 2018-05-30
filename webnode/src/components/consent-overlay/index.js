@@ -23,6 +23,7 @@ const ConsentOverlay = ({ status, giveConsent, denyConsent }) => {
 
 const style = {
   ConsentOverlayStyle: {
+    fontFamily: "Poppins",
     overflow: "hidden",
     bottom: 0,
     left: 0,
