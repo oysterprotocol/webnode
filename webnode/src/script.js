@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/lib/integration/react";
-import Footer from "./components/footer";
+import Overlay from "./components/overlay";
 import Root from "./components/root";
 
 import { store, persistor } from "./redux";
@@ -10,7 +10,7 @@ import { store, persistor } from "./redux";
 const App = ({ ethAddress }) => (
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <Footer ethAddress={ethAddress} />
+      <Overlay ethAddress={ethAddress} />
     </PersistGate>
   </Provider>
 );

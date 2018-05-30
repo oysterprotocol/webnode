@@ -7,7 +7,7 @@ import ConsentOverlay from "../consent-overlay";
 
 import { CONSENT_STATUS } from "../../config";
 
-class Footer extends Component {
+class Overlay extends Component {
   componentDidMount() {
     const { setOwnerEthAddress, ethAddress } = this.props;
     setOwnerEthAddress(ethAddress);
@@ -40,4 +40,4 @@ const mapDispatchToProps = dispatch => ({
   denyConsent: obj => dispatch(consentActions.denyConsent())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Footer);
+export default connect(mapStateToProps, mapDispatchToProps)(Overlay);
