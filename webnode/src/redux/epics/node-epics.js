@@ -4,7 +4,6 @@ import moment from "moment";
 import _ from "lodash";
 
 import nodeActions from "../actions/node-actions";
-import consentActions from "../actions/consent-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import nodeSelectors from "../selectors/node-selectors";
 import brokerNode from "../services/broker-node";
