@@ -222,6 +222,10 @@ module.exports = {
         "eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
       }
     }),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: "development",
+      DEBUG: true
+    }),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),
     // Makes some environment variables available to the JS code, for example:

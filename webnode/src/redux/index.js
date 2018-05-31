@@ -8,17 +8,18 @@ import storage from "redux-persist/lib/storage";
 import reducer from "./reducers/index";
 import epics from "./epics";
 
-import { DEVELOPED_MODE } from "../config";
+const DEVELOPMENT_MODE = process.env.NODE_ENV !== "production";
+const DEBUGGING = process.env.DEBUG;
 
 const epicMiddleware = createEpicMiddleware(epics);
 
 const loggerMiddleware = createLogger();
 
 let middlewares = null;
-if (!DEVELOPED_MODE) {
-  middlewares = [epicMiddleware, promise];
-} else {
+if (DEVELOPMENT_MODE) {
   middlewares = [epicMiddleware, promise, loggerMiddleware];
+} else {
+  middlewares = [epicMiddleware, promise];
 }
 
 const storeEnhancer = [applyMiddleware(...middlewares)];
@@ -26,7 +27,7 @@ const storeEnhancer = [applyMiddleware(...middlewares)];
 const persistConfig = {
   key: "directories",
   storage,
-  whitelist: []
+  whitelist: DEBUGGING ? [] : ["consent", "node", "treasureHunt"]
 };
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

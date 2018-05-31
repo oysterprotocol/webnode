@@ -1,4 +1,3 @@
-export const DEVELOPED_MODE = true;
 export const API_VERSION = "api/v2";
 export const API_ROOT_URL =
   window.location.href.indexOf("localhost") > 0
