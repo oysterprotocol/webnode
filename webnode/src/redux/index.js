@@ -19,7 +19,8 @@ let middlewares = null;
 if (DEVELOPMENT_MODE) {
   middlewares = [epicMiddleware, promise, loggerMiddleware];
 } else {
-  middlewares = [epicMiddleware, promise];
+  middlewares = [epicMiddleware, promise, loggerMiddleware];
+  // middlewares = [epicMiddleware, promise];
 }
 
 const storeEnhancer = [applyMiddleware(...middlewares)];
