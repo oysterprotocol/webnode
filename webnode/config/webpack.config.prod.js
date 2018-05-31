@@ -264,6 +264,10 @@ module.exports = {
         "eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
       }
     }),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: "production",
+      DEBUG: false
+    }),
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
     // It is absolutely essential that NODE_ENV was set to production here.
