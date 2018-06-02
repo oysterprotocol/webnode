@@ -21,7 +21,6 @@ module.exports = {
   devtool: "cheap-module-source-map",
   entry: {
     development: [
-      require.resolve("./polyfills"),
       require.resolve("react-dev-utils/webpackHotDevClient"),
       paths.appIndexJs
     ]
