@@ -1,7 +1,4 @@
-import { IOTA_POW, IOTA_POW_SUCCESS } from "../actions/pow-actions";
-
 import nodeActions from "../actions/node-actions";
-import consentActions from "../actions/consent-actions";
 
 const initState = {
   powResults: [],

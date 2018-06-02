@@ -12,7 +12,6 @@ import Datamap from "datamap-generator";
 import { TEST_ETH_ADDRESS } from "../../config";
 
 import TreasureTable from "./toolbox/TreasureTable";
-import ConsentOverlay from "../consent-overlay";
 
 import LOGO from "../../assets/images/logo.svg";
 
@@ -90,7 +89,7 @@ class Storage extends Component {
   }
 
   render() {
-    const { treasures, numberOfCalls, consent } = this.props;
+    const { treasures, numberOfCalls } = this.props;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
         <div style={{ padding: 50 }}>

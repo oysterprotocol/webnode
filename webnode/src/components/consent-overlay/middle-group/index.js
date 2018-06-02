@@ -1,6 +1,5 @@
 import React from "react";
 import Radium from "radium";
-import color from "color";
 
 const MiddleGroup = () => (
   <div style={styles.container}>

@@ -89,7 +89,6 @@ export const localPow = data => {
   const branchTransaction = data.branchTx;
   const minWeightMagnitude = data.mwm;
   const trytes = data.trytes;
-  const callback = data.callback;
 
   const curlHashing = (
     trunkTransaction,
@@ -223,27 +222,6 @@ export const attachToTangle = data => {
           }
         }
       )
-      .then(nonce => {
-        console.log(
-          "attachToTangle nonce ",
-          data.tryte.substr(0, 2187 - 81).concat(nonce)
-        );
-      })
-      .catch(error => {
-        console.log("attachToTangle error ", error);
-      });
-  });
-};
-
-const attachToTangleOnTask = data => {
-  return new Promise((resolve, reject) => {
-    curl
-      .pow({
-        trunkTransaction: data.trunkTransaction,
-        branchTransaction: data.branchTransaction,
-        minWeight: data.minWeight,
-        trytes: data.trytes
-      })
       .then(nonce => {
         console.log(
           "attachToTangle nonce ",

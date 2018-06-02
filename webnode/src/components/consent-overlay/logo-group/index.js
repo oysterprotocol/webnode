@@ -1,6 +1,5 @@
 import React from "react";
 import Radium from "radium";
-import color from "color";
 
 import { ASSET_URL } from "../../../config";
 import Logo from "../../../assets/images/oyster-logo-with-dot.svg";
