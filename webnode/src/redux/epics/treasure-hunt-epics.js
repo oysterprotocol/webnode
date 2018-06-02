@@ -13,6 +13,15 @@ import Datamap from "datamap-generator";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
 
+import IotaWorker from 'worker-loader?name=iota-worker.js!../workers/iota-worker';
+
+console.log("CREATE WEB WORKER")
+const iotaWorker = new IotaWorker;
+
+if (iotaWorker) {
+  iotaWorker.postMessage("Web worker message");
+}
+
 const performPowEpic = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_PERFORM_POW)

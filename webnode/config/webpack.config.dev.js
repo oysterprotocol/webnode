@@ -91,7 +91,7 @@ module.exports = {
 
       // First, run the linter.
       // It's important to do this before Babel processes the JS.
-      {
+      /*{
         test: /\.(js|jsx|mjs)$/,
         enforce: "pre",
         use: [
@@ -104,14 +104,13 @@ module.exports = {
           }
         ],
         include: paths.appSrc
-      },
+      },*/
       {
         test: /worker\.js$/,
         use: {
           loader: "worker-loader",
           options: {
-            name: "[name].[ext]",
-            publicPath: "src/redux/workers/"
+            name: "[name].[ext]"
           }
         }
       },
