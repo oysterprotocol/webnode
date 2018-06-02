@@ -1,7 +1,5 @@
 import { Observable } from "rxjs";
 import { combineEpics } from "redux-observable";
-import moment from "moment";
-import _ from "lodash";
 
 import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
@@ -11,12 +9,10 @@ import iota from "../services/iota";
 
 import Datamap from "datamap-generator";
 
-import AppUtils from "../../utils/app";
 
 import {
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
-  SECTOR_STATUS,
   CHUNKS_PER_SECTOR,
   TEST_GENESIS_HASHES
 } from "../../config/";
