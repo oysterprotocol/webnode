@@ -1,22 +1,17 @@
 "use strict";
 
 const autoprefixer = require("autoprefixer");
-const path = require("path");
-const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
-const WatchMissingNodeModulesPlugin = require("react-dev-utils/WatchMissingNodeModulesPlugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
-const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const ScriptAttrHtmlWebpackPlugin = require("script-attr-html-webpack-plugin");
 const getClientEnvironment = require("./env");
 const paths = require("./paths");
 
-const publicPath = "/";
 const publicUrl = "";
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
+
 module.exports = {
   devtool: "cheap-module-source-map",
   entry: {
@@ -29,8 +24,6 @@ module.exports = {
   module: {
     strictExportPresence: true,
     rules: [
-      // First, run the linter.
-      // It's important to do this before Babel processes the JS.
       {
         test: /\.(js|jsx|mjs)$/,
         enforce: "pre",
@@ -44,16 +37,6 @@ module.exports = {
           }
         ],
         include: paths.appSrc
-      },
-      {
-        test: /worker\.js$/,
-        use: {
-          loader: "worker-loader",
-          options: {
-            name: "[name].[ext]",
-            publicPath: "src/redux/workers/"
-          }
-        }
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -110,7 +93,16 @@ module.exports = {
             ]
           },
           {
-
+            test: /worker\.js$/,
+            use: {
+              loader: "worker-loader",
+              options: {
+                name: "[name].[ext]",
+                publicPath: "src/redux/workers/"
+              }
+            }
+          },
+          {
             exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
             loader: require.resolve("file-loader"),
             options: {
