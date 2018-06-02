@@ -20,29 +20,11 @@ const env = getClientEnvironment(publicUrl);
 module.exports = {
   devtool: "cheap-module-source-map",
   entry: {
-    development: [
-      paths.appIndexJs
-    ]
+    development: paths.appIndexJs
   },
   output: {
-    pathinfo: true,
     filename: "static/js/[name].bundle.js",
     chunkFilename: "static/js/[name].chunk.js",
-    publicPath: publicPath,
-    devtoolModuleFilenameTemplate: info =>
-      path.resolve(info.absoluteResourcePath).replace(/\\/g, "/")
-  },
-  resolve: {
-    modules: ["node_modules", paths.appNodeModules].concat(
-      process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
-    ),
-    extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
-    alias: {
-      "react-native": "react-native-web"
-    },
-    plugins: [
-      new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])
-    ]
   },
   module: {
     strictExportPresence: true,
@@ -152,18 +134,5 @@ module.exports = {
         "eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
       }
     }),
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: "development",
-      DEBUG: true
-    }),
-    new webpack.NamedModulesPlugin(),
-    new webpack.DefinePlugin(env.stringified),
-    new webpack.HotModuleReplacementPlugin(),
-    new CaseSensitivePathsPlugin(),
-    new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
-  ],
-  performance: {
-    hints: false
-  }
+  ]
 };
