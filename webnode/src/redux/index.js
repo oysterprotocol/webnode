@@ -12,6 +12,7 @@ import reducer from "./reducers/index";
 import epics from "./epics";
 
 const IS_DEV = process.env.NODE_ENV === "development";
+const DEBUGGING = process.env.DEBUG;
 
 Raven.config(SENTRY_DSN).install();
 
@@ -21,13 +22,12 @@ const middleware = [
   promise,
   createRavenMiddleware(Raven, {})
 ].filter(x => !!x);
-
 const storeEnhancer = [applyMiddleware(...middleware)];
 
 const persistConfig = {
   key: "directories",
   storage,
-  whitelist: []
+  whitelist: DEBUGGING ? [] : ["consent", "node", "treasureHunt"]
 };
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

@@ -9,6 +9,7 @@ const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const WatchMissingNodeModulesPlugin = require("react-dev-utils/WatchMissingNodeModulesPlugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
+const ScriptAttrHtmlWebpackPlugin = require("script-attr-html-webpack-plugin");
 const getClientEnvironment = require("./env");
 const paths = require("./paths");
 
@@ -33,7 +34,8 @@ module.exports = {
       require.resolve("./polyfills"),
       require.resolve("react-dev-utils/webpackHotDevClient"),
       paths.appIndexJs
-    ]
+    ],
+    script: paths.appSrc + "/script.js"
   },
   output: {
     // Add /* filename */ comments to generated require()s in the output.
@@ -126,7 +128,7 @@ module.exports = {
             loader: require.resolve("url-loader"),
             options: {
               limit: 10000,
-              name: "static/media/[name].[hash:8].[ext]"
+              name: "static/media/[name].[ext]"
             }
           },
           // Process JS with Babel.
@@ -195,7 +197,7 @@ module.exports = {
             exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
             loader: require.resolve("file-loader"),
             options: {
-              name: "static/media/[name].[hash:8].[ext]"
+              name: "static/media/[name].[ext]"
             }
           }
         ]
@@ -214,6 +216,15 @@ module.exports = {
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.appHtml
+    }),
+    new ScriptAttrHtmlWebpackPlugin({
+      attributes: {
+        "eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
+      }
+    }),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: "development",
+      DEBUG: true
     }),
     // Add module names to factory functions so they appear in browser profiler.
     new webpack.NamedModulesPlugin(),

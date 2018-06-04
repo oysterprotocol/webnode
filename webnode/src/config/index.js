@@ -2,24 +2,15 @@ export const API_VERSION = "api/v2";
 export const API_ROOT_URL =
   window.location.href.indexOf("localhost") > 0
     ? "http://localhost:3000"
-    : "http://18.188.64.13:3000";
+    : "https://broker-1.oysternodes.com:3000";
 
-export const PEER_HOST = "localhost";
-export const PEER_PORT = 8000;
-export const PEER_PATH = "/peer";
-export const PEER_DEBUG = 3;
+export const ASSET_URL =
+  window.location.href.indexOf("localhost") > 0
+    ? window.location.href
+    : "https://web.oysternode.com/";
 
 export const IOTA_API_PROVIDER = "http://18.188.64.13:14265";
 export const IOTA_ADDRESS_LENGTH = 81;
-
-export const DEFAULT_CONSTANT = Object.freeze({
-  PEER_ID: "",
-  BROKER_NODE: ["127.0.0.1"],
-  WEB_NODE: [],
-  GENESIS_HASH: [],
-  EXCHANGES_TRANSACTION_ID: "",
-  EXCHANGES_NEED_REQUESTED: ""
-});
 
 export const MIN_BROKER_NODES = 1;
 export const MIN_GENESIS_HASHES = 1;
@@ -27,6 +18,12 @@ export const MIN_GENESIS_HASHES = 1;
 export const SECTOR_STATUS = {
   CLAIMED: "CLAIMED",
   UNCLAIMED: "UNCLAIMED"
+};
+
+export const CONSENT_STATUS = {
+  PENDING: "PENDING",
+  APPROVED: "APPROVED",
+  DENIED: "DENIED"
 };
 
 export const CHUNKS_PER_SECTOR = 1000000;

@@ -1,5 +1,5 @@
 import _ from "lodash";
-import Encryption from "./encryption";
+import Datamap from "datamap-generator";
 
 const generate = address => {
   const range = _.range(0, 1000);
@@ -8,10 +8,10 @@ const generate = address => {
     range,
     (chain, n) => {
       const lastValue = chain[n];
-      const nextValue = Encryption.sideChain(lastValue);
+      const nextValue = Datamap.sideChain(lastValue);
       return [...chain, nextValue];
     },
-    [Encryption.sideChain(address)]
+    [Datamap.sideChain(address)]
   );
 
   return sidechain;

@@ -4,14 +4,15 @@ import { Input, Button, Container, Header, Image } from "semantic-ui-react";
 import _ from "lodash";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
-import appActions from "../../redux/actions/app-actions";
+import nodeActions from "../../redux/actions/node-actions";
+import consentActions from "../../redux/actions/consent-actions";
 
-import datamap from "../../utils/datamap";
+import Datamap from "datamap-generator";
 
 import { TEST_ETH_ADDRESS } from "../../config";
 
 import TreasureTable from "./toolbox/TreasureTable";
-import ConsentOverlay from "./oysterconsent/ConsentOverlay";
+import ConsentOverlay from "../consent-overlay";
 
 import LOGO from "../../assets/images/logo.svg";
 
@@ -63,8 +64,7 @@ class Storage extends Component {
 
   async onClick() {
     const { findTreasure } = this.props;
-
-    const generatedMap = datamap.rawGenerate(
+    const generatedMap = Datamap.rawGenerate(
       this.state.genesisHash,
       this.state.numberOfChunks
     );
@@ -79,9 +79,14 @@ class Storage extends Component {
     Promise.all(transformedMap); //TODO better implementation
   }
 
+  componentDidMount() {
+    const { setOwnerEthAddress } = this.props;
+    setOwnerEthAddress(TEST_ETH_ADDRESS);
+  }
+
   startApp() {
-    const { startApp } = this.props;
-    startApp(TEST_ETH_ADDRESS);
+    const { giveConsent } = this.props;
+    giveConsent();
   }
 
   render() {
@@ -102,7 +107,6 @@ class Storage extends Component {
           </div>
           {treasures.length !== 0 ? TreasureTable(treasures) : null}
         </div>
-        <ConsentOverlay consent={consent} />
       </Container>
     );
   }
@@ -118,7 +122,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
   startSector: obj => dispatch(treasureHuntActions.startSector(obj)),
-  startApp: ethAddress => dispatch(appActions.startApp(ethAddress))
+  giveConsent: () => dispatch(consentActions.giveConsent()),
+  setOwnerEthAddress: ethAddress =>
+    dispatch(nodeActions.setOwnerEthAddress(ethAddress))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Storage);

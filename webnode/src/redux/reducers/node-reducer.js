@@ -1,7 +1,6 @@
 import _ from "lodash";
 
 import nodeActions from "../actions/node-actions";
-import appActions from "../actions/app-actions";
 
 import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
 
@@ -11,7 +10,7 @@ const initState = {
   newGenesisHashes: [],
   oldGenesisHashes: [],
   id: null,
-  lastResetAt: new Date()
+  lastResetAt: null
 };
 
 const brokerNodeGenerator = address => {
@@ -32,7 +31,7 @@ const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case appActions.APP_START:
+    case nodeActions.NODE_SET_OWNER_ETH_ADDRESS:
       return {
         ...state,
         ethAddress: action.payload

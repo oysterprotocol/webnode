@@ -2,11 +2,12 @@ import React from "react";
 import Radium from "radium";
 import color from "color";
 
-import Logo from "../../../../assets/images/oyster-logo-with-dot.svg";
+import { ASSET_URL } from "../../../config";
+import Logo from "../../../assets/images/oyster-logo-with-dot.svg";
 
 const LogoGroup = () => (
   <div style={style.container}>
-    <img src={Logo} style={style.logo} />
+    <img src={ASSET_URL + Logo} style={style.logo} />
     <div style={style.text}>Oyster Protocol in use</div>
   </div>
 );
