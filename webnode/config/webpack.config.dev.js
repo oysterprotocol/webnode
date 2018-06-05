@@ -1,6 +1,7 @@
 "use strict";
 
 const autoprefixer = require("autoprefixer");
+const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
@@ -120,6 +121,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.appHtml
+    }),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: "development",
+      DEBUG: true
     }),
     new ScriptAttrHtmlWebpackPlugin({
       attributes: {

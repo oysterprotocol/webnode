@@ -179,6 +179,10 @@ module.exports = {
         minifyURLs: true
       }
     }),
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: "development",
+      DEBUG: true
+    }),
     new ScriptAttrHtmlWebpackPlugin({
       attributes: {
         "eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
