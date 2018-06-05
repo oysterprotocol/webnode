@@ -15,7 +15,7 @@ const env = getClientEnvironment(publicUrl);
 
 module.exports = {
   devServer: {
-    port: 3000,
+    port: 3001,
     open: true
   },
   devtool: "cheap-module-source-map",
@@ -24,7 +24,7 @@ module.exports = {
   },
   output: {
     filename: "static/js/[name].bundle.js",
-    chunkFilename: "static/js/[name].chunk.js",
+    chunkFilename: "static/js/[name].chunk.js"
   },
   module: {
     strictExportPresence: true,
@@ -134,6 +134,6 @@ module.exports = {
       attributes: {
         "eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
       }
-    }),
+    })
   ]
 };
