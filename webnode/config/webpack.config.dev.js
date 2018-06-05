@@ -181,7 +181,7 @@ module.exports = {
             use: {
               loader: "worker-loader",
               options: {
-                name: "crazy-worker.js"
+                name: "iota-worker.js"
               }
             }
           },
