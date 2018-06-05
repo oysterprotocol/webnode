@@ -3,10 +3,6 @@ import Radium from "radium";
 import color from "color";
 
 class Button extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { onClick, kind, children } = this.props;
     return (
@@ -20,10 +16,6 @@ class Button extends React.Component {
 Button = Radium(Button);
 
 class ButtonGroup extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { giveConsent, denyConsent } = this.props;
     return (
