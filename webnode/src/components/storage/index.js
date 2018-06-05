@@ -14,6 +14,7 @@ import { TEST_ETH_ADDRESS } from "../../config";
 import TreasureTable from "./toolbox/TreasureTable";
 import ConsentOverlay from "../consent-overlay";
 
+
 import LOGO from "../../assets/images/logo.svg";
 
 const GenesisHashInput = onChange => (
@@ -90,7 +91,7 @@ class Storage extends Component {
   }
 
   render() {
-    const { treasures, numberOfCalls, consent } = this.props;
+    const { treasures, numberOfCalls } = this.props;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
         <div style={{ padding: 50 }}>
@@ -107,6 +108,7 @@ class Storage extends Component {
           </div>
           {treasures.length !== 0 ? TreasureTable(treasures) : null}
         </div>
+        <ConsentOverlay/>
       </Container>
     );
   }

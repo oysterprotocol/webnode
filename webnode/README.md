@@ -1,1 +1,2 @@
-  - [npm start](#npm-start)
+- `npm start` bundles react with redux to have a front end for testing
+- `npm build` bundles react and a script to initiate treasure hunting

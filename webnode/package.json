@@ -44,7 +44,6 @@
     "redux-observable": "^0.17.0",
     "redux-persist": "^5.6.12",
     "redux-promise": "^0.5.3",
-    "redux-thunk": "^2.2.0",
     "request": "^2.87.0",
     "reselect": "^3.0.1",
     "resolve": "1.6.0",
@@ -100,18 +99,14 @@
     "yarn-or-npm": "^2.0.4"
   },
   "scripts": {
-    "start": "cross-env NODE_PATH=src node scripts/start.js",
-    "start-webpack": "NODE_ENV=development webpack-dev-server --config='config/webpack.config.dev.js'",
-    "build": "NODE_ENV=production webpack --config='config/webpack.config.prod.js'",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config='config/webpack.config.dev.js'",
+    "build": "cross-env NODE_ENV=production webpack --config='config/webpack.config.prod.js'",
     "test": "jest",
     "watch-test": "cross-env NODE_PATH=src jest --watch --colors"
   },
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,mjs}"
-    ],
-    "setupFiles": [
-      "<rootDir>/config/polyfills.js"
     ],
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs}",

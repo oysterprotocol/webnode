@@ -2,7 +2,7 @@ import { createSelector } from "reselect";
 import _ from "lodash";
 
 import { SECTOR_STATUS } from "../../config/";
-const { UNCLAIMED, CLAIMED } = SECTOR_STATUS;
+const { UNCLAIMED } = SECTOR_STATUS;
 
 const getNewGenesisHashes = state => state.node.newGenesisHashes;
 
