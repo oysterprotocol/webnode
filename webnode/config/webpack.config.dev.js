@@ -26,6 +26,9 @@ const env = getClientEnvironment(publicUrl);
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
 module.exports = {
+  devServer: {
+    clientLogLevel: "none"
+  },
   // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
   // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
   devtool: "cheap-module-source-map",
@@ -106,15 +109,6 @@ module.exports = {
         include: paths.appSrc
       },*/
       {
-        test: /worker\.js$/,
-        use: {
-          loader: "worker-loader",
-          options: {
-            name: "[name].[ext]"
-          }
-        }
-      },
-      {
         // "oneOf" will traverse all following loaders until one will
         // match the requirements. When no loader matches it will fall
         // back to the "file" loader at the end of the loader list.
@@ -182,7 +176,15 @@ module.exports = {
               }
             ]
           },
-
+          {
+            test: /worker\.js$/,
+            use: {
+              loader: "worker-loader",
+              options: {
+                name: "crazy-worker.js"
+              }
+            }
+          },
           // "file" loader makes sure those assets get served by WebpackDevServer.
           // When you `import` an asset, you get its (virtual) filename.
           // In production, they would get copied to the `build` folder.
