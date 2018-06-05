@@ -24,7 +24,7 @@ const registerWebnodeEpic = (action$, store) => {
     .mergeMap(action => {
       const { node } = store.getState();
       const { id, brokerNodes } = node;
-      const brokerNodeUrl = brokerNodes.length ? brokerNodes[0] : API_ROOT_URL;
+      const brokerNodeUrl = nodeSelectors.brokerNodeUrl(store.getState());
 
       return Observable.fromPromise(
         brokerNode.registerWebnode(brokerNodeUrl, id)
