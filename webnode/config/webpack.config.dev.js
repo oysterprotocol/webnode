@@ -15,7 +15,8 @@ const env = getClientEnvironment(publicUrl);
 
 module.exports = {
   devServer: {
-    port: 3000
+    port: 3000,
+    open: true
   },
   devtool: "cheap-module-source-map",
   entry: {
