@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import _ from "lodash";
 
-import { SECTOR_STATUS } from "../../config/";
+import { API_ROOT_URL, SECTOR_STATUS } from "../../config/";
 const { UNCLAIMED } = SECTOR_STATUS;
 
 const getNewGenesisHashes = state => state.node.newGenesisHashes;

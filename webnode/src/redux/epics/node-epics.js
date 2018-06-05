@@ -9,9 +9,7 @@ import iota from "../services/iota";
 
 import Datamap from "datamap-generator";
 
-
 import {
-  API_ROOT_URL,
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
   CHUNKS_PER_SECTOR,
@@ -22,8 +20,7 @@ const registerWebnodeEpic = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_INITIALIZE, nodeActions.NODE_RESET)
     .mergeMap(action => {
-      const { node } = store.getState();
-      const { id, brokerNodes } = node;
+      const { id } = store.getState().node;
       const brokerNodeUrl = nodeSelectors.brokerNodeUrl(store.getState());
 
       return Observable.fromPromise(
