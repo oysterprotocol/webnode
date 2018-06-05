@@ -4,25 +4,25 @@ import { createEpicMiddleware } from "redux-observable";
 import promise from "redux-promise";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import Raven from "raven-js";
+import createRavenMiddleware from "raven-for-redux";
+
+import { SENTRY_DSN } from "../config";
 import reducer from "./reducers/index";
 import epics from "./epics";
 
-const DEVELOPMENT_MODE = process.env.NODE_ENV !== "production";
+const IS_DEV = process.env.NODE_ENV === "development";
 const DEBUGGING = process.env.DEBUG;
 
-const epicMiddleware = createEpicMiddleware(epics);
+Raven.config(SENTRY_DSN).install();
 
-const loggerMiddleware = createLogger();
-
-let middlewares = null;
-if (DEVELOPMENT_MODE) {
-  middlewares = [epicMiddleware, promise, loggerMiddleware];
-} else {
-  middlewares = [epicMiddleware, promise, loggerMiddleware];
-  // middlewares = [epicMiddleware, promise];
-}
-
-const storeEnhancer = [applyMiddleware(...middlewares)];
+const middleware = [
+  IS_DEV && createLogger(),
+  createEpicMiddleware(epics),
+  promise,
+  createRavenMiddleware(Raven, {})
+].filter(x => !!x);
+const storeEnhancer = [applyMiddleware(...middleware)];
 
 const persistConfig = {
   key: "directories",
