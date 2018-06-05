@@ -99,8 +99,8 @@
     "yarn-or-npm": "^2.0.4"
   },
   "scripts": {
-    "start": "NODE_ENV=development webpack-dev-server --config='config/webpack.config.dev.js'",
-    "build": "NODE_ENV=production webpack --config='config/webpack.config.prod.js'",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config='config/webpack.config.dev.js'",
+    "build": "cross-env NODE_ENV=production webpack --config='config/webpack.config.prod.js'",
     "test": "jest",
     "watch-test": "cross-env NODE_PATH=src jest --watch --colors"
   },
