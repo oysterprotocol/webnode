@@ -11,6 +11,7 @@ import Datamap from "datamap-generator";
 
 
 import {
+  API_ROOT_URL,
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
   CHUNKS_PER_SECTOR,
@@ -22,7 +23,12 @@ const registerWebnodeEpic = (action$, store) => {
     .ofType(nodeActions.NODE_INITIALIZE, nodeActions.NODE_RESET)
     .mergeMap(action => {
       const { node } = store.getState();
-      return Observable.fromPromise(brokerNode.registerWebnode(node.id))
+      const { id, brokerNodes } = node;
+      const brokerNodeUrl = brokerNodes.length ? brokerNodes[0] : API_ROOT_URL;
+
+      return Observable.fromPromise(
+        brokerNode.registerWebnode(brokerNodeUrl, id)
+      )
         .map(({ data }) => {
           console.log("/api/v1/supply/webnodes response:", data);
           return nodeActions.determineBrokerNodeOrGenesisHash();

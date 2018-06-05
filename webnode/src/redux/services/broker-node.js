@@ -1,10 +1,10 @@
 import axios from "axios";
 import { API_ROOT_URL, API_VERSION } from "../../config/";
 
-const registerWebnode = address =>
+const registerWebnode = (brokerNodeUrl, address) =>
   axios({
     method: "POST",
-    url: `${API_ROOT_URL}/${API_VERSION}/supply/webnodes`,
+    url: `${brokerNodeUrl}/${API_VERSION}/supply/webnodes`,
     data: { address }
   });
 
