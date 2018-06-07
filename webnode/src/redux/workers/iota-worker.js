@@ -16,29 +16,10 @@
  * //import IotaWorker from 'worker-loader?name=iota-worker.js!../workers/iota-worker';
  */
 
-
-/**
- * If you enable the line below you will get a window not defined error because
- * workers run in another global context that is different from the current
- * window. Thus, using the window shortcut to get the current global scope (instead of self) within a Worker will return an error.
- */
-//import iota from "../services/iota";
-
-
-/** npm start
- * If you enable the line below you will get a "Uncaught SyntaxError: Unexpected token <" error
- * When the file is attempted to be fetched, the index.html file is returned.
- * I think once this returns successfully, functions from iota.js will be on the scope
- */
-
-/** npm start-webpack
- * If you enable the line below you will get a "GET http://localhost:8080/services/iota.js 404 (Not Found)" error
- * When the file is attempted to be fetched, the index.html file is returned.
- * I think once this returns successfully, functions from iota.js will be on the scope
- */
-//importScripts("../services/iota.js")
+import iota from "../services/iota";
+//importScripts("../services/iota.js") // eslint-disable-line
 
 onmessage = event => { // eslint-disable-line
   console.log("Message Recieved in Worker")
-  console.log(self)
+  console.log(self) // eslint-disable-line
 }
