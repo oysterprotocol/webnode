@@ -37,8 +37,7 @@ module.exports = {
       require.resolve("./polyfills"),
       require.resolve("react-dev-utils/webpackHotDevClient"),
       paths.appIndexJs
-    ],
-    script: paths.appSrc + "/script.js"
+    ]
   },
   output: {
     // Add /* filename */ comments to generated require()s in the output.
