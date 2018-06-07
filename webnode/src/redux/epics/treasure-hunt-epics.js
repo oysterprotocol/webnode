@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { combineEpics, store } from "redux-observable"; //TODO remove store as dependency
+import { combineEpics } from "redux-observable"; //TODO remove store as dependency
 
 import _ from "lodash";
 
@@ -29,7 +29,7 @@ const performPowEpic = (action$, store) => {
     .ofType(treasureHuntActions.TREASURE_HUNT_PERFORM_POW)
     .mergeMap(action => {
       const { treasureHunt } = store.getState();
-      const { dataMapHash, treasure, chunkIdx, numberOfChunks } = treasureHunt;
+      const { dataMapHash, treasure, chunkIdx } = treasureHunt;
 
       const address = iota.toAddress(
         iota.utils.toTrytes(Datamap.obfuscate(dataMapHash))
@@ -37,7 +37,7 @@ const performPowEpic = (action$, store) => {
       // const address =
       //   "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
 
-      const [_obfHash, nextDataMapHash] = Datamap.hashChain(dataMapHash);
+      const [_obfHash, nextDataMapHash] = Datamap.hashChain(dataMapHash); //eslint-disable-line
 
       // TODO: change this
       const value = 0;
@@ -109,7 +109,6 @@ const findTreasureEpic = (action$, store) => {
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
       ).mergeMap(transaction => {
-        const message = iota.parseMessage(transaction.signatureMessageFragment);
         const sideChain = Sidechain.generate(dataMapHash);
         store.dispatch({
           //TODO Remove this dispatch
@@ -124,7 +123,7 @@ const findTreasureEpic = (action$, store) => {
           );
         });
 
-        const [_obfHash, nextDataMapHash] = Datamap.hashChain(dataMapHash);
+        const [_obfHash, nextDataMapHash] = Datamap.hashChain(dataMapHash); //eslint-disable-line
 
         return Observable.of(
           !!chainWithTreasure
