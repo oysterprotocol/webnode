@@ -46,7 +46,7 @@ const findMostRecentTransaction = address =>
       (error, transactionObjects) => {
         if (error || !transactionObjects.length) {
           console.log("IOTA ERROR: ", error);
-          reject(new Error("No transaction found"));
+          return reject(new Error("No transaction found"));
         }
         const settledTransactions = transactionObjects || [];
         const recentTransaction = _.maxBy(

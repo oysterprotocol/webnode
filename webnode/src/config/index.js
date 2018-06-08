@@ -1,7 +1,7 @@
 export const API_VERSION = "api/v2";
 export const API_ROOT_URL =
   window.location.href.indexOf("localhost") > 0
-    ? "http://localhost:3000"
+    ? "http://52.14.218.135:3000"
     : "https://broker-1.oysternodes.com:3000";
 
 export const ASSET_URL =
@@ -9,7 +9,7 @@ export const ASSET_URL =
     ? window.location.href
     : "https://web.oysternode.com/";
 
-export const IOTA_API_PROVIDER = "http://18.188.64.13:14265";
+export const IOTA_API_PROVIDER = "http://52.14.218.135:14265";
 export const IOTA_ADDRESS_LENGTH = 81;
 
 export const MIN_BROKER_NODES = 1;

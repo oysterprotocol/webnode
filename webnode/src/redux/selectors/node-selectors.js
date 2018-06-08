@@ -30,7 +30,7 @@ const treasureHuntableSector = createSelector(
 );
 
 const brokerNodeUrl = createSelector([getBrokerNodes], brokerNodes => {
-  return brokerNodes.length ? brokerNodes[0] : API_ROOT_URL;
+  return brokerNodes.length ? brokerNodes[0].address : API_ROOT_URL;
 });
 
 export default {

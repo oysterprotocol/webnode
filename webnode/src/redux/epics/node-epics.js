@@ -221,6 +221,10 @@ const checkIfSectorClaimedEpic = (action$, store) => {
       const dataMapHash = dataMap[specialChunkIdx];
 
       // NOT positive this is correct but it worked in the treasure hunt epic
+      global.iota = iota;
+      global.Datamap = Datamap;
+      global.dataMapHash = dataMapHash;
+
       const address = iota.toAddress(
         iota.utils.toTrytes(Datamap.obfuscate(dataMapHash))
       );
