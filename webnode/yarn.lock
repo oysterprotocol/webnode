@@ -2347,7 +2347,7 @@ data-urls@^1.0.0:
 
 "datamap-generator@git+https://github.com/oysterprotocol/datamap-generator.git":
   version "1.0.4"
-  resolved "git+https://github.com/oysterprotocol/datamap-generator.git#2fa13ee95bfbe95016855e82b08db79e1ef9baed"
+  resolved "git+https://github.com/oysterprotocol/datamap-generator.git#a41f4ffc3c33f4c4b534ba031be57150d257c8dc"
   dependencies:
     js-sha3 "^0.7.0"
 

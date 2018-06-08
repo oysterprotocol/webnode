@@ -7,6 +7,7 @@ import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
+import forge from "node-forge";
 
 import Sidechain from "../../utils/sidechain";
 import Datamap from "datamap-generator";
@@ -20,11 +21,9 @@ const performPowEpic = (action$, store) => {
       const { treasureHunt } = store.getState();
       const { dataMapHash, treasure, chunkIdx } = treasureHunt;
 
-      const address = iota.toAddress(
-        iota.utils.toTrytes(Datamap.obfuscate(dataMapHash))
-      );
-      // const address =
-      //   "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
+      const hashInBytes = forge.util.hexToBytes(dataMapHash);
+      const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes);
+      const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       const [_obfHash, nextDataMapHash] = Datamap.hashChain(dataMapHash); //eslint-disable-line
 

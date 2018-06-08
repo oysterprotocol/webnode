@@ -6,6 +6,7 @@ import treasureHuntActions from "../actions/treasure-hunt-actions";
 import nodeSelectors from "../selectors/node-selectors";
 import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
+import forge from "node-forge";
 
 import Datamap from "datamap-generator";
 
@@ -220,23 +221,17 @@ const checkIfSectorClaimedEpic = (action$, store) => {
       const dataMap = Datamap.rawGenerate(genesisHash, numberOfChunks);
       const dataMapHash = dataMap[specialChunkIdx];
 
-      // NOT positive this is correct but it worked in the treasure hunt epic
-      global.iota = iota;
-      global.Datamap = Datamap;
-      global.dataMapHash = dataMapHash;
-
-      const address = iota.toAddress(
-        iota.utils.toTrytes(Datamap.obfuscate(dataMapHash))
-      );
-      // const address =
-      //   "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
+      const hashInBytes = forge.util.hexToBytes(dataMapHash);
+      const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes);
+      const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
       ).map(transaction => {
         if (
-          iota.checkIfClaimed(transaction) &&
-          !TEST_GENESIS_HASHES.includes(genesisHash)
+          iota.checkIfClaimed(transaction)
+          // iota.checkIfClaimed(transaction) &&
+          // !TEST_GENESIS_HASHES.includes(genesisHash)
         ) {
           return nodeActions.markSectorAsClaimed({
             genesisHash,
