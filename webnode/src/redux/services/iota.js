@@ -13,17 +13,6 @@ const iotaProvider = new IOTA({
 curl.init();
 const MAX_TIMESTAMP_VALUE = (Math.pow(3, 27) - 1) / 2;
 
-const checkIfClaimed = transaction => {
-  if (!transaction) return false;
-
-  const attachedAt = transaction.attachmentTimestamp;
-  const lastEpoch = moment()
-    .subtract(1, "year")
-    .valueOf();
-
-  return lastEpoch < attachedAt;
-};
-
 const toAddress = string => string.substr(0, IOTA_ADDRESS_LENGTH);
 
 const parseMessage = message => {
@@ -39,7 +28,7 @@ const parseMessage = message => {
   return iota.utils.fromTrytes(evenChars);
 };
 
-const findMostRecentTransaction = address =>
+const findAllTransactions = address =>
   new Promise((resolve, reject) => {
     iotaProvider.api.findTransactionObjects(
       { addresses: [address] },
@@ -49,15 +38,35 @@ const findMostRecentTransaction = address =>
           return reject(new Error("No transaction found"));
         }
         const settledTransactions = transactionObjects || [];
-        const recentTransaction = _.maxBy(
+        const ordered = _.orderBy(
           settledTransactions,
-          "attachmentTimestamp"
+          ["attachmentTimestamp"],
+          ["desc"]
         );
-        console.log("IOTA TRANSACTION: ", recentTransaction);
-        resolve(recentTransaction);
+
+        console.log("IOTA TRANSACTIONS: ", ordered);
+        resolve(ordered);
       }
     );
   });
+
+const checkIfClaimed = address =>
+  findAllTransactions(address).then(transactions => {
+    const mostRecentTransaction = transactions[0];
+    const workedOnByOtherWebnode = transactions.length > 1;
+
+    const attachedAt = mostRecentTransaction.attachmentTimestamp;
+    const lastEpoch = moment()
+      .subtract(1, "minute")
+      .valueOf();
+
+    const afterLastEpoch = lastEpoch < attachedAt;
+
+    return workedOnByOtherWebnode && afterLastEpoch;
+  });
+
+const findMostRecentTransaction = address =>
+  findAllTransactions(address).then(transactions => transactions[0]);
 
 const prepareTransfers = data => {
   return new Promise((resolve, reject) => {

@@ -88,11 +88,9 @@ const findTreasureEpic = (action$, store) => {
     .mergeMap(action => {
       const { dataMapHash, chunkIdx } = action.payload;
 
-      const address = iota.toAddress(
-        iota.utils.toTrytes(Datamap.obfuscate(dataMapHash))
-      );
-      //    const address =
-      //      "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
+      const hashInBytes = forge.util.hexToBytes(dataMapHash);
+      const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes);
+      const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)

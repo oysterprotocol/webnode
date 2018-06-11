@@ -225,27 +225,20 @@ const checkIfSectorClaimedEpic = (action$, store) => {
       const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes);
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
-      return Observable.fromPromise(
-        iota.findMostRecentTransaction(address)
-      ).map(transaction => {
-        if (
-          iota.checkIfClaimed(transaction)
-          // iota.checkIfClaimed(transaction) &&
-          // !TEST_GENESIS_HASHES.includes(genesisHash)
-        ) {
-          return nodeActions.markSectorAsClaimed({
-            genesisHash,
-            sectorIdx
-          });
-        } else {
-          return treasureHuntActions.startSector({
-            dataMapHash,
-            genesisHash,
-            numberOfChunks,
-            sectorIdx
-          });
-        }
-      });
+      return Observable.fromPromise(iota.checkIfClaimed(address)).map(
+        claimed =>
+          claimed
+            ? nodeActions.markSectorAsClaimed({
+                genesisHash,
+                sectorIdx
+              })
+            : treasureHuntActions.startSector({
+                dataMapHash,
+                genesisHash,
+                numberOfChunks,
+                sectorIdx
+              })
+      );
     });
 };
 
