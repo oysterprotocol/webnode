@@ -33,10 +33,6 @@ const findAllTransactions = address =>
     iotaProvider.api.findTransactionObjects(
       { addresses: [address] },
       (error, transactionObjects) => {
-        if (error || !transactionObjects.length) {
-          console.log("IOTA ERROR: ", error);
-          return reject(new Error("No transaction found"));
-        }
         const settledTransactions = transactionObjects || [];
         const ordered = _.orderBy(
           settledTransactions,
@@ -52,14 +48,16 @@ const findAllTransactions = address =>
 
 const checkIfClaimed = address =>
   findAllTransactions(address).then(transactions => {
+    if (!transactions.length) return false;
+
     const mostRecentTransaction = transactions[0];
+
     const workedOnByOtherWebnode = transactions.length > 1;
 
     const attachedAt = mostRecentTransaction.attachmentTimestamp;
     const lastEpoch = moment()
       .subtract(1, "minute")
       .valueOf();
-
     const afterLastEpoch = lastEpoch < attachedAt;
 
     return workedOnByOtherWebnode && afterLastEpoch;

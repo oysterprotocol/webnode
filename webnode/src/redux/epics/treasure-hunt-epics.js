@@ -22,10 +22,8 @@ const performPowEpic = (action$, store) => {
       const { dataMapHash, treasure, chunkIdx } = treasureHunt;
 
       const hashInBytes = forge.util.hexToBytes(dataMapHash);
-      const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes);
+      const [obfuscatedHash, nextDataMapHash] = Datamap.hashChain(hashInBytes);
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
-
-      const [_obfHash, nextDataMapHash] = Datamap.hashChain(dataMapHash); //eslint-disable-line
 
       // TODO: change this
       const value = 0;
@@ -89,7 +87,10 @@ const findTreasureEpic = (action$, store) => {
       const { dataMapHash, chunkIdx } = action.payload;
 
       const hashInBytes = forge.util.hexToBytes(dataMapHash);
-      const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes);
+      const [obfuscatedHash, nextDataMapHashInBytes] = Datamap.hashChain(
+        hashInBytes
+      );
+      const nextDataMapHash = forge.util.bytesToHex(nextDataMapHashInBytes);
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       return Observable.fromPromise(
@@ -108,8 +109,6 @@ const findTreasureEpic = (action$, store) => {
             dataMapHash
           );
         });
-
-        const [_obfHash, nextDataMapHash] = Datamap.hashChain(dataMapHash); //eslint-disable-line
 
         return Observable.of(
           !!chainWithTreasure
