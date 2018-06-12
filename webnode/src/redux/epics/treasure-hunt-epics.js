@@ -12,17 +12,6 @@ import Sidechain from "../../utils/sidechain";
 import Datamap from "datamap-generator";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
-//Inline example (Disable worker-loader in config
-//import IotaWorker from 'worker-loader?name=iota-worker.js!../workers/iota-worker';
-import IotaWorker from '../workers/iota-worker';
-
-console.log("CREATE WEB WORKER")
-const iotaWorker = new IotaWorker;
-
-if (iotaWorker) {
-  console.log("Post Worker Message");
-  iotaWorker.postMessage("Web worker message");
-}
 
 const performPowEpic = (action$, store) => {
   return action$
