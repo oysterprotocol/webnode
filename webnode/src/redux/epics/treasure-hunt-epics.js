@@ -7,6 +7,7 @@ import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
+import forge from "node-forge";
 
 import Sidechain from "../../utils/sidechain";
 import Datamap from "datamap-generator";
@@ -20,13 +21,9 @@ const performPowEpic = (action$, store) => {
       const { treasureHunt } = store.getState();
       const { dataMapHash, treasure, chunkIdx } = treasureHunt;
 
-      const address = iota.toAddress(
-        iota.utils.toTrytes(Datamap.obfuscate(dataMapHash))
-      );
-      // const address =
-      //   "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
-
-      const [_obfHash, nextDataMapHash] = Datamap.hashChain(dataMapHash); //eslint-disable-line
+      const hashInBytes = forge.util.hexToBytes(dataMapHash);
+      const [obfuscatedHash, nextDataMapHash] = Datamap.hashChain(hashInBytes);
+      const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       // TODO: change this
       const value = 0;
@@ -89,11 +86,12 @@ const findTreasureEpic = (action$, store) => {
     .mergeMap(action => {
       const { dataMapHash, chunkIdx } = action.payload;
 
-      const address = iota.toAddress(
-        iota.utils.toTrytes(Datamap.obfuscate(dataMapHash))
+      const hashInBytes = forge.util.hexToBytes(dataMapHash);
+      const [obfuscatedHash, nextDataMapHashInBytes] = Datamap.hashChain(
+        hashInBytes
       );
-      //    const address =
-      //      "HT9MZQXKVBVT9AYVTISCLELYWXTILJDIMHFQRGS9YIJUIRSSNRZFIZCHYHQHKZIPGYYCSUSARFNSXD9UY";
+      const nextDataMapHash = forge.util.bytesToHex(nextDataMapHashInBytes);
+      const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
@@ -111,8 +109,6 @@ const findTreasureEpic = (action$, store) => {
             dataMapHash
           );
         });
-
-        const [_obfHash, nextDataMapHash] = Datamap.hashChain(dataMapHash); //eslint-disable-line
 
         return Observable.of(
           !!chainWithTreasure
