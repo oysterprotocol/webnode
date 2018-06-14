@@ -69,7 +69,7 @@ const performPowEpic = (action$, store) => {
                 })
               : treasureHuntActions.incrementChunk({
                   nextChunkIdx: chunkIdx + 1,
-                  nextDataMapHash
+                  nextDataMapHash: forge.util.bytesToHex(nextDataMapHash)
                 })
           )
         )
