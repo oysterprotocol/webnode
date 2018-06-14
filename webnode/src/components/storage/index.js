@@ -82,12 +82,12 @@ class Storage extends Component {
 
   componentDidMount() {
     const { setOwnerEthAddress } = this.props;
-    // setOwnerEthAddress(TEST_ETH_ADDRESS);
+    setOwnerEthAddress(TEST_ETH_ADDRESS);
   }
 
   startApp() {
-    const { giveConsent } = this.props;
-    giveConsent();
+    const { initialize } = this.props;
+    initialize();
   }
 
   render() {
@@ -133,6 +133,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
   startSector: obj => dispatch(treasureHuntActions.startSector(obj)),
+  initialize: () => dispatch(nodeActions.initialize()),
   giveConsent: () => dispatch(consentActions.giveConsent()),
   denyConsent: () => dispatch(consentActions.denyConsent()),
   setOwnerEthAddress: ethAddress =>
