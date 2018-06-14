@@ -9,7 +9,6 @@ import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
 import forge from "node-forge";
 
-import Sidechain from "../../utils/sidechain";
 import Datamap from "datamap-generator";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
