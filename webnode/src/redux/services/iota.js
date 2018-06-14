@@ -2,7 +2,7 @@ import IOTA from "iota.lib.js";
 import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
 import curl from "curl.lib.js";
 import _ from "lodash";
-import moment from "moment";
+import subMinutes from 'date-fns/sub_minutes';
 
 const iota = new IOTA();
 
@@ -55,9 +55,7 @@ const checkIfClaimed = address =>
     const workedOnByOtherWebnode = transactions.length > 1;
 
     const attachedAt = mostRecentTransaction.attachmentTimestamp;
-    const lastEpoch = moment()
-      .subtract(1, "minute")
-      .valueOf();
+    const lastEpoch = subMinutes(new Date(), 1).valueOf();
     const afterLastEpoch = lastEpoch < attachedAt;
 
     return workedOnByOtherWebnode && afterLastEpoch;
