@@ -3,7 +3,7 @@ import actions from "./pow-actions";
 test("pow-action IOTA_POW", () => {
   const branchTransaction = "address";
   const broadcastingNodes = ["node", "testnode"];
-  const mwm = 14;
+  const mwm = 9;
   const trunkTransaction = "trunk";
   const trytes = ["tryte", "tryte"];
   const expected = {

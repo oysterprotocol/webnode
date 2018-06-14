@@ -33,7 +33,6 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
   ? { publicPath: Array(cssFilename.split("/").length).join("../") }
   : {};
 
-
 module.exports = {
   bail: true,
   devtool: shouldUseSourceMap ? "source-map" : false,
@@ -57,9 +56,7 @@ module.exports = {
     alias: {
       "react-native": "react-native-web"
     },
-    plugins: [
-      new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])
-    ]
+    plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
   },
   module: {
     strictExportPresence: true,
@@ -236,6 +233,6 @@ module.exports = {
       navigateFallbackWhitelist: [/^(?!\/__).*/],
       // Don't precache sourcemaps (they're large) and build asset manifest:
       staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/]
-    }),
+    })
   ]
 };

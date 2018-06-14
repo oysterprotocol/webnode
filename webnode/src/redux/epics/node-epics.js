@@ -92,7 +92,10 @@ const requestBrokerEpic = (action$, store) => {
       brokerNode.requestBrokerNodeAddressPoW({ brokerNodeUrl, currentList })
     )
       .mergeMap(({ data }) => {
-        const { id: txid, pow: { message, address, branchTx, trunkTx } } = data;
+        const {
+          id: txid,
+          pow: { message, address, branchTx, trunkTx }
+        } = data;
 
         // TODO: change this
         const value = 0;
