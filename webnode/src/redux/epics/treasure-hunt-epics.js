@@ -97,10 +97,6 @@ const findTreasureEpic = (action$, store) => {
       ).mergeMap(transaction => {
         const sideChain = Datamap.sideChainGenerate(dataMapHash);
 
-        global.dataMapHash = dataMapHash;
-        global.Datamap = Datamap;
-        global.signatureMessageFragment = transaction.signatureMessageFragment;
-
         store.dispatch({
           //TODO Remove this dispatch
           type: "IOTA_RETURN"
