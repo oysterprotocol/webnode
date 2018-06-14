@@ -96,7 +96,12 @@ const findTreasureEpic = (action$, store) => {
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
       ).mergeMap(transaction => {
-        const sideChain = Sidechain.generate(dataMapHash);
+        const sideChain = Datamap.sideChainGenerate(dataMapHash);
+
+        global.dataMapHash = dataMapHash;
+        global.Datamap = Datamap;
+        global.signatureMessageFragment = transaction.signatureMessageFragment;
+
         store.dispatch({
           //TODO Remove this dispatch
           type: "IOTA_RETURN"

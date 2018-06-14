@@ -24,9 +24,9 @@ const middleware = [
 const storeEnhancer = [applyMiddleware(...middleware)];
 
 const persistConfig = {
-  key: "directories",
+  key: "root",
   storage,
-  whitelist: DEBUGGING ? [] : ["consent", "node", "treasureHunt"]
+  whitelist: ["consent", "node", "treasureHunt"]
 };
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

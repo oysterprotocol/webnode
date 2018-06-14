@@ -12,7 +12,7 @@ WebFont.load({
   }
 });
 
-const ConsentOverlay = ({ status, giveConsent, denyConsent }) => {
+const ConsentOverlay = ({ giveConsent, denyConsent }) => {
   return (
     <StyleRoot>
       <div style={style.ConsentOverlayStyle}>
