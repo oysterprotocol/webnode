@@ -1,4 +1,7 @@
-import { Observable } from "rxjs";
+import { fromPromise } from 'rxjs/observable/fromPromise';
+import { of } from 'rxjs/observable/of';
+import { empty } from 'rxjs/observable/empty';
+
 import { combineEpics } from "redux-observable";
 
 import nodeActions from "../actions/node-actions";
@@ -23,7 +26,7 @@ const registerWebnodeEpic = (action$, store) => {
       const { id } = store.getState().node;
       const brokerNodeUrl = nodeSelectors.brokerNodeUrl(store.getState());
 
-      return Observable.fromPromise(
+      return fromPromise(
         brokerNode.registerWebnode({ brokerNodeUrl, address: id })
       )
         .map(({ data }) => {
@@ -33,7 +36,7 @@ const registerWebnodeEpic = (action$, store) => {
         .catch(error => {
           console.log("/api/v1/supply/webnodes error:", error);
           // TODO: fire a generic error action
-          return Observable.of(nodeActions.determineBrokerNodeOrGenesisHash());
+          return of(nodeActions.determineBrokerNodeOrGenesisHash());
         });
     });
 };
@@ -43,7 +46,7 @@ const brokerNodeOrGenesisHashEpic = (action$, store) => {
     .ofType(nodeActions.NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH)
     .mergeMap(() => {
       const { node } = store.getState();
-      return Observable.of(
+      return of(
         node.brokerNodes.length < MIN_BROKER_NODES
           ? nodeActions.requestBrokerNodes()
           : nodeActions.determineGenesisHashOrTreasureHunt()
@@ -67,11 +70,11 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
         node.newGenesisHashes.length < MIN_GENESIS_HASHES ||
         !treasureHuntableGenesisHash
       ) {
-        return Observable.of(nodeActions.requestGenesisHashes());
+        return of(nodeActions.requestGenesisHashes());
       } else {
         const { genesisHash, numberOfChunks } = treasureHuntableGenesisHash;
         const { index } = treasureHuntableSector;
-        return Observable.of(
+        return of(
           nodeActions.checkIfSectorClaimed({
             genesisHash: genesisHash,
             numberOfChunks: numberOfChunks,
@@ -88,7 +91,7 @@ const requestBrokerEpic = (action$, store) => {
     const currentList = brokerNodes.map(bn => bn.address);
     const brokerNodeUrl = nodeSelectors.brokerNodeUrl(store.getState());
 
-    return Observable.fromPromise(
+    return fromPromise(
       brokerNode.requestBrokerNodeAddressPoW({ brokerNodeUrl, currentList })
     )
       .mergeMap(({ data }) => {
@@ -103,14 +106,14 @@ const requestBrokerEpic = (action$, store) => {
         const seed =
           "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-        return Observable.fromPromise(
+        return fromPromise(
           iota.prepareTransfers({ address, message, value, tag, seed })
         ).map(trytes => {
           return { txid, trytes, branchTx, trunkTx };
         });
       })
       .mergeMap(({ txid, trytes, branchTx, trunkTx }) =>
-        Observable.fromPromise(
+        fromPromise(
           iota.localPow({
             branchTx,
             trunkTx,
@@ -122,7 +125,7 @@ const requestBrokerEpic = (action$, store) => {
         })
       )
       .mergeMap(({ txid, trytesArray }) =>
-        Observable.fromPromise(
+        fromPromise(
           brokerNode.completeBrokerNodeAddressPoW({
             brokerNodeUrl,
             txid,
@@ -138,7 +141,7 @@ const requestBrokerEpic = (action$, store) => {
       )
       .catch(error => {
         console.log("BROKER NODE ADDRESS FETCH ERROR", error);
-        return Observable.empty();
+        return empty();
       });
   });
 };
@@ -151,7 +154,7 @@ const requestGenesisHashEpic = (action$, store) => {
       const currentList = newGenesisHashes.map(gh => gh.genesisHash);
       const brokerNodeUrl = nodeSelectors.brokerNodeUrl(store.getState());
 
-      return Observable.fromPromise(
+      return fromPromise(
         brokerNode.requestGenesisHashPoW({ brokerNodeUrl, currentList })
       )
         .mergeMap(({ data }) => {
@@ -166,14 +169,14 @@ const requestGenesisHashEpic = (action$, store) => {
           const seed =
             "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-          return Observable.fromPromise(
+          return fromPromise(
             iota.prepareTransfers({ address, message, value, tag, seed })
           ).map(trytes => {
             return { txid, trytes, branchTx, trunkTx };
           });
         })
         .mergeMap(({ txid, trytes, branchTx, trunkTx }) =>
-          Observable.fromPromise(
+          fromPromise(
             iota.localPow({
               branchTx,
               trunkTx,
@@ -185,7 +188,7 @@ const requestGenesisHashEpic = (action$, store) => {
           })
         )
         .mergeMap(({ txid, trytesArray }) =>
-          Observable.fromPromise(
+          fromPromise(
             brokerNode.completeGenesisHashPoW({
               brokerNodeUrl,
               txid,
@@ -204,12 +207,12 @@ const requestGenesisHashEpic = (action$, store) => {
             })
             .catch(error => {
               console.log("GENESIS HASH COMPLETE ERROR", error);
-              return Observable.empty();
+              return empty();
             })
         )
         .catch(error => {
           console.log("GENESIS HASH FETCH ERROR", error);
-          return Observable.empty();
+          return empty();
         });
     });
 };
@@ -227,7 +230,7 @@ const checkIfSectorClaimedEpic = (action$, store) => {
       const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes); //eslint-ignore-line
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
-      return Observable.fromPromise(iota.checkIfClaimed(address)).map(
+      return fromPromise(iota.checkIfClaimed(address)).map(
         claimed =>
           claimed
             ? nodeActions.markSectorAsClaimed({
