@@ -9,7 +9,6 @@ import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
 import forge from "node-forge";
 
-import Sidechain from "../../utils/sidechain";
 import Datamap from "datamap-generator";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
@@ -96,7 +95,8 @@ const findTreasureEpic = (action$, store) => {
       return Observable.fromPromise(
         iota.findMostRecentTransaction(address)
       ).mergeMap(transaction => {
-        const sideChain = Sidechain.generate(dataMapHash);
+        const sideChain = Datamap.sideChainGenerate(dataMapHash);
+
         store.dispatch({
           //TODO Remove this dispatch
           type: "IOTA_RETURN"

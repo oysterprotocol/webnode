@@ -7,11 +7,9 @@ import storage from "redux-persist/lib/storage";
 import Raven from "raven-js";
 import createRavenMiddleware from "raven-for-redux";
 
-import { SENTRY_DSN } from "../config";
+import { SENTRY_DSN, IS_DEV, DEBUGGING } from "../config";
 import reducer from "./reducers/index";
 import epics from "./epics";
-
-const IS_DEV = process.env.NODE_ENV === "development";
 
 Raven.config(SENTRY_DSN).install();
 
@@ -24,9 +22,9 @@ const middleware = [
 const storeEnhancer = [applyMiddleware(...middleware)];
 
 const persistConfig = {
-  key: "directories",
+  key: "oyster-webnode",
   storage,
-  whitelist: false ? [] : ["consent", "node", "treasureHunt"]
+  whitelist: DEBUGGING ? [] : ["consent", "node", "treasureHunt"]
 };
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
