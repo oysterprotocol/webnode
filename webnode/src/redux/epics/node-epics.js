@@ -14,7 +14,6 @@ import {
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
   CHUNKS_PER_SECTOR,
-  TEST_GENESIS_HASHES
 } from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {
@@ -222,7 +221,7 @@ const checkIfSectorClaimedEpic = (action$, store) => {
       const dataMapHash = dataMap[specialChunkIdx];
 
       const hashInBytes = forge.util.hexToBytes(dataMapHash);
-      const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes);
+      const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes); //eslint-ignore-line
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       return Observable.fromPromise(iota.checkIfClaimed(address)).map(

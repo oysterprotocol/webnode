@@ -1,5 +1,5 @@
 import { combineEpics } from "redux-observable";
-import moment from "moment";
+import subDays from 'date-fns/sub_days'
 
 import uuidv1 from "uuid/v1";
 import nodeActions from "../actions/node-actions";
@@ -18,12 +18,10 @@ const startAppEpic = (action$, store) => {
       const newWebnode =
         !!node.lastResetAt &&
         node.lastResetAt >
-          moment()
-            .subtract(14, "days")
-            .valueOf();
+        subDays(new Date(), 14).valueOf();
 
       const id = uuidv1();
-      const today = moment().valueOf();
+      const today = new Date().valueOf();
 
       return newWebnode
         ? nodeActions.initialize()

@@ -12,7 +12,6 @@ import reducer from "./reducers/index";
 import epics from "./epics";
 
 const IS_DEV = process.env.NODE_ENV === "development";
-const DEBUGGING = process.env.DEBUG;
 
 Raven.config(SENTRY_DSN).install();
 

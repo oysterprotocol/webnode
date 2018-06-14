@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/lib/integration/react";
 import Overlay from "./components/overlay";
-import Root from "./components/root";
 
 import { store, persistor } from "./redux";
 
