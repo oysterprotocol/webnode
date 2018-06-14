@@ -3,9 +3,11 @@
 const autoprefixer = require("autoprefixer");
 const path = require("path");
 const webpack = require("webpack");
+const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
@@ -19,46 +21,16 @@ const APP_VERSION = "0.0.1";
 const publicPath = ""; //paths.servedPath;
 const shouldUseRelativeAssetPaths = publicPath === "./";
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== "false";
+const generateStatsFile = process.env.GENERATE_STATS_FILE !== "false";
 const publicUrl = publicPath.slice(0, -1);
 const env = getClientEnvironment(publicUrl);
-
-if (env.stringified["process.env"].NODE_ENV !== '"production"') {
-  throw new Error("Production builds must have NODE_ENV=production.");
-}
 
 const cssFilename = `static/css/oyster-webnode-${APP_VERSION}.css`;
 const extractTextPluginOptions = shouldUseRelativeAssetPaths
   ? { publicPath: Array(cssFilename.split("/").length).join("../") }
   : {};
 
-
-module.exports = {
-  bail: true,
-  devtool: shouldUseSourceMap ? "source-map" : false,
-  // In production, we only want to load the polyfills and the app code.
-  entry: {
-    script: paths.appSrc + "/script.js"
-  },
-  output: {
-    path: paths.appBuild,
-    filename: `static/js/oyster-webnode-${APP_VERSION}.min.js`,
-    chunkFilename: "static/js/[name].[chunkhash:8].chunk.js",
-    publicPath: publicPath,
-    devtoolModuleFilenameTemplate: info =>
-      path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, "/")
-  },
-  resolve: {
-    modules: ["node_modules", paths.appNodeModules].concat(
-      process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
-    ),
-    extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
-    alias: {
-      "react-native": "react-native-web"
-    },
-    plugins: [
-      new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])
-    ]
-  },
+const common = {
   module: {
     strictExportPresence: true,
     rules: [
@@ -147,7 +119,16 @@ module.exports = {
             )
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
           },
-
+          {
+            test: /worker\.js$/,
+            use: {
+              loader: "worker-loader",
+              options: {
+                name: "[name].[ext]",
+                publicPath: "src/redux/workers/"
+              }
+            }
+          },
           {
             loader: require.resolve("file-loader"),
             exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
@@ -161,24 +142,12 @@ module.exports = {
       }
     ]
   },
+
   plugins: [
-    new InterpolateHtmlPlugin(env.raw),
-    new HtmlWebpackPlugin({
-      inject: true,
-      template: paths.appHtml,
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true
-      }
+    new BundleAnalyzerPlugin({
+      generateStatsFile: generateStatsFile
     }),
+    new InterpolateHtmlPlugin(env.raw),
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
       DEBUG: true
@@ -188,51 +157,127 @@ module.exports = {
         "eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
       }
     }),
-    new webpack.DefinePlugin(env.stringified),
-    new MinifyPlugin(
-      {},
-      {
-        sourceMap: null
-      }
-    ),
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
     new ExtractTextPlugin({
       filename: cssFilename
-    }),
-    // Generate a manifest file which contains a mapping of all asset filenames
-    // to their corresponding output file so that tools can pick it up without
-    // having to parse `index.html`.
-    new ManifestPlugin({
-      fileName: "asset-manifest.json"
-    }),
-    // Generate a service worker script that will precache, and keep up to date,
-    // the HTML & assets that are part of the Webpack build.
-    new SWPrecacheWebpackPlugin({
-      // By default, a cache-busting query parameter is appended to requests
-      // used to populate the caches, to ensure the responses are fresh.
-      // If a URL is already hashed by Webpack, then there is no concern
-      // about it being stale, and the cache-busting can be skipped.
-      dontCacheBustUrlsMatching: /\.\w{8}\./,
-      filename: "service-worker.js",
-      logger(message) {
-        if (message.indexOf("Total precache size is") === 0) {
-          // This message occurs for every build and is a bit too noisy.
-          return;
-        }
-        if (message.indexOf("Skipping static resource") === 0) {
-          // This message obscures real errors so we ignore it.
-          // https://github.com/facebookincubator/create-react-app/issues/2612
-          return;
-        }
-        console.log(message);
-      },
-      minify: true,
-      navigateFallback: publicUrl + "/index.html",
-      // Ignores URLs starting from /__ (useful for Firebase):
-      // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
-      navigateFallbackWhitelist: [/^(?!\/__).*/],
-      // Don't precache sourcemaps (they're large) and build asset manifest:
-      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/]
-    }),
+    })
   ]
 };
+// end common configuration
+
+if (env.stringified["process.env"].NODE_ENV == '"production"') {
+  module.exports = merge(common, {
+    bail: true,
+    devtool: shouldUseSourceMap ? "source-map" : false,
+    // In production, we only want to load the polyfills and the app code.
+    entry: {
+      script: paths.appSrc + "/script.js"
+    },
+    output: {
+      path: paths.appBuild,
+      filename: `static/js/oyster-webnode-${APP_VERSION}.[hash:8].min.js`,
+      chunkFilename: "static/js/[name].[chunkhash:8].chunk.js",
+      publicPath: publicPath,
+      devtoolModuleFilenameTemplate: info =>
+        path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, "/")
+    },
+    resolve: {
+      modules: ["node_modules", paths.appNodeModules].concat(
+        process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
+      ),
+      extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
+      alias: {
+        "react-native": "react-native-web"
+      },
+      plugins: [
+        new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])
+      ]
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        inject: true,
+        template: paths.appHtml,
+        minify: {
+          removeComments: true,
+          collapseWhitespace: true,
+          removeRedundantAttributes: true,
+          useShortDoctype: true,
+          removeEmptyAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          keepClosingSlash: true,
+          minifyJS: true,
+          minifyCSS: true,
+          minifyURLs: true
+        }
+      }),
+      new webpack.DefinePlugin(env.stringified),
+      new MinifyPlugin(
+        {},
+        {
+          sourceMap: null
+        }
+      ),
+      // Generate a manifest file which contains a mapping of all asset filenames
+      // to their corresponding output file so that tools can pick it up without
+      // having to parse `index.html`.
+      new ManifestPlugin({
+        fileName: "asset-manifest.json"
+      }),
+      // Generate a service worker script that will precache, and keep up to date,
+      // the HTML & assets that are part of the Webpack build.
+      new SWPrecacheWebpackPlugin({
+        // By default, a cache-busting query parameter is appended to requests
+        // used to populate the caches, to ensure the responses are fresh.
+        // If a URL is already hashed by Webpack, then there is no concern
+        // about it being stale, and the cache-busting can be skipped.
+        dontCacheBustUrlsMatching: /\.\w{8}\./,
+        filename: "service-worker.js",
+        logger(message) {
+          if (message.indexOf("Total precache size is") === 0) {
+            // This message occurs for every build and is a bit too noisy.
+            return;
+          }
+          if (message.indexOf("Skipping static resource") === 0) {
+            // This message obscures real errors so we ignore it.
+            // https://github.com/facebookincubator/create-react-app/issues/2612
+            return;
+          }
+          console.log(message);
+        },
+        minify: true,
+        navigateFallback: publicUrl + "/index.html",
+        // Ignores URLs starting from /__ (useful for Firebase):
+        // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
+        navigateFallbackWhitelist: [/^(?!\/__).*/],
+        // Don't precache sourcemaps (they're large) and build asset manifest:
+        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/]
+      })
+    ]
+  });
+}
+// end production configuration
+
+if (env.stringified["process.env"].NODE_ENV == '"development"') {
+  module.exports = merge(common, {
+    devServer: {
+      port: 3000,
+      open: true
+    },
+    devtool: "cheap-module-source-map",
+    entry: {
+      development: paths.appIndexJs
+    },
+    output: {
+      filename: "static/js/[name].bundle.[hash:8].js",
+      chunkFilename: "static/js/[name].chunk.[chunkhash:8].js"
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        inject: true,
+        template: paths.appHtml
+      })
+    ]
+  });
+}
+// end development configuration
+
