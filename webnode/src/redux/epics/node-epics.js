@@ -9,7 +9,7 @@ import treasureHuntActions from "../actions/treasure-hunt-actions";
 import nodeSelectors from "../selectors/node-selectors";
 import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
-import forge from "node-forge";
+import util from "node-forge/lib/util";
 
 import Datamap from "datamap-generator";
 
@@ -226,7 +226,7 @@ const checkIfSectorClaimedEpic = (action$, store) => {
       const dataMap = Datamap.rawGenerate(genesisHash, numberOfChunks);
       const dataMapHash = dataMap[specialChunkIdx];
 
-      const hashInBytes = forge.util.hexToBytes(dataMapHash);
+      const hashInBytes = util.hexToBytes(dataMapHash);
       const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes); //eslint-ignore-line
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
