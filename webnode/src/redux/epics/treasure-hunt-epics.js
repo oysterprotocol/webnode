@@ -3,13 +3,13 @@ import { of } from 'rxjs/observable/of';
 import { empty } from 'rxjs/observable/empty';
 import { combineEpics } from "redux-observable"; //TODO remove store as dependency
 
-import _ from "lodash";
+import find from "lodash/find";
 
 import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
-import forge from "node-forge";
+import util from "node-forge/lib/util";
 
 import Datamap from "datamap-generator";
 
@@ -22,7 +22,7 @@ const performPowEpic = (action$, store) => {
       const { treasureHunt } = store.getState();
       const { dataMapHash, treasure, chunkIdx } = treasureHunt;
 
-      const hashInBytes = forge.util.hexToBytes(dataMapHash);
+      const hashInBytes = util.hexToBytes(dataMapHash);
       const [obfuscatedHash, nextDataMapHash] = Datamap.hashChain(hashInBytes);
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
@@ -70,7 +70,7 @@ const performPowEpic = (action$, store) => {
                 })
               : treasureHuntActions.incrementChunk({
                   nextChunkIdx: chunkIdx + 1,
-                  nextDataMapHash: forge.util.bytesToHex(nextDataMapHash)
+                  nextDataMapHash: util.bytesToHex(nextDataMapHash)
                 })
           )
         )
@@ -87,11 +87,11 @@ const findTreasureEpic = (action$, store) => {
     .mergeMap(action => {
       const { dataMapHash, chunkIdx } = action.payload;
 
-      const hashInBytes = forge.util.hexToBytes(dataMapHash);
+      const hashInBytes = util.hexToBytes(dataMapHash);
       const [obfuscatedHash, nextDataMapHashInBytes] = Datamap.hashChain(
         hashInBytes
       );
-      const nextDataMapHash = forge.util.bytesToHex(nextDataMapHashInBytes);
+      const nextDataMapHash = util.bytesToHex(nextDataMapHashInBytes);
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       return fromPromise(
@@ -104,7 +104,7 @@ const findTreasureEpic = (action$, store) => {
           type: "IOTA_RETURN"
         });
 
-        const chainWithTreasure = _.find(sideChain, hashedAddress => {
+        const chainWithTreasure = find(sideChain, hashedAddress => {
           return !!Datamap.decryptTreasure(
             hashedAddress,
             transaction.signatureMessageFragment,
