@@ -8,10 +8,9 @@ importScripts("import-example.js");
 onmessage = event => {
   console.log("Message Recieved in Worker");
   console.log(event);
-  console.log(self.addNumbers(1,2));
+  console.log(self.addNumbers(1, 2));
 };
 /* eslint-disable */
-
 
 /**
  * Example of how to use worker, delete this worker when an example is implemented

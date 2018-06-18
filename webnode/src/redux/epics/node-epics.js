@@ -13,7 +13,7 @@ import Datamap from "datamap-generator";
 import {
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
-  CHUNKS_PER_SECTOR,
+  CHUNKS_PER_SECTOR
 } from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {

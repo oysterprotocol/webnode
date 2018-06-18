@@ -21,8 +21,8 @@ const shouldUseRelativeAssetPaths = publicPath === "./";
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== "false";
 const publicUrl = publicPath.slice(0, -1);
 const env = getClientEnvironment(publicUrl);
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 
 if (env.stringified["process.env"].NODE_ENV !== '"production"') {
   throw new Error("Production builds must have NODE_ENV=production.");

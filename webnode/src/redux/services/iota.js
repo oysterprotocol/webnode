@@ -2,7 +2,7 @@ import IOTA from "iota.lib.js";
 import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
 import curl from "curl.lib.js";
 import _ from "lodash";
-import subMinutes from 'date-fns/sub_minutes';
+import subMinutes from "date-fns/sub_minutes";
 
 const iota = new IOTA();
 
