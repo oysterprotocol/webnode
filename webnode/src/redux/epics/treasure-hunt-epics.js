@@ -1,6 +1,6 @@
-import { fromPromise } from 'rxjs/observable/fromPromise';
-import { of } from 'rxjs/observable/of';
-import { empty } from 'rxjs/observable/empty';
+import { fromPromise } from "rxjs/observable/fromPromise";
+import { of } from "rxjs/observable/of";
+import { empty } from "rxjs/observable/empty";
 import { combineEpics } from "redux-observable"; //TODO remove store as dependency
 
 import find from "lodash/find";
@@ -94,41 +94,41 @@ const findTreasureEpic = (action$, store) => {
       const nextDataMapHash = util.bytesToHex(nextDataMapHashInBytes);
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
-      return fromPromise(
-        iota.findMostRecentTransaction(address)
-      ).mergeMap(transaction => {
-        const sideChain = Datamap.sideChainGenerate(dataMapHash);
+      return fromPromise(iota.findMostRecentTransaction(address)).mergeMap(
+        transaction => {
+          const sideChain = Datamap.sideChainGenerate(dataMapHash);
 
-        store.dispatch({
-          //TODO Remove this dispatch
-          type: "IOTA_RETURN"
-        });
+          store.dispatch({
+            //TODO Remove this dispatch
+            type: "IOTA_RETURN"
+          });
 
-        const chainWithTreasure = find(sideChain, hashedAddress => {
-          return !!Datamap.decryptTreasure(
-            hashedAddress,
-            transaction.signatureMessageFragment,
-            dataMapHash
+          const chainWithTreasure = _.find(sideChain, hashedAddress => {
+            return !!Datamap.decryptTreasure(
+              hashedAddress,
+              transaction.signatureMessageFragment,
+              dataMapHash
+            );
+          });
+
+          return of(
+            !!chainWithTreasure
+              ? treasureHuntActions.saveTreasure({
+                  treasure: Datamap.decryptTreasure(
+                    chainWithTreasure,
+                    transaction.signatureMessageFragment,
+                    dataMapHash
+                  ),
+                  nextChunkIdx: chunkIdx + 1,
+                  nextDataMapHash
+                })
+              : treasureHuntActions.incrementChunk({
+                  nextChunkIdx: chunkIdx + 1,
+                  nextDataMapHash
+                })
           );
-        });
-
-        return of(
-          !!chainWithTreasure
-            ? treasureHuntActions.saveTreasure({
-                treasure: Datamap.decryptTreasure(
-                  chainWithTreasure,
-                  transaction.signatureMessageFragment,
-                  dataMapHash
-                ),
-                nextChunkIdx: chunkIdx + 1,
-                nextDataMapHash
-              })
-            : treasureHuntActions.incrementChunk({
-                nextChunkIdx: chunkIdx + 1,
-                nextDataMapHash
-              })
-        );
-      });
+        }
+      );
     });
 };
 
@@ -174,7 +174,7 @@ const claimTreasureEpic = (action$, store) => {
       const {
         receiverEthAddr,
         genesisHash,
-        numChunks,
+        numberOfChunks,
         sectorIdx,
         treasure
       } = action.payload;
@@ -184,7 +184,7 @@ const claimTreasureEpic = (action$, store) => {
         BrokerNode.claimTreasure({
           receiverEthAddr,
           genesisHash,
-          numChunks,
+          numberOfChunks,
           sectorIdx,
           ethKey
         })

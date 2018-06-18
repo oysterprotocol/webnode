@@ -1,6 +1,6 @@
-import { fromPromise } from 'rxjs/observable/fromPromise';
-import { of } from 'rxjs/observable/of';
-import { empty } from 'rxjs/observable/empty';
+import { fromPromise } from "rxjs/observable/fromPromise";
+import { of } from "rxjs/observable/of";
+import { empty } from "rxjs/observable/empty";
 
 import { combineEpics } from "redux-observable";
 
@@ -16,7 +16,7 @@ import Datamap from "datamap-generator";
 import {
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
-  CHUNKS_PER_SECTOR,
+  CHUNKS_PER_SECTOR
 } from "../../config/";
 
 const registerWebnodeEpic = (action$, store) => {
@@ -75,13 +75,39 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
         const { genesisHash, numberOfChunks } = treasureHuntableGenesisHash;
         const { index } = treasureHuntableSector;
         return of(
-          nodeActions.checkIfSectorClaimed({
+          nodeActions.resumeOrStartNewSector({
             genesisHash: genesisHash,
             numberOfChunks: numberOfChunks,
             sectorIdx: index
           })
         );
       }
+    });
+};
+
+const resumeOrStartNewSectorEpic = (action$, store) => {
+  return action$
+    .ofType(nodeActions.NODE_RESUME_OR_START_NEW_SECTOR)
+    .mergeMap(action => {
+      const { genesisHash, numberOfChunks, sectorIdx } = action.payload;
+      const {
+        chunkIdx,
+        sectorIdx: currentSectorIdx
+      } = store.getState().treasureHunt;
+      const sectorsFirstChunkIdx = sectorIdx * CHUNKS_PER_SECTOR;
+
+      const alreadyStartedSector =
+        chunkIdx > sectorsFirstChunkIdx && currentSectorIdx === sectorIdx;
+
+      return alreadyStartedSector
+        ? of(treasureHuntActions.performPow())
+        : of(
+            nodeActions.checkIfSectorClaimed({
+              genesisHash,
+              numberOfChunks,
+              sectorIdx
+            })
+          );
     });
 };
 
@@ -95,10 +121,7 @@ const requestBrokerEpic = (action$, store) => {
       brokerNode.requestBrokerNodeAddressPoW({ brokerNodeUrl, currentList })
     )
       .mergeMap(({ data }) => {
-        const {
-          id: txid,
-          pow: { message, address, branchTx, trunkTx }
-        } = data;
+        const { id: txid, pow: { message, address, branchTx, trunkTx } } = data;
 
         // TODO: change this
         const value = 0;
@@ -259,6 +282,7 @@ export default combineEpics(
   genesisHashOrTreasureHuntEpic,
   requestBrokerEpic,
   requestGenesisHashEpic,
+  resumeOrStartNewSectorEpic,
   checkIfSectorClaimedEpic,
   markSectorAsClaimedEpic
 );

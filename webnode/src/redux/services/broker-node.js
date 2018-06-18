@@ -39,7 +39,7 @@ const completeGenesisHashPoW = ({ brokerNodeUrl, txid, trytes }) =>
 const claimTreasure = ({
   ethKey,
   genesisHash,
-  numChunks,
+  numberOfChunks,
   receiverEthAddr,
   sectorIdx
 }) =>
@@ -49,7 +49,7 @@ const claimTreasure = ({
     data: {
       ethKey,
       genesisHash,
-      numChunks,
+      numChunks: numberOfChunks,
       receiverEthAddr,
       sectorIdx
     }

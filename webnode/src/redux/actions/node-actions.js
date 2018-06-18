@@ -14,6 +14,8 @@ export const NODE_ADD_BROKER_NODE = "directories/node/add_broker_node";
 export const NODE_ADD_NEW_GENESIS_HASH =
   "directories/node/add_new_genesis_hash";
 export const NODE_RESET = "directories/node/reset";
+export const NODE_RESUME_OR_START_NEW_SECTOR =
+  "directories/node/resume_or_start_new_sector";
 export const NODE_CHECK_IF_SECTOR_CLAIMED =
   "directories/node/check_if_sector_claimed";
 export const NODE_MARK_SECTOR_AS_CLAIMED =
@@ -30,6 +32,7 @@ const ACTIONS = Object.freeze({
   NODE_ADD_BROKER_NODE,
   NODE_ADD_NEW_GENESIS_HASH,
   NODE_RESET,
+  NODE_RESUME_OR_START_NEW_SECTOR,
   NODE_CHECK_IF_SECTOR_CLAIMED,
   NODE_MARK_SECTOR_AS_CLAIMED,
 
@@ -63,6 +66,11 @@ const ACTIONS = Object.freeze({
   resetNode: ({ id, lastResetAt }) => ({
     type: NODE_RESET,
     payload: { id, lastResetAt }
+  }),
+
+  resumeOrStartNewSector: ({ genesisHash, sectorIdx, numberOfChunks }) => ({
+    type: NODE_RESUME_OR_START_NEW_SECTOR,
+    payload: { genesisHash, sectorIdx, numberOfChunks }
   }),
 
   checkIfSectorClaimed: ({ genesisHash, sectorIdx, numberOfChunks }) => ({
