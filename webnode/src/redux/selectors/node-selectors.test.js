@@ -1,7 +1,7 @@
 import { SECTOR_STATUS } from "../../config/";
 import nodeSelectors from "./node-selectors";
 
-const { NOT_STARTED, SEARCHING, TREASURE_FOUND, CLAIMED } = SECTOR_STATUS;
+const { UNCLAIMED, SEARCHING, TREASURE_FOUND, CLAIMED } = SECTOR_STATUS;
 
 test("node-selectors", () => {
   const lastResetAt = new Date();
@@ -17,7 +17,7 @@ test("node-selectors", () => {
         {
           genesisHash: "genesisHash 1",
           sectorIdx: 1,
-          sectors: [{ index: 11, status: NOT_STARTED }]
+          sectors: [{ index: 11, status: UNCLAIMED }]
         },
         {
           genesisHash: "genesisHash 2",
@@ -39,12 +39,12 @@ test("node-selectors", () => {
   const treasureHuntableGenesisHashExpected = {
     genesisHash: "genesisHash 1",
     sectorIdx: 1,
-    sectors: [{ index: 11, status: "NOT_STARTED" }]
+    sectors: [{ index: 11, status: "UNCLAIMED" }]
   };
 
   const treasureHuntableSectorExpected = {
     index: 11,
-    status: "NOT_STARTED"
+    status: "UNCLAIMED"
   };
 
   expect(nodeSelectors.treasureHuntableGenesisHash(state)).toEqual(

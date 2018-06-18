@@ -1,8 +1,9 @@
 import IOTA from "iota.lib.js";
 import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
 import curl from "curl.lib.js";
-import _ from "lodash";
-import subMinutes from "date-fns/sub_minutes";
+import findLastIndex from "lodash/findLastIndex";
+import orderBy from "lodash/orderBy";
+import subMinutes from 'date-fns/sub_minutes';
 
 const iota = new IOTA();
 
@@ -17,7 +18,7 @@ const toAddress = string => string.substr(0, IOTA_ADDRESS_LENGTH);
 
 const parseMessage = message => {
   const characters = message.split("");
-  const notNineIndex = _.findLastIndex(characters, c => c !== "9");
+  const notNineIndex = findLastIndex(characters, c => c !== "9");
 
   const choppedArray = characters.slice(0, notNineIndex + 1);
   const choppedMessage = choppedArray.join("");
@@ -34,7 +35,7 @@ const findAllTransactions = address =>
       { addresses: [address] },
       (error, transactionObjects) => {
         const settledTransactions = transactionObjects || [];
-        const ordered = _.orderBy(
+        const ordered = orderBy(
           settledTransactions,
           ["attachmentTimestamp"],
           ["desc"]
