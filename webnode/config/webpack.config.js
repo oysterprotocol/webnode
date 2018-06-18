@@ -165,7 +165,7 @@ const common = {
 };
 // end common configuration
 
-if (env.stringified["process.env"].NODE_ENV == '"production"') {
+if (env.stringified["process.env"].NODE_ENV === '"production"') {
   module.exports = merge(common, {
     bail: true,
     devtool: shouldUseSourceMap ? "source-map" : false,
@@ -176,7 +176,7 @@ if (env.stringified["process.env"].NODE_ENV == '"production"') {
     output: {
       path: paths.appBuild,
       filename: `static/js/oyster-webnode-${APP_VERSION}.[hash:8].min.js`,
-      chunkFilename: "static/js/[name].[chunkhash:8].chunk.js",
+      chunkFilename: "static/js/[name].chunk.js",
       publicPath: publicPath,
       devtoolModuleFilenameTemplate: info =>
         path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, "/")
@@ -257,7 +257,7 @@ if (env.stringified["process.env"].NODE_ENV == '"production"') {
 }
 // end production configuration
 
-if (env.stringified["process.env"].NODE_ENV == '"development"') {
+if (env.stringified["process.env"].NODE_ENV === '"development"') {
   module.exports = merge(common, {
     devServer: {
       port: 3000,
@@ -280,4 +280,3 @@ if (env.stringified["process.env"].NODE_ENV == '"development"') {
   });
 }
 // end development configuration
-
