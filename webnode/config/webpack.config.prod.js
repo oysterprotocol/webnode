@@ -1,17 +1,19 @@
 "use strict";
 
-const autoprefixer = require("autoprefixer");
-const path = require("path");
-const webpack = require("webpack");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+// Plugins
+const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
+const MinifyPlugin = require("babel-minify-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
-const eslintFormatter = require("react-dev-utils/eslintFormatter");
-const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
-const MinifyPlugin = require("babel-minify-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const ScriptAttrHtmlWebpackPlugin = require("script-attr-html-webpack-plugin");
+
+const autoprefixer = require("autoprefixer");
+const path = require("path");
+const webpack = require("webpack");
+const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const paths = require("./paths");
 const getClientEnvironment = require("./env");
 
@@ -190,7 +192,9 @@ module.exports = {
     }),
     new webpack.DefinePlugin(env.stringified),
     new MinifyPlugin(
-      {},
+      {
+        removeDebugger: true
+      },
       {
         sourceMap: null
       }
