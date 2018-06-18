@@ -65,11 +65,10 @@ export default (state = initState, action) => {
 
     case nodeActions.NODE_MARK_SECTOR_AS_CLAIMED:
       const { genesisHash: gh, sectorIdx } = action.payload;
-      const updatedGenesisHashes = map(
-        state.newGenesisHashes,
+      const updatedGenesisHashes = state.newGenesisHashes.map(
         newGenesisHash => {
           if (newGenesisHash.genesisHash === gh) {
-            const updatedSectors = map(newGenesisHash.sectors, sector => {
+            const updatedSectors = newGenesisHash.sectors.map(sector => {
               if (sector.index === sectorIdx) {
                 return {
                   ...sector,
