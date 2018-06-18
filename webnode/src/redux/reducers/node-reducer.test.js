@@ -1,5 +1,3 @@
-import range from "lodash/range";
-import map from "lodash/map";
 import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
 
 import node from "./node-reducer";
@@ -11,8 +9,8 @@ const brokerNodeGenerator = address => {
 
 const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
   const numberOfSectors = Math.ceil(numberOfChunks / CHUNKS_PER_SECTOR);
-  const sectorIdxes = range(numberOfSectors);
-  const sectors = map(sectorIdxes, index => {
+  const sectorIdxes = Array.from(new Array(numberOfSectors), (_x, i) => i);
+  const sectors = sectorIdxes.map(index => {
     return {
       index,
       status: SECTOR_STATUS.UNCLAIMED
