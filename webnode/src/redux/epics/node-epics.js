@@ -282,6 +282,7 @@ export default combineEpics(
   genesisHashOrTreasureHuntEpic,
   requestBrokerEpic,
   requestGenesisHashEpic,
+  resumeOrStartNewSectorEpic,
   checkIfSectorClaimedEpic,
   markSectorAsClaimedEpic
 );
