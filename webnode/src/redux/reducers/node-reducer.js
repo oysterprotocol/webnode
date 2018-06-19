@@ -1,4 +1,5 @@
-import _ from "lodash";
+import range from "lodash/range";
+import map from "lodash/map";
 
 import nodeActions from "../actions/node-actions";
 
@@ -19,8 +20,8 @@ const brokerNodeGenerator = address => {
 
 const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
   const numberOfSectors = Math.ceil(numberOfChunks / CHUNKS_PER_SECTOR);
-  const sectorIdxes = _.range(numberOfSectors);
-  const sectors = _.map(sectorIdxes, index => {
+  const sectorIdxes = range(numberOfSectors);
+  const sectors = map(sectorIdxes, index => {
     return {
       index,
       status: SECTOR_STATUS.UNCLAIMED
@@ -67,11 +68,11 @@ export default (state = initState, action) => {
 
     case nodeActions.NODE_MARK_SECTOR_AS_CLAIMED:
       const { genesisHash: gh, sectorIdx } = action.payload;
-      const updatedGenesisHashes = _.map(
+      const updatedGenesisHashes = map(
         state.newGenesisHashes,
         newGenesisHash => {
           if (newGenesisHash.genesisHash === gh) {
-            const updatedSectors = _.map(newGenesisHash.sectors, sector => {
+            const updatedSectors = map(newGenesisHash.sectors, sector => {
               if (sector.index === sectorIdx) {
                 return {
                   ...sector,
@@ -93,6 +94,6 @@ export default (state = initState, action) => {
       };
 
     default:
-      return { ...state };
+      return state;
   }
 };

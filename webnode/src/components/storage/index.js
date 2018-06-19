@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Input, Button, Container, Header, Image } from "semantic-ui-react";
-import _ from "lodash";
+import { CONSENT_STATUS } from "../../config";
+import toArray from "lodash/toArray";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 import nodeActions from "../../redux/actions/node-actions";
@@ -13,7 +14,6 @@ import { TEST_ETH_ADDRESS } from "../../config";
 
 import TreasureTable from "./toolbox/TreasureTable";
 import ConsentOverlay from "../consent-overlay";
-
 
 import LOGO from "../../assets/images/logo.svg";
 
@@ -70,7 +70,7 @@ class Storage extends Component {
       this.state.numberOfChunks
     );
 
-    const transformedMap = _.toArray(generatedMap)
+    const transformedMap = toArray(generatedMap)
       .map((value, index) => ({
         dataMapHash: value,
         chunkIdx: index
@@ -86,12 +86,18 @@ class Storage extends Component {
   }
 
   startApp() {
-    const { giveConsent } = this.props;
-    giveConsent();
+    const { initialize } = this.props;
+    initialize();
   }
 
   render() {
-    const { treasures, numberOfCalls } = this.props;
+    const {
+      treasures,
+      numberOfCalls,
+      giveConsent,
+      denyConsent,
+      status
+    } = this.props;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
         <div style={{ padding: 50 }}>
@@ -108,7 +114,9 @@ class Storage extends Component {
           </div>
           {treasures.length !== 0 ? TreasureTable(treasures) : null}
         </div>
-        <ConsentOverlay/>
+        {status === CONSENT_STATUS.PENDING ? (
+          <ConsentOverlay giveConsent={giveConsent} denyConsent={denyConsent} />
+        ) : null}
       </Container>
     );
   }
@@ -116,6 +124,7 @@ class Storage extends Component {
 
 const mapStateToProps = state => ({
   statuses: state.pow.statuses,
+  status: state.consent.status,
   treasures: state.test.treasures,
   numberOfCalls: state.test.numberOfCalls, //TODO remove for production
   consent: state.pow.consent
@@ -124,7 +133,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
   startSector: obj => dispatch(treasureHuntActions.startSector(obj)),
+  initialize: () => dispatch(nodeActions.initialize()),
   giveConsent: () => dispatch(consentActions.giveConsent()),
+  denyConsent: () => dispatch(consentActions.denyConsent()),
   setOwnerEthAddress: ethAddress =>
     dispatch(nodeActions.setOwnerEthAddress(ethAddress))
 });

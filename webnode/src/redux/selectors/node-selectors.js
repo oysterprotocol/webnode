@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
-import _ from "lodash";
+import find from "lodash/find";
+import includes from "lodash/includes";
 
 import { API_ROOT_URL, SECTOR_STATUS } from "../../config/";
 const { UNCLAIMED } = SECTOR_STATUS;
@@ -10,9 +11,9 @@ const getBrokerNodes = state => state.node.brokerNodes;
 const treasureHuntableGenesisHash = createSelector(
   [getNewGenesisHashes],
   newGenesisHashes => {
-    return _.find(newGenesisHashes, gh => {
-      return _.find(gh.sectors, sector =>
-        _.includes([UNCLAIMED], sector.status)
+    return find(newGenesisHashes, gh => {
+      return find(gh.sectors, sector =>
+        includes([UNCLAIMED], sector.status)
       );
     });
   }
@@ -25,7 +26,7 @@ const treasureHuntableSector = createSelector(
       return null;
     }
 
-    return _.find(genesisHash.sectors, sector => sector.status === UNCLAIMED);
+    return find(genesisHash.sectors, sector => sector.status === UNCLAIMED);
   }
 );
 

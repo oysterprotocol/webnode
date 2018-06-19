@@ -1,15 +1,16 @@
-import { Observable } from "rxjs";
+import { fromPromise } from "rxjs/observable/fromPromise";
+import { of } from "rxjs/observable/of";
+import { empty } from "rxjs/observable/empty";
 import { combineEpics } from "redux-observable"; //TODO remove store as dependency
 
-import _ from "lodash";
+import find from "lodash/find";
 
 import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
-import forge from "node-forge";
+import util from "node-forge/lib/util";
 
-import Sidechain from "../../utils/sidechain";
 import Datamap from "datamap-generator";
 
 import { CHUNKS_PER_SECTOR } from "../../config/";
@@ -21,7 +22,7 @@ const performPowEpic = (action$, store) => {
       const { treasureHunt } = store.getState();
       const { dataMapHash, treasure, chunkIdx } = treasureHunt;
 
-      const hashInBytes = forge.util.hexToBytes(dataMapHash);
+      const hashInBytes = util.hexToBytes(dataMapHash);
       const [obfuscatedHash, nextDataMapHash] = Datamap.hashChain(hashInBytes);
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
@@ -31,24 +32,24 @@ const performPowEpic = (action$, store) => {
       const seed =
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-      return Observable.fromPromise(iota.findMostRecentTransaction(address))
+      return fromPromise(iota.findMostRecentTransaction(address))
         .map(transaction => transaction.signatureMessageFragment)
         .mergeMap(message =>
-          Observable.fromPromise(iota.getTransactionsToApprove(1)).map(
+          fromPromise(iota.getTransactionsToApprove(1)).map(
             ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) => {
               return { message, trunkTx, branchTx };
             }
           )
         )
         .mergeMap(({ trunkTx, branchTx, message }) =>
-          Observable.fromPromise(
+          fromPromise(
             iota.prepareTransfers({ address, message, value, tag, seed })
           ).map(trytes => {
             return { trytes, trunkTx, branchTx };
           })
         )
         .mergeMap(({ trytes, trunkTx, branchTx }) =>
-          Observable.fromPromise(
+          fromPromise(
             iota.localPow({
               trunkTx,
               branchTx,
@@ -58,10 +59,10 @@ const performPowEpic = (action$, store) => {
           )
         )
         .mergeMap(trytesArray =>
-          Observable.fromPromise(iota.broadcastTransactions(trytesArray))
+          fromPromise(iota.broadcastTransactions(trytesArray))
         )
         .mergeMap(() =>
-          Observable.of(
+          of(
             !treasure
               ? treasureHuntActions.findTreasure({
                   dataMapHash,
@@ -69,13 +70,13 @@ const performPowEpic = (action$, store) => {
                 })
               : treasureHuntActions.incrementChunk({
                   nextChunkIdx: chunkIdx + 1,
-                  nextDataMapHash
+                  nextDataMapHash: util.bytesToHex(nextDataMapHash)
                 })
           )
         )
         .catch(error => {
           console.log("TREASURE HUNTING ERROR", error);
-          return Observable.empty();
+          return empty();
         });
     });
 };
@@ -86,47 +87,48 @@ const findTreasureEpic = (action$, store) => {
     .mergeMap(action => {
       const { dataMapHash, chunkIdx } = action.payload;
 
-      const hashInBytes = forge.util.hexToBytes(dataMapHash);
+      const hashInBytes = util.hexToBytes(dataMapHash);
       const [obfuscatedHash, nextDataMapHashInBytes] = Datamap.hashChain(
         hashInBytes
       );
-      const nextDataMapHash = forge.util.bytesToHex(nextDataMapHashInBytes);
+      const nextDataMapHash = util.bytesToHex(nextDataMapHashInBytes);
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
-      return Observable.fromPromise(
-        iota.findMostRecentTransaction(address)
-      ).mergeMap(transaction => {
-        const sideChain = Sidechain.generate(dataMapHash);
-        store.dispatch({
-          //TODO Remove this dispatch
-          type: "IOTA_RETURN"
-        });
+      return fromPromise(iota.findMostRecentTransaction(address)).mergeMap(
+        transaction => {
+          const sideChain = Datamap.sideChainGenerate(dataMapHash);
 
-        const chainWithTreasure = _.find(sideChain, hashedAddress => {
-          return !!Datamap.decryptTreasure(
-            hashedAddress,
-            transaction.signatureMessageFragment,
-            dataMapHash
+          store.dispatch({
+            //TODO Remove this dispatch
+            type: "IOTA_RETURN"
+          });
+
+          const chainWithTreasure = _.find(sideChain, hashedAddress => {
+            return !!Datamap.decryptTreasure(
+              hashedAddress,
+              transaction.signatureMessageFragment,
+              dataMapHash
+            );
+          });
+
+          return of(
+            !!chainWithTreasure
+              ? treasureHuntActions.saveTreasure({
+                  treasure: Datamap.decryptTreasure(
+                    chainWithTreasure,
+                    transaction.signatureMessageFragment,
+                    dataMapHash
+                  ),
+                  nextChunkIdx: chunkIdx + 1,
+                  nextDataMapHash
+                })
+              : treasureHuntActions.incrementChunk({
+                  nextChunkIdx: chunkIdx + 1,
+                  nextDataMapHash
+                })
           );
-        });
-
-        return Observable.of(
-          !!chainWithTreasure
-            ? treasureHuntActions.saveTreasure({
-                treasure: Datamap.decryptTreasure(
-                  chainWithTreasure,
-                  transaction.signatureMessageFragment,
-                  dataMapHash
-                ),
-                nextChunkIdx: chunkIdx + 1,
-                nextDataMapHash
-              })
-            : treasureHuntActions.incrementChunk({
-                nextChunkIdx: chunkIdx + 1,
-                nextDataMapHash
-              })
-        );
-      });
+        }
+      );
     });
 };
 
@@ -151,7 +153,7 @@ const nextChunkEpic = (action$, store) => {
       const endOfFile = chunkIdx > numberOfChunks;
       const endOfSector = chunkIdx > CHUNKS_PER_SECTOR * (sectorIdx + 1) - 1;
 
-      return Observable.of(
+      return of(
         endOfFile || endOfSector
           ? treasureHuntActions.claimTreasure({
               genesisHash,
@@ -172,17 +174,17 @@ const claimTreasureEpic = (action$, store) => {
       const {
         receiverEthAddr,
         genesisHash,
-        numChunks,
+        numberOfChunks,
         sectorIdx,
         treasure
       } = action.payload;
       const ethKey = treasure;
 
-      return Observable.fromPromise(
+      return fromPromise(
         BrokerNode.claimTreasure({
           receiverEthAddr,
           genesisHash,
-          numChunks,
+          numberOfChunks,
           sectorIdx,
           ethKey
         })
@@ -192,7 +194,7 @@ const claimTreasureEpic = (action$, store) => {
         )
         .catch(error => {
           console.log("CLAIM TREASURE ERROR: ", error);
-          return Observable.empty();
+          return empty();
         });
     });
 };
