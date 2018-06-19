@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Input, Button, Container, Header, Image } from "semantic-ui-react";
 import { CONSENT_STATUS } from "../../config";
-import toArray from "lodash/toArray";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 import nodeActions from "../../redux/actions/node-actions";
@@ -70,7 +69,7 @@ class Storage extends Component {
       this.state.numberOfChunks
     );
 
-    const transformedMap = toArray(generatedMap)
+    const transformedMap = Object.values(generatedMap)
       .map((value, index) => ({
         dataMapHash: value,
         chunkIdx: index

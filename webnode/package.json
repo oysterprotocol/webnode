@@ -25,7 +25,6 @@
     "iota.lib.js": "^0.4.7",
     "jest": "^23.1.0",
     "js-sha3": "^0.7.0",
-    "lodash": "^4.17.5",
     "node-forge": "^0.7.5",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",

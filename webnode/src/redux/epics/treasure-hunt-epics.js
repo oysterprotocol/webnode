@@ -3,8 +3,6 @@ import { of } from "rxjs/observable/of";
 import { empty } from "rxjs/observable/empty";
 import { combineEpics } from "redux-observable"; //TODO remove store as dependency
 
-import find from "lodash/find";
-
 import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
@@ -103,7 +101,7 @@ const findTreasureEpic = (action$, store) => {
             type: "IOTA_RETURN"
           });
 
-          const chainWithTreasure = _.find(sideChain, hashedAddress => {
+          const chainWithTreasure = sideChain.find(hashedAddress => {
             return !!Datamap.decryptTreasure(
               hashedAddress,
               transaction.signatureMessageFragment,
