@@ -194,7 +194,8 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       ),
       extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
       alias: {
-        "react-native": "react-native-web"
+        react: "preact-compat",
+        "react-dom": "preact-compat"
       },
       plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
     },

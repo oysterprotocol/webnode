@@ -29,6 +29,8 @@
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
+    "preact": "^8.2.9",
+    "preact-compat": "^3.18.0",
     "promise": "8.0.1",
     "prop-types": "^15.6.0",
     "radium": "^0.24.0",
