@@ -1,20 +1,23 @@
 "use strict";
 
-const autoprefixer = require("autoprefixer");
-const path = require("path");
-const webpack = require("webpack");
-const merge = require("webpack-merge");
+//Plugins
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const MinifyPlugin = require("babel-minify-webpack-plugin");
 const ScriptAttrHtmlWebpackPlugin = require("script-attr-html-webpack-plugin");
+
+const autoprefixer = require("autoprefixer");
+const path = require("path");
+const webpack = require("webpack");
+const merge = require("webpack-merge");
 const paths = require("./paths");
 const getClientEnvironment = require("./env");
 
@@ -72,7 +75,10 @@ const common = {
             options: {
               compact: true,
               presets: ["react-app"],
-              plugins: ["transform-object-rest-spread"]
+              plugins: [
+                "transform-object-rest-spread",
+                "lodash"
+              ]
             }
           },
           {
@@ -158,7 +164,8 @@ const common = {
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
     new ExtractTextPlugin({
       filename: cssFilename
-    })
+    }),
+    new LodashModuleReplacementPlugin
   ]
 };
 // end common configuration
