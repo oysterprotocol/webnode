@@ -144,9 +144,6 @@ const common = {
   },
 
   plugins: [
-    new BundleAnalyzerPlugin({
-      generateStatsFile: generateStatsFile
-    }),
     new InterpolateHtmlPlugin(env.raw),
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
@@ -175,7 +172,7 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
     },
     output: {
       path: paths.appBuild,
-      filename: `static/js/oyster-webnode-${APP_VERSION}.[hash:8].min.js`,
+      filename: `static/js/oyster-webnode-${APP_VERSION}.min.js`,
       chunkFilename: "static/js/[name].chunk.js",
       publicPath: publicPath,
       devtoolModuleFilenameTemplate: info =>
@@ -194,6 +191,9 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       ]
     },
     plugins: [
+      new BundleAnalyzerPlugin({
+        generateStatsFile: generateStatsFile
+      }),
       new HtmlWebpackPlugin({
         inject: true,
         template: paths.appHtml,
