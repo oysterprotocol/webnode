@@ -261,7 +261,7 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
 if (env.stringified["process.env"].NODE_ENV === '"development"') {
   module.exports = merge(common, {
     devServer: {
-      port: 3000,
+      port: 3001,
       open: true
     },
     devtool: "cheap-module-source-map",
