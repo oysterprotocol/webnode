@@ -5,6 +5,7 @@ import { PersistGate } from "redux-persist/lib/integration/react";
 import Overlay from "./components/overlay";
 
 import { store, persistor } from "./redux";
+import { SCRIPT_ATTRIBUTE_ETH_ADDRESS } from "./config";
 
 const App = ({ ethAddress }) => (
   <Provider store={store}>
@@ -16,7 +17,7 @@ const App = ({ ethAddress }) => (
 
 if (!module.parent) {
   const script = document.currentScript;
-  const ethAddress = script.getAttribute("eth-address");
+  const ethAddress = script.getAttribute(SCRIPT_ATTRIBUTE_ETH_ADDRESS);
   if (!!ethAddress) {
     console.log("Oyster Webnode initialized.");
     ReactDOM.render(
@@ -25,7 +26,7 @@ if (!module.parent) {
     );
   } else {
     console.log(
-      "Oyster Webnode must be initialized with an 'eth-address' attribute, please remember to specify this attribute in the script tag."
+      `Oyster Webnode must be initialized with an ${SCRIPT_ATTRIBUTE_ETH_ADDRESS} attribute, please remember to specify this attribute in the script tag.`
     );
   }
 }
