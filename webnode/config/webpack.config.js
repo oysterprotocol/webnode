@@ -3,11 +3,12 @@
 const autoprefixer = require("autoprefixer");
 const path = require("path");
 const webpack = require("webpack");
-const merge = require('webpack-merge');
+const merge = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
@@ -154,7 +155,7 @@ const common = {
     }),
     new ScriptAttrHtmlWebpackPlugin({
       attributes: {
-        "eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
+        "data-eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
       }
     }),
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
@@ -179,7 +180,9 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       chunkFilename: "static/js/[name].chunk.js",
       publicPath: publicPath,
       devtoolModuleFilenameTemplate: info =>
-        path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, "/")
+        path
+          .relative(paths.appSrc, info.absoluteResourcePath)
+          .replace(/\\/g, "/")
     },
     resolve: {
       modules: ["node_modules", paths.appNodeModules].concat(
@@ -189,9 +192,7 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       alias: {
         "react-native": "react-native-web"
       },
-      plugins: [
-        new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])
-      ]
+      plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
     },
     plugins: [
       new HtmlWebpackPlugin({

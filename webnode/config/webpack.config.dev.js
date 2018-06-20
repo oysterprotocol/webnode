@@ -133,7 +133,7 @@ module.exports = {
     }),
     new ScriptAttrHtmlWebpackPlugin({
       attributes: {
-        "eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
+        "data-eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
       }
     })
   ]

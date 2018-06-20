@@ -11,6 +11,8 @@ export const ASSET_URL =
     ? window.location.href
     : "https://web.oysternode.com/";
 
+export const SCRIPT_ATTRIBUTE_ETH_ADDRESS = "data-eth-address";
+
 export const IOTA_API_PROVIDER = "http://18.217.133.146:14265";
 export const IOTA_ADDRESS_LENGTH = 81;
 
