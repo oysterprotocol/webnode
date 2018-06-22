@@ -1,4 +1,5 @@
-import IOTA from "iota.lib.js";
+import IOTA from "iota.lib.js/lib/iota.js";
+import utils from "iota.lib.js/lib/utils/utils";
 import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
 import curl from "curl.lib.js";
 import subMinutes from "date-fns/sub_minutes";
@@ -26,7 +27,7 @@ const parseMessage = message => {
   const evenChars =
     choppedMessage.length % 2 === 0 ? choppedMessage : choppedMessage + "9";
 
-  return iota.utils.fromTrytes(evenChars);
+  return utils.fromTrytes(evenChars);
 };
 
 const findAllTransactions = address =>
@@ -130,7 +131,7 @@ export const localPow = data => {
     }
 
     function getBundleTrytes(thisTrytes, callback) {
-      let txObject = iota.utils.transactionObject(thisTrytes);
+      let txObject = utils.transactionObject(thisTrytes);
 
       /*Commenting this out.  We potentially want to be able to search
             using tags, at least until mainnet comes out.*/
@@ -154,12 +155,12 @@ export const localPow = data => {
         txObject.trunkTransaction = previousTxHash;
         txObject.branchTransaction = trunkTransaction;
       }
-      let newTrytes = iota.utils.transactionTrytes(txObject);
+      let newTrytes = utils.transactionTrytes(txObject);
       curl
         .pow({ trytes: newTrytes, minWeight: minWeightMagnitude })
         .then(nonce => {
           let returnedTrytes = newTrytes.substr(0, 2673 - 81).concat(nonce);
-          let newTxObject = iota.utils.transactionObject(returnedTrytes);
+          let newTxObject = utils.transactionObject(returnedTrytes);
           let txHash = newTxObject.hash;
           previousTxHash = txHash;
           finalBundleTrytes.push(returnedTrytes);
@@ -246,6 +247,6 @@ export default {
   getTransactionsToApprove,
   broadcastTransactions,
   findMostRecentTransaction,
-  utils: iota.utils,
+  utils,
   toAddress: toAddress
 };
