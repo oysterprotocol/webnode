@@ -15,6 +15,7 @@ before_install:
 script:
 - yarn && yarn test:coverage
 after_script:
+- ls
 - ls webnode/
 - ls webnode/coverage/
 - ./cc-test-reporter sum-coverage coverage/coverage-final.json
