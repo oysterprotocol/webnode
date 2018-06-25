@@ -28,7 +28,7 @@ deploy:
     secure: LxJHmm8XF/cPeZLCAVxgrqkDmiReRopNUX3ouJKBl7MT1VvKpuXgpVjagvZMEVu/GPpuPDtF+ZgsXDxqU2jkBulCdtxLsuNINOH2Okjy6XZkcdse0Yn6xQCp7Olqb0lJUhMKuvljo/KKDMG8C2hGw3CEHdJIlWIddloPrielfFDLxo3yRAQrTjJ9iYS+WHtLzRO+CwZ2qA6TZu1ebJzmfQltuiUZw04urEKcTmmQRI/Mty04VoPv5r+kxnr57t7yFpYB9ODXkg4iSDgssdGdp0Dh/eQi3hhMWqXk3GQjQOF0oNsMNdUM59tD6xPjbrv0JJ6M8x1PeAKlkm/BRv4YvCudsr7anMeZQAwich1FdHQbt7vU9kVoR1X1eUEmSMQfgGBzYeEqQKiMml+ONUAqZfy8fxgj5D1qtVutBcGHTKCozmzwrgYWw4mRekt6JXLBiPTABFr/rdFkcXvbML5em7I2oIQiMyVjOVnVaAUC05xUxfqYqmaL+B3+D3MVW5gubE7XcVgqCws4+q17J0ln2JZMme320JDWZ6UBP4PQE3+ccHbuF7SE/THAziN8Bn8/YoDC5k1KyMPmXHkyzxEzLRob1QVm5YGZ+Mb8sIIQQCOGsF48IPYnzaqEo4Sw5YmA5MJ/BpCKySIB9R3pye2h4cvfNrNvVZ704b0Otk0UgFk=
   bucket: oyster-webnode
   cache_control: max-age=120
-  local_dir: webnode/build
+  local_dir: build
   acl: public_read
   on:
     repo: oysterprotocol/webnode
