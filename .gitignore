@@ -2,3 +2,4 @@
 .idea
 node_modules
 webnode/node_modules
+webnode/coverage

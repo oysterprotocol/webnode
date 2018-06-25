@@ -110,7 +110,8 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server --config='config/webpack.config.js'",
     "build": "cross-env NODE_ENV=production webpack --config='config/webpack.config.js'",
     "test": "jest",
-    "watch-test": "cross-env NODE_PATH=src jest --watch --colors"
+    "test:watch": "cross-env NODE_PATH=src jest --watch --colors",
+    "test:coverage": "cross-env NODE_PATH=src jest --coverage"
   },
   "jest": {
     "collectCoverageFrom": [
