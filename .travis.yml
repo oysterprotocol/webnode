@@ -18,6 +18,10 @@ script:
 - yarn && yarn test:coverage
 after_script:
 - cd ../
+- ls
+- ls webnode/
+- ls webnode/coverage
+- cat webnode/coverage/coverage-final.json
 - ./cc-test-reporter sum-coverage webnode/coverage/coverage-final.json
 - ./cc-test-reporter upload-coverage
 - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
