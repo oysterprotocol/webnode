@@ -2,12 +2,12 @@ export const IS_DEV = process.env.NODE_ENV === "development";
 export const DEBUGGING = process.env.DEBUG;
 export const API_VERSION = "api/v2";
 export const API_ROOT_URL =
-  window.location.href.indexOf("localhost") > 0
+  (window.location && window.location.href.indexOf('localhost') > 0) > 0
     ? "http://18.217.133.146:3000"
     : "https://broker-1.oysternodes.com:3000";
 
 export const ASSET_URL =
-  window.location.href.indexOf("localhost") > 0
+  (window.location && window.location.href.indexOf('localhost') > 0) > 0
     ? window.location.href
     : "https://web.oysternode.com/";
 
