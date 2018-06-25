@@ -76,8 +76,7 @@ const common = {
               compact: true,
               presets: ["react-app"],
               plugins: [
-                "transform-object-rest-spread",
-                "lodash"
+                "transform-object-rest-spread"
               ]
             }
           },
@@ -164,8 +163,7 @@ const common = {
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
     new ExtractTextPlugin({
       filename: cssFilename
-    }),
-    new LodashModuleReplacementPlugin
+    })
   ]
 };
 // end common configuration
