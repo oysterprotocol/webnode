@@ -17,9 +17,8 @@ before_script:
 script:
 - yarn && yarn test:coverage
 after_script:
-- ls
-- ls coverage/
-- ./cc-test-reporter sum-coverage coverage/coverage-final.json
+- cd ../
+- ./cc-test-reporter sum-coverage webnode/coverage/coverage-final.json
 - ./cc-test-reporter upload-coverage
 - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 deploy:
