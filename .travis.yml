@@ -19,7 +19,6 @@ script:
 after_script:
 - cd ../
 - ./cc-test-reporter sum-coverage webnode/coverage/coverage-final.json
-- ./cc-test-reporter upload-coverage
 - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 deploy:
   provider: s3
