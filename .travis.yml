@@ -8,11 +8,10 @@ cache:
   yarn: true
   directories:
   - node_modules
-before_install:
+before_script:
 - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
 - chmod +x ./cc-test-reporter
 - ./cc-test-reporter before-build
-before_script:
 - cd webnode/
 script:
 - yarn && yarn test:coverage
