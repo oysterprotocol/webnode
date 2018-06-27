@@ -8,18 +8,14 @@ cache:
   yarn: true
   directories:
   - node_modules
-before_install:
+before_script:
+- cd webnode/
 - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
 - chmod +x ./cc-test-reporter
 - ./cc-test-reporter before-build
-before_script:
-- cd webnode/
 script:
 - yarn && yarn test:coverage
 after_script:
-- cd ../
-- ./cc-test-reporter sum-coverage webnode/coverage/coverage-final.json
-- ./cc-test-reporter upload-coverage
 - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 deploy:
   provider: s3
