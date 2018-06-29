@@ -1,13 +1,13 @@
-import { SECTOR_STATUS } from "../../config/";
+import { API_ROOT_URL, SECTOR_STATUS } from "../../config/";
 import nodeSelectors from "./node-selectors";
 
 const { UNCLAIMED, SEARCHING, TREASURE_FOUND, CLAIMED } = SECTOR_STATUS;
 
 test("node-selectors", () => {
   const lastResetAt = new Date();
-  const state = {
+  let state = {
     node: {
-      brokerNodes: [],
+      brokerNodes: [{ address: "first address" }, { address: "b" }],
       newGenesisHashes: [
         {
           genesisHash: "genesisHash bad",
@@ -47,11 +47,26 @@ test("node-selectors", () => {
     status: "UNCLAIMED"
   };
 
+  const brokerNodeUrlExpected = "first address";
   expect(nodeSelectors.treasureHuntableGenesisHash(state)).toEqual(
     treasureHuntableGenesisHashExpected
   );
 
   expect(nodeSelectors.treasureHuntableSector(state)).toEqual(
     treasureHuntableSectorExpected
+  );
+
+  expect(nodeSelectors.brokerNodeUrl(state)).toEqual(
+    brokerNodeUrlExpected
+  );
+
+  state = {
+    node: {
+      brokerNodes: []
+    }
+  };
+
+  expect(nodeSelectors.brokerNodeUrl(state)).toEqual(
+    API_ROOT_URL
   );
 });

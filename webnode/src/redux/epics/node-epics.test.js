@@ -8,6 +8,7 @@ import { ActionsObservable, combineEpics } from "redux-observable";
 import configureMockStore from "redux-mock-store";
 
 import nodeActions from "../actions/node-actions";
+import treasureHuntActions from "../actions/treasure-hunt-actions";
 import nodeEpics from "./node-epics";
 import nodeSelectors from "../selectors/node-selectors";
 
@@ -167,7 +168,6 @@ test("genesisHashOrTreasureHuntEpic", () => {
           numberOfChunks: numberOfChunks,
           sectorIdx: index
         })
-
       ]);
     });
 
@@ -183,5 +183,123 @@ test("genesisHashOrTreasureHuntEpic", () => {
     .toArray()
     .subscribe(actions => {
       expect(actions).toEqual([nodeActions.requestGenesisHashes()]);
+    });
+});
+
+test("resumeOrStartNewSectorEpic", () => {
+  let state = {
+    treasureHunt: { sectorIdx: 1, chunkIdx: 2000000 }
+  };
+
+  let store = mockStore(state);
+
+  const genesisHash = "hash";
+  const numberOfChunks = 11;
+  const sectorIdx = 1;
+
+  const action = ActionsObservable.of({
+    type: nodeActions.NODE_RESUME_OR_START_NEW_SECTOR,
+    payload: {
+      genesisHash: genesisHash,
+      numberOfChunks: numberOfChunks,
+      sectorIdx: sectorIdx
+    }
+  });
+
+  nodeEpics(action, store)
+    .toArray()
+    .subscribe(actions => {
+      expect(actions).toEqual([treasureHuntActions.performPow()]);
+    });
+
+  state = {
+    treasureHunt: { sectorIdx: 1, chunkIdx: 1 }
+  };
+
+  store = mockStore(state);
+
+  nodeEpics(action, store)
+    .toArray()
+    .subscribe(actions => {
+      expect(actions).toEqual([
+        nodeActions.checkIfSectorClaimed({
+          genesisHash,
+          numberOfChunks,
+          sectorIdx
+        })
+      ]);
+    });
+});
+
+test("requestBrokerEpic", () => {
+  let state = {
+    node: {
+      brokerNodes: [{ genesisHash: "aa" }, { genesisHash: "b" }]
+    }
+  };
+
+  let store = mockStore(state);
+
+  const action = ActionsObservable.of({
+    type: nodeActions.NODE_REQUEST_BROKER_NODES
+  });
+
+  const address = "";
+
+  nodeEpics(action, store)
+    .toArray()
+    .subscribe(actions => {
+      expect(actions).toEqual([
+        nodeActions.addBrokerNode({ address }),
+        nodeActions.determineBrokerNodeOrGenesisHash()
+      ]);
+    });
+});
+
+test("requestGenesisHashEpic", () => {
+  let state = {
+    node: {
+      brokerNodes: [{ address: "aa" }, { address: "b" }],
+      newGenesisHashes: [{ address: "aa" }, { address: "b" }]
+    }
+  };
+
+  let store = mockStore(state);
+
+  const action = ActionsObservable.of({
+    type: nodeActions.NODE_REQUEST_GENESIS_HASHES
+  });
+
+  const genesisHash = "";
+  const numberOfChunks = "";
+
+  nodeEpics(action, store)
+    .toArray()
+    .subscribe(actions => {
+      expect(actions).toEqual([
+        nodeActions.addNewGenesisHash({
+          genesisHash,
+          numberOfChunks
+        }),
+        nodeActions.determineGenesisHashOrTreasureHunt()
+      ]);
+    });
+});
+
+test("markSectorAsClaimedEpic", () => {
+  let state = {};
+
+  let store = mockStore(state);
+
+  const action = ActionsObservable.of({
+    type: nodeActions.NODE_MARK_SECTOR_AS_CLAIMED
+  });
+
+  nodeEpics(action, store)
+    .toArray()
+    .subscribe(actions => {
+      expect(actions).toEqual([
+        {"type": nodeActions.NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT}
+      ]);
     });
 });
