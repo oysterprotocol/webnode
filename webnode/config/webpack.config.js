@@ -6,13 +6,14 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
 const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
 const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const MinifyPlugin = require("babel-minify-webpack-plugin");
 const ScriptAttrHtmlWebpackPlugin = require("script-attr-html-webpack-plugin");
+const { CheckerPlugin } = require("awesome-typescript-loader");
 
 const autoprefixer = require("autoprefixer");
 const path = require("path");
@@ -38,6 +39,10 @@ const common = {
   module: {
     strictExportPresence: true,
     rules: [
+      {
+        test: /\.tsx?$/,
+        loader: "awesome-typescript-loader"
+      },
       {
         test: /\.(js|jsx|mjs)$/,
         enforce: "pre",
@@ -75,10 +80,7 @@ const common = {
             options: {
               compact: true,
               presets: ["react-app"],
-              plugins: [
-                "transform-object-rest-spread",
-                "lodash"
-              ]
+              plugins: ["transform-object-rest-spread", "lodash"]
             }
           },
           {
@@ -165,7 +167,7 @@ const common = {
     new ExtractTextPlugin({
       filename: cssFilename
     }),
-    new LodashModuleReplacementPlugin
+    new LodashModuleReplacementPlugin()
   ]
 };
 // end common configuration
@@ -192,7 +194,16 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       modules: ["node_modules", paths.appNodeModules].concat(
         process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
       ),
-      extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
+      extensions: [
+        ".ts",
+        ".tsx",
+        ".web.js",
+        ".mjs",
+        ".js",
+        ".json",
+        ".web.jsx",
+        ".jsx"
+      ],
       alias: {
         react: "preact-compat",
         "react-dom": "preact-compat"
@@ -200,6 +211,7 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
     },
     plugins: [
+      new CheckerPlugin(),
       new BundleAnalyzerPlugin({
         generateStatsFile: generateStatsFile
       }),
