@@ -12,7 +12,7 @@ const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const MinifyPlugin = require("babel-minify-webpack-plugin");
-const ScriptAttrHtmlWebpackPlugin = require("script-attr-html-webpack-plugin");
+const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
 const { CheckerPlugin } = require("awesome-typescript-loader");
 
 const autoprefixer = require("autoprefixer");
@@ -153,15 +153,9 @@ const common = {
   },
 
   plugins: [
-    new InterpolateHtmlPlugin(env.raw),
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
       DEBUG: true
-    }),
-    new ScriptAttrHtmlWebpackPlugin({
-      attributes: {
-        "data-eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
-      }
     }),
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
     new ExtractTextPlugin({
@@ -178,7 +172,7 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
     devtool: shouldUseSourceMap ? "source-map" : false,
     // In production, we only want to load the polyfills and the app code.
     entry: {
-      script: paths.appSrc + "/script.tsx"
+      script: paths.appSrc + "/script.js"
     },
     output: {
       path: paths.appBuild,
@@ -231,6 +225,7 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
           minifyURLs: true
         }
       }),
+      new InterpolateHtmlPlugin(env.raw),
       new webpack.DefinePlugin(env.stringified),
       new MinifyPlugin(
         {},
@@ -296,7 +291,17 @@ if (env.stringified["process.env"].NODE_ENV === '"development"') {
       new HtmlWebpackPlugin({
         inject: true,
         template: paths.appHtml
-      })
+      }),
+      new ScriptExtHtmlWebpackPlugin({
+        custom: [
+          {
+            test: /\.js$/,
+            attribute: "data-eth-address",
+            value: "0xD1833A50f411432aD38E8374df8Cfff79e743788"
+          }
+        ]
+      }),
+      new InterpolateHtmlPlugin(env.raw)
     ]
   });
 }
