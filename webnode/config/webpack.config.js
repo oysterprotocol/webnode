@@ -178,7 +178,7 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
     devtool: shouldUseSourceMap ? "source-map" : false,
     // In production, we only want to load the polyfills and the app code.
     entry: {
-      script: paths.appSrc + "/script.js"
+      script: paths.appSrc + "/script.tsx"
     },
     output: {
       path: paths.appBuild,
