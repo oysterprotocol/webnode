@@ -7,7 +7,7 @@ const ManifestPlugin = require("webpack-manifest-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
-const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
+const InterpolateHtmlPlugin = require("interpolate-html-plugin");
 const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
@@ -280,9 +280,7 @@ if (env.stringified["process.env"].NODE_ENV === '"development"') {
       open: true
     },
     devtool: "cheap-module-source-map",
-    entry: {
-      development: paths.appIndexJs
-    },
+    entry: paths.appIndexJs,
     output: {
       filename: "static/js/[name].bundle.[hash:8].js",
       chunkFilename: "static/js/[name].chunk.[chunkhash:8].js"
