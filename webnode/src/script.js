@@ -10,7 +10,7 @@ import { SCRIPT_ATTRIBUTE_ETH_ADDRESS } from "./config";
 const App = ({ ethAddress }) => (
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <div>xxxxxxxxxx</div>
+      <Overlay ethAddress={ethAddress} />
     </PersistGate>
   </Provider>
 );
