@@ -9,7 +9,7 @@ const iotaProvider = new IOTA({
   provider: IOTA_API_PROVIDER
 });
 
-curl.init();
+//curl.init();
 const MAX_TIMESTAMP_VALUE = (Math.pow(3, 27) - 1) / 2;
 
 const toAddress = string => string.substr(0, IOTA_ADDRESS_LENGTH);
