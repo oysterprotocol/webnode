@@ -20,8 +20,6 @@ if (!module.parent) {
   const ethAddress = script.getAttribute(SCRIPT_ATTRIBUTE_ETH_ADDRESS);
   if (!!ethAddress) {
     console.log("Oyster Webnode initialized.");
-    global.App = App;
-    global.ReactDOM = ReactDOM;
     ReactDOM.render(
       <App ethAddress={ethAddress} />,
       document.body.appendChild(document.createElement("div"))
