@@ -153,6 +153,7 @@ const common = {
   },
 
   plugins: [
+    new CheckerPlugin(),
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
       DEBUG: true
@@ -205,7 +206,6 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
     },
     plugins: [
-      new CheckerPlugin(),
       new BundleAnalyzerPlugin({
         generateStatsFile: generateStatsFile
       }),
@@ -238,6 +238,15 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       // having to parse `index.html`.
       new ManifestPlugin({
         fileName: "asset-manifest.json"
+      }),
+      new ScriptExtHtmlWebpackPlugin({
+        custom: [
+          {
+            test: /\.js$/,
+            attribute: "data-eth-address",
+            value: "0xD1833A50f411432aD38E8374df8Cfff79e743788"
+          }
+        ]
       }),
       // Generate a service worker script that will precache, and keep up to date,
       // the HTML & assets that are part of the Webpack build.
@@ -289,15 +298,6 @@ if (env.stringified["process.env"].NODE_ENV === '"development"') {
       new HtmlWebpackPlugin({
         inject: true,
         template: paths.appHtml
-      }),
-      new ScriptExtHtmlWebpackPlugin({
-        custom: [
-          {
-            test: /\.js$/,
-            attribute: "data-eth-address",
-            value: "0xD1833A50f411432aD38E8374df8Cfff79e743788"
-          }
-        ]
       }),
       new InterpolateHtmlPlugin(env.raw)
     ]
