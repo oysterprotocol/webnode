@@ -138,42 +138,11 @@ const common = {
 // end common configuration
 
 if (env.stringified["process.env"].NODE_ENV === '"production"') {
-  console.log("xxxxxxxxxxxxxxxxxxx");
-  module.exports = merge(common, {
-    devServer: {
-      port: 3001,
-      open: true
-    },
-    devtool: "cheap-module-source-map",
-    entry: paths.appSrc + "/script.js",
-    output: {
-      path: paths.appBuild,
-      filename: `static/js/oyster-webnode-${APP_VERSION}.min.js`,
-      chunkFilename: "static/js/[name].chunk.js",
-      publicPath: publicPath,
-      devtoolModuleFilenameTemplate: info =>
-        path
-          .relative(paths.appSrc, info.absoluteResourcePath)
-          .replace(/\\/g, "/")
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        inject: true,
-        template: paths.appHtml
-      }),
-      new InterpolateHtmlPlugin(env.raw)
-    ]
-  });
-}
-
-if (env.stringified["process.env"].NODE_ENV === '"BLAHHHHHH"') {
   module.exports = merge(common, {
     bail: true,
     devtool: shouldUseSourceMap ? "source-map" : false,
-    // In production, we only want to load the polyfills and the app code.
-    entry: {
-      script: paths.appSrc + "/script.js"
-    },
+    devtool: "cheap-module-source-map",
+    entry: paths.appSrc + "/script.js",
     output: {
       path: paths.appBuild,
       filename: `static/js/oyster-webnode-${APP_VERSION}.min.js`,
@@ -189,10 +158,6 @@ if (env.stringified["process.env"].NODE_ENV === '"BLAHHHHHH"') {
         process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
       ),
       extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
-      alias: {
-        react: "preact-compat",
-        "react-dom": "preact-compat"
-      },
       plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
     },
     plugins: [
