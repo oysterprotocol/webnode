@@ -124,10 +124,6 @@ const common = {
       filename: "[name].css",
       chunkFilename: "[id].css"
     }),
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: "development",
-      DEBUG: true
-    }),
     // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
     new ExtractTextPlugin({
       filename: cssFilename
@@ -161,6 +157,9 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
     },
     plugins: [
+      new BundleAnalyzerPlugin({
+        generateStatsFile: generateStatsFile
+      }),
       new HtmlWebpackPlugin({
         inject: true,
         template: paths.appHtml,
@@ -176,7 +175,8 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
           minifyCSS: true,
           minifyURLs: true
         }
-      })
+      }),
+      new InterpolateHtmlPlugin(env.raw)
     ]
   });
 }
