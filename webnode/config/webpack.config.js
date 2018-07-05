@@ -13,7 +13,6 @@ const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const MinifyPlugin = require("babel-minify-webpack-plugin");
 const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
-const { CheckerPlugin } = require("awesome-typescript-loader");
 
 const autoprefixer = require("autoprefixer");
 const path = require("path");
@@ -39,10 +38,6 @@ const common = {
   module: {
     strictExportPresence: true,
     rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "awesome-typescript-loader"
-      },
       {
         test: /\.(js|jsx|mjs)$/,
         enforce: "pre",
@@ -153,7 +148,6 @@ const common = {
   },
 
   plugins: [
-    new CheckerPlugin(),
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
       DEBUG: true
@@ -189,16 +183,7 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       modules: ["node_modules", paths.appNodeModules].concat(
         process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
       ),
-      extensions: [
-        ".ts",
-        ".tsx",
-        ".web.js",
-        ".mjs",
-        ".js",
-        ".json",
-        ".web.jsx",
-        ".jsx"
-      ],
+      extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
       alias: {
         react: "preact-compat",
         "react-dom": "preact-compat"
