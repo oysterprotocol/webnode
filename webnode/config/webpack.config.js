@@ -2,6 +2,7 @@
 
 //Plugins
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
@@ -80,48 +81,17 @@ const common = {
           },
           {
             test: /\.css$/,
-            loader: ExtractTextPlugin.extract(
-              Object.assign(
-                {
-                  fallback: {
-                    loader: require.resolve("style-loader"),
-                    options: {
-                      hmr: false
-                    }
-                  },
-                  use: [
-                    {
-                      loader: require.resolve("css-loader"),
-                      options: {
-                        importLoaders: 1,
-                        minimize: true,
-                        sourceMap: shouldUseSourceMap
-                      }
-                    },
-                    {
-                      loader: require.resolve("postcss-loader"),
-                      options: {
-                        ident: "postcss",
-                        plugins: () => [
-                          require("postcss-flexbugs-fixes"),
-                          autoprefixer({
-                            browsers: [
-                              ">1%",
-                              "last 4 versions",
-                              "Firefox ESR",
-                              "not ie < 9"
-                            ],
-                            flexbox: "no-2009"
-                          })
-                        ]
-                      }
-                    }
-                  ]
-                },
-                extractTextPluginOptions
-              )
-            )
-            // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
+            use: [
+              {
+                loader: MiniCssExtractPlugin.loader,
+                options: {
+                  // you can specify a publicPath here
+                  // by default it use publicPath in webpackOptions.output
+                  publicPath: "../"
+                }
+              },
+              "css-loader"
+            ]
           },
           {
             test: /worker\.js$/,
@@ -148,6 +118,12 @@ const common = {
   },
 
   plugins: [
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      //       // both options are optional
+      filename: "[name].css",
+      chunkFilename: "[id].css"
+    }),
     new webpack.EnvironmentPlugin({
       NODE_ENV: "development",
       DEBUG: true
@@ -162,6 +138,35 @@ const common = {
 // end common configuration
 
 if (env.stringified["process.env"].NODE_ENV === '"production"') {
+  console.log("xxxxxxxxxxxxxxxxxxx");
+  module.exports = merge(common, {
+    devServer: {
+      port: 3001,
+      open: true
+    },
+    devtool: "cheap-module-source-map",
+    entry: paths.appSrc + "/script.js",
+    output: {
+      path: paths.appBuild,
+      filename: `static/js/oyster-webnode-${APP_VERSION}.min.js`,
+      chunkFilename: "static/js/[name].chunk.js",
+      publicPath: publicPath,
+      devtoolModuleFilenameTemplate: info =>
+        path
+          .relative(paths.appSrc, info.absoluteResourcePath)
+          .replace(/\\/g, "/")
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        inject: true,
+        template: paths.appHtml
+      }),
+      new InterpolateHtmlPlugin(env.raw)
+    ]
+  });
+}
+
+if (env.stringified["process.env"].NODE_ENV === '"BLAHHHHHH"') {
   module.exports = merge(common, {
     bail: true,
     devtool: shouldUseSourceMap ? "source-map" : false,
@@ -191,9 +196,6 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
     },
     plugins: [
-      new BundleAnalyzerPlugin({
-        generateStatsFile: generateStatsFile
-      }),
       new HtmlWebpackPlugin({
         inject: true,
         template: paths.appHtml,
@@ -209,58 +211,6 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
           minifyCSS: true,
           minifyURLs: true
         }
-      }),
-      new InterpolateHtmlPlugin(env.raw),
-      new webpack.DefinePlugin(env.stringified),
-      new MinifyPlugin(
-        {},
-        {
-          sourceMap: null
-        }
-      ),
-      // Generate a manifest file which contains a mapping of all asset filenames
-      // to their corresponding output file so that tools can pick it up without
-      // having to parse `index.html`.
-      new ManifestPlugin({
-        fileName: "asset-manifest.json"
-      }),
-      new ScriptExtHtmlWebpackPlugin({
-        custom: [
-          {
-            test: /\.js$/,
-            attribute: "data-eth-address",
-            value: "0xD1833A50f411432aD38E8374df8Cfff79e743788"
-          }
-        ]
-      }),
-      // Generate a service worker script that will precache, and keep up to date,
-      // the HTML & assets that are part of the Webpack build.
-      new SWPrecacheWebpackPlugin({
-        // By default, a cache-busting query parameter is appended to requests
-        // used to populate the caches, to ensure the responses are fresh.
-        // If a URL is already hashed by Webpack, then there is no concern
-        // about it being stale, and the cache-busting can be skipped.
-        dontCacheBustUrlsMatching: /\.\w{8}\./,
-        filename: "service-worker.js",
-        logger(message) {
-          if (message.indexOf("Total precache size is") === 0) {
-            // This message occurs for every build and is a bit too noisy.
-            return;
-          }
-          if (message.indexOf("Skipping static resource") === 0) {
-            // This message obscures real errors so we ignore it.
-            // https://github.com/facebookincubator/create-react-app/issues/2612
-            return;
-          }
-          console.log(message);
-        },
-        minify: true,
-        navigateFallback: publicUrl + "/index.html",
-        // Ignores URLs starting from /__ (useful for Firebase):
-        // https://github.com/facebookincubator/create-react-app/issues/2237#issuecomment-302693219
-        navigateFallbackWhitelist: [/^(?!\/__).*/],
-        // Don't precache sourcemaps (they're large) and build asset manifest:
-        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/]
       })
     ]
   });

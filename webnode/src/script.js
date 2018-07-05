@@ -15,18 +15,16 @@ const App = ({ ethAddress }) => (
   </Provider>
 );
 
-if (!module.parent) {
-  const script = document.currentScript;
-  const ethAddress = script.getAttribute(SCRIPT_ATTRIBUTE_ETH_ADDRESS);
-  if (!!ethAddress) {
-    console.log("Oyster Webnode initialized.");
-    ReactDOM.render(
-      <App ethAddress={ethAddress} />,
-      document.body.appendChild(document.createElement("div"))
-    );
-  } else {
-    console.log(
-      `Oyster Webnode must be initialized with an ${SCRIPT_ATTRIBUTE_ETH_ADDRESS} attribute, please remember to specify this attribute in the script tag.`
-    );
-  }
+const script = document.currentScript;
+const ethAddress = "0x"; //script.getAttribute(SCRIPT_ATTRIBUTE_ETH_ADDRESS);
+if (!!ethAddress) {
+  console.log("Oyster Webnode initialized.");
+  ReactDOM.render(
+    <App ethAddress={ethAddress} />,
+    document.body.appendChild(document.createElement("div"))
+  );
+} else {
+  console.log(
+    `Oyster Webnode must be initialized with an ${SCRIPT_ATTRIBUTE_ETH_ADDRESS} attribute, please remember to specify this attribute in the script tag.`
+  );
 }

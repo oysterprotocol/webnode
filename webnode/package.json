@@ -83,7 +83,7 @@
     "eslint-loader": "^2.0.0",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "file-loader": "^1.1.11",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "3.0.7",
     "husky": "^0.14.3",
     "identity-obj-proxy": "^3.0.0",
     "interpolate-html-plugin": "^3.0.0",
@@ -91,6 +91,7 @@
     "jest-enzyme": "^4.2.0",
     "jsdom-worker": "^0.1.0",
     "lodash-webpack-plugin": "^0.11.5",
+    "mini-css-extract-plugin": "^0.4.1",
     "nock": "^9.2.6",
     "node-fetch": "^2.1.2",
     "redux-mock-store": "^1.5.3",
@@ -109,16 +110,16 @@
     "yarn-or-npm": "^2.0.4"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development webpack-dev-server --config='config/webpack.config.js' --mode development --open",
-    "build": "cross-env NODE_ENV=production webpack --config='config/webpack.config.js' --mode production",
+    "start":
+      "cross-env NODE_ENV=development webpack-dev-server --config='config/webpack.config.js' --mode development",
+    "build":
+      "cross-env NODE_ENV=production webpack --config='config/webpack.config.js' --mode production",
     "test": "jest",
     "test:watch": "cross-env NODE_PATH=src jest --watch --colors",
     "test:coverage": "cross-env NODE_PATH=src jest --coverage"
   },
   "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,mjs}"
-    ],
+    "collectCoverageFrom": ["src/**/*.{js,jsx,mjs}"],
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs}",
       "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs}"
@@ -128,11 +129,10 @@
     "transform": {
       "^.+\\.(js|jsx|mjs)$": "<rootDir>/node_modules/babel-jest",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-      "^(?!.*\\.(js|jsx|mjs|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+      "^(?!.*\\.(js|jsx|mjs|css|json)$)":
+        "<rootDir>/config/jest/fileTransform.js"
     },
-    "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(jsx|mjs)$"
-    ],
+    "transformIgnorePatterns": ["[/\\\\]node_modules[/\\\\].+\\.(jsx|mjs)$"],
     "moduleNameMapper": {
       "^react-native$": "react-native-web"
     },
