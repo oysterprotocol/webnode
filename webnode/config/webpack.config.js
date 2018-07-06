@@ -179,6 +179,15 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       new ManifestPlugin({
         fileName: "asset-manifest.json"
       }),
+      new ScriptExtHtmlWebpackPlugin({
+        custom: [
+          {
+            test: /.js$/,
+            attribute: "data-eth-address",
+            value: "0xD1833A50f411432aD38E8374df8Cfff79e743788"
+          }
+        ]
+      }),
       new SWPrecacheWebpackPlugin({
         // By default, a cache-busting query parameter is appended to requests
         // used to populate the caches, to ensure the responses are fresh.

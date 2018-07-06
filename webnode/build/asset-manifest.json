@@ -1,0 +1,6 @@
+{
+  "main.js": "static/js/oyster-webnode-0.0.1.min.js",
+  "main.js.map": "static/js/oyster-webnode-0.0.1.min.js.map",
+  "static/media/oyster-logo-with-dot.svg": "static/media/oyster-logo-with-dot.svg",
+  "index.html": "index.html"
+}
