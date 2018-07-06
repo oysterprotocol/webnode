@@ -3,7 +3,6 @@
 //Plugins
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
@@ -29,11 +28,6 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== "false";
 const generateStatsFile = process.env.GENERATE_STATS_FILE !== "false";
 const publicUrl = publicPath.slice(0, -1);
 const env = getClientEnvironment(publicUrl);
-
-const cssFilename = `static/css/oyster-webnode-${APP_VERSION}.css`;
-const extractTextPluginOptions = shouldUseRelativeAssetPaths
-  ? { publicPath: Array(cssFilename.split("/").length).join("../") }
-  : {};
 
 const common = {
   module: {
@@ -85,12 +79,11 @@ const common = {
               {
                 loader: MiniCssExtractPlugin.loader,
                 options: {
-                  // you can specify a publicPath here
-                  // by default it use publicPath in webpackOptions.output
                   publicPath: "../"
                 }
               },
-              "css-loader"
+              "css-loader",
+              "postcss-loader"
             ]
           },
           {
@@ -110,26 +103,10 @@ const common = {
               name: "static/media/[name].[ext]"
             }
           }
-          // ** STOP ** Are you adding a new loader?
-          // Make sure to add the new loader(s) before the "file" loader.
         ]
       }
     ]
-  },
-
-  plugins: [
-    new MiniCssExtractPlugin({
-      // Options similar to the same options in webpackOptions.output
-      //       // both options are optional
-      filename: "[name].css",
-      chunkFilename: "[id].css"
-    }),
-    // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
-    new ExtractTextPlugin({
-      filename: cssFilename
-    }),
-    new LodashModuleReplacementPlugin()
-  ]
+  }
 };
 // end common configuration
 
@@ -159,6 +136,10 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
     plugins: [
       new BundleAnalyzerPlugin({
         generateStatsFile: generateStatsFile
+      }),
+      new MiniCssExtractPlugin({
+        filename: "[name].[hash].css",
+        chunkFilename: "[id].[hash].css"
       }),
       new HtmlWebpackPlugin({
         inject: true,
@@ -237,6 +218,10 @@ if (env.stringified["process.env"].NODE_ENV === '"development"') {
       new HtmlWebpackPlugin({
         inject: true,
         template: paths.appHtml
+      }),
+      new MiniCssExtractPlugin({
+        filename: "[name].css",
+        chunkFilename: "[id].css"
       }),
       new InterpolateHtmlPlugin(env.raw)
     ]
