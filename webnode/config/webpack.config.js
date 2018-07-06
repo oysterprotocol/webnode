@@ -82,8 +82,7 @@ const common = {
                   publicPath: "../"
                 }
               },
-              "css-loader",
-              "postcss-loader"
+              "css-loader"
             ]
           },
           {

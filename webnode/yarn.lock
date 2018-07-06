@@ -9,10 +9,10 @@
     "@babel/highlight" "7.0.0-beta.51"
 
 "@babel/helper-module-imports@^7.0.0-beta.49":
-  version "7.0.0-beta.51"
-  resolved "https://registry.yarnpkg.com/@babel/helper-module-imports/-/helper-module-imports-7.0.0-beta.51.tgz#ce00428045fbb7d5ebc0ea7bf835789f15366ab2"
+  version "7.0.0-beta.52"
+  resolved "https://registry.yarnpkg.com/@babel/helper-module-imports/-/helper-module-imports-7.0.0-beta.52.tgz#70840e83ae891f94702c6c613787c48ee3c965bb"
   dependencies:
-    "@babel/types" "7.0.0-beta.51"
+    "@babel/types" "7.0.0-beta.52"
     lodash "^4.17.5"
 
 "@babel/highlight@7.0.0-beta.51":
@@ -30,9 +30,9 @@
     core-js "^2.5.7"
     regenerator-runtime "^0.11.1"
 
-"@babel/types@7.0.0-beta.51", "@babel/types@^7.0.0-beta.49":
-  version "7.0.0-beta.51"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.0.0-beta.51.tgz#d802b7b543b5836c778aa691797abf00f3d97ea9"
+"@babel/types@7.0.0-beta.52", "@babel/types@^7.0.0-beta.49":
+  version "7.0.0-beta.52"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.0.0-beta.52.tgz#a3e5620b1534b253a50abcf2222b520e23b16da2"
   dependencies:
     esutils "^2.0.2"
     lodash "^4.17.5"
@@ -2604,9 +2604,9 @@ data-urls@^1.0.0:
     whatwg-mimetype "^2.0.0"
     whatwg-url "^6.4.0"
 
-"datamap-generator@git+https://github.com/oysterprotocol/datamap-generator.git":
+datamap-generator@oysterprotocol/datamap-generator:
   version "1.0.6"
-  resolved "git+https://github.com/oysterprotocol/datamap-generator.git#db8bfa886e676c5c6f8ad59f7d9f2bb845a3f235"
+  resolved "https://codeload.github.com/oysterprotocol/datamap-generator/tar.gz/877aedcf333872d57d4c01008e5a534a074b726b"
   dependencies:
     js-sha3 "^0.7.0"
     lodash "^4.17.5"
@@ -7165,7 +7165,7 @@ redux-logger@^3.0.6:
   dependencies:
     deep-diff "^0.3.5"
 
-redux-mock-store@^1.5.1:
+redux-mock-store@^1.5.3:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/redux-mock-store/-/redux-mock-store-1.5.3.tgz#1f10528949b7ce8056c2532624f7cafa98576c6d"
   dependencies:
