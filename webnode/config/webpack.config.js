@@ -2,17 +2,17 @@
 
 //Plugins
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const InterpolateHtmlPlugin = require("react-dev-utils/InterpolateHtmlPlugin");
+const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
+const InterpolateHtmlPlugin = require("interpolate-html-plugin");
 const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
 const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const MinifyPlugin = require("babel-minify-webpack-plugin");
-const ScriptAttrHtmlWebpackPlugin = require("script-attr-html-webpack-plugin");
+const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
 
 const autoprefixer = require("autoprefixer");
 const path = require("path");
@@ -28,11 +28,6 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== "false";
 const generateStatsFile = process.env.GENERATE_STATS_FILE !== "false";
 const publicUrl = publicPath.slice(0, -1);
 const env = getClientEnvironment(publicUrl);
-
-const cssFilename = `static/css/oyster-webnode-${APP_VERSION}.css`;
-const extractTextPluginOptions = shouldUseRelativeAssetPaths
-  ? { publicPath: Array(cssFilename.split("/").length).join("../") }
-  : {};
 
 const common = {
   module: {
@@ -75,56 +70,20 @@ const common = {
             options: {
               compact: true,
               presets: ["react-app"],
-              plugins: [
-                "transform-object-rest-spread",
-                "lodash"
-              ]
+              plugins: ["transform-object-rest-spread", "lodash"]
             }
           },
           {
             test: /\.css$/,
-            loader: ExtractTextPlugin.extract(
-              Object.assign(
-                {
-                  fallback: {
-                    loader: require.resolve("style-loader"),
-                    options: {
-                      hmr: false
-                    }
-                  },
-                  use: [
-                    {
-                      loader: require.resolve("css-loader"),
-                      options: {
-                        importLoaders: 1,
-                        minimize: true,
-                        sourceMap: shouldUseSourceMap
-                      }
-                    },
-                    {
-                      loader: require.resolve("postcss-loader"),
-                      options: {
-                        ident: "postcss",
-                        plugins: () => [
-                          require("postcss-flexbugs-fixes"),
-                          autoprefixer({
-                            browsers: [
-                              ">1%",
-                              "last 4 versions",
-                              "Firefox ESR",
-                              "not ie < 9"
-                            ],
-                            flexbox: "no-2009"
-                          })
-                        ]
-                      }
-                    }
-                  ]
-                },
-                extractTextPluginOptions
-              )
-            )
-            // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
+            use: [
+              {
+                loader: MiniCssExtractPlugin.loader,
+                options: {
+                  publicPath: "../"
+                }
+              },
+              "css-loader"
+            ]
           },
           {
             test: /worker\.js$/,
@@ -143,30 +102,10 @@ const common = {
               name: "static/media/[name].[ext]"
             }
           }
-          // ** STOP ** Are you adding a new loader?
-          // Make sure to add the new loader(s) before the "file" loader.
         ]
       }
     ]
-  },
-
-  plugins: [
-    new InterpolateHtmlPlugin(env.raw),
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: "development",
-      DEBUG: true
-    }),
-    new ScriptAttrHtmlWebpackPlugin({
-      attributes: {
-        "data-eth-address": "0xD1833A50f411432aD38E8374df8Cfff79e743788"
-      }
-    }),
-    // Note: this won't work without ExtractTextPlugin.extract(..) in `loaders`.
-    new ExtractTextPlugin({
-      filename: cssFilename
-    }),
-    new LodashModuleReplacementPlugin
-  ]
+  }
 };
 // end common configuration
 
@@ -174,10 +113,8 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
   module.exports = merge(common, {
     bail: true,
     devtool: shouldUseSourceMap ? "source-map" : false,
-    // In production, we only want to load the polyfills and the app code.
-    entry: {
-      script: paths.appSrc + "/script.js"
-    },
+    devtool: "cheap-module-source-map",
+    entry: paths.appSrc + "/script.js",
     output: {
       path: paths.appBuild,
       filename: `static/js/oyster-webnode-${APP_VERSION}.min.js`,
@@ -193,15 +130,15 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
         process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
       ),
       extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
-      alias: {
-        react: "preact-compat",
-        "react-dom": "preact-compat"
-      },
       plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
     },
     plugins: [
       new BundleAnalyzerPlugin({
         generateStatsFile: generateStatsFile
+      }),
+      new MiniCssExtractPlugin({
+        filename: "[name].[hash].css",
+        chunkFilename: "[id].[hash].css"
       }),
       new HtmlWebpackPlugin({
         inject: true,
@@ -219,21 +156,18 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
           minifyURLs: true
         }
       }),
-      new webpack.DefinePlugin(env.stringified),
-      new MinifyPlugin(
-        {},
-        {
-          sourceMap: null
-        }
-      ),
-      // Generate a manifest file which contains a mapping of all asset filenames
-      // to their corresponding output file so that tools can pick it up without
-      // having to parse `index.html`.
       new ManifestPlugin({
         fileName: "asset-manifest.json"
       }),
-      // Generate a service worker script that will precache, and keep up to date,
-      // the HTML & assets that are part of the Webpack build.
+      new ScriptExtHtmlWebpackPlugin({
+        custom: [
+          {
+            test: /.js$/,
+            attribute: "data-eth-address",
+            value: "0xD1833A50f411432aD38E8374df8Cfff79e743788"
+          }
+        ]
+      }),
       new SWPrecacheWebpackPlugin({
         // By default, a cache-busting query parameter is appended to requests
         // used to populate the caches, to ensure the responses are fresh.
@@ -260,7 +194,8 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
         navigateFallbackWhitelist: [/^(?!\/__).*/],
         // Don't precache sourcemaps (they're large) and build asset manifest:
         staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/]
-      })
+      }),
+      new InterpolateHtmlPlugin(env.raw)
     ]
   });
 }
@@ -273,9 +208,7 @@ if (env.stringified["process.env"].NODE_ENV === '"development"') {
       open: true
     },
     devtool: "cheap-module-source-map",
-    entry: {
-      development: paths.appIndexJs
-    },
+    entry: paths.appIndexJs,
     output: {
       filename: "static/js/[name].bundle.[hash:8].js",
       chunkFilename: "static/js/[name].chunk.[chunkhash:8].js"
@@ -284,7 +217,12 @@ if (env.stringified["process.env"].NODE_ENV === '"development"') {
       new HtmlWebpackPlugin({
         inject: true,
         template: paths.appHtml
-      })
+      }),
+      new MiniCssExtractPlugin({
+        filename: "[name].css",
+        chunkFilename: "[id].css"
+      }),
+      new InterpolateHtmlPlugin(env.raw)
     ]
   });
 }
