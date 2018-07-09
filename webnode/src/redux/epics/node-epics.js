@@ -92,12 +92,13 @@ const resumeOrStartNewSectorEpic = (action$, store) => {
       const { genesisHash, numberOfChunks, sectorIdx } = action.payload;
       const {
         chunkIdx,
-        sectorIdx: currentSectorIdx
+        sectorIdx: currentSectorIdx,
+        genesisHash: currentGenesisHash
       } = store.getState().treasureHunt;
       const sectorsFirstChunkIdx = sectorIdx * CHUNKS_PER_SECTOR;
 
       const alreadyStartedSector =
-        chunkIdx > sectorsFirstChunkIdx && currentSectorIdx === sectorIdx;
+        chunkIdx > sectorsFirstChunkIdx && currentSectorIdx === sectorIdx && genesisHash === currentGenesisHash;
 
       return alreadyStartedSector
         ? of(treasureHuntActions.performPow())
