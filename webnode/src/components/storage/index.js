@@ -39,7 +39,11 @@ const NumberofChunksInput = onChange => (
 class Storage extends Component {
   constructor(props) {
     super(props);
-    this.state = { genesisHash: "", numberOfChunks: 0 };
+    this.state = {
+      genesisHash: "",
+      numberOfChunks: 0,
+      stressCount: 2
+    };
   }
 
   onGenesisHashChange = (e, data) => {
@@ -62,6 +66,32 @@ class Storage extends Component {
     }
   }
 
+  increment() {
+    const { stressCount } = this.state;
+    this.setState({ stressCount: stressCount + 1 });
+  }
+
+  decrement() {
+    const { stressCount } = this.state;
+    this.setState({ stressCount: stressCount - 1 });
+    if (stressCount - 1 <= 0) {
+      this.setState({ stressCount: 1 });
+    }
+  }
+
+  start() {
+    let { stressCount, ticks} = this.state;
+    if (stressCount > 0) {
+      this.intervalStress = setInterval(() => {
+        this.onClick();
+      }, stressCount);
+    }
+  }
+
+  stop() {
+    clearInterval(this.intervalStress)
+  }
+
   async onClick() {
     const { findTreasure } = this.props;
     const generatedMap = Datamap.rawGenerate(
@@ -79,14 +109,14 @@ class Storage extends Component {
     Promise.all(transformedMap); //TODO better implementation
   }
 
-  componentDidMount() {
-    const { setOwnerEthAddress } = this.props;
-    setOwnerEthAddress(TEST_ETH_ADDRESS);
-  }
-
   startApp() {
     const { initialize } = this.props;
     initialize();
+  }
+
+  componentDidMount() {
+    const { setOwnerEthAddress } = this.props;
+    setOwnerEthAddress(TEST_ETH_ADDRESS);
   }
 
   render() {
@@ -97,6 +127,7 @@ class Storage extends Component {
       denyConsent,
       status
     } = this.props;
+    const { stressCount } = this.state;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
         <div style={{ padding: 50 }}>
@@ -110,6 +141,13 @@ class Storage extends Component {
             {NumberofChunksInput(this.onNumberOfChunksChange)}
             <Button onClick={() => this.onClick()}>Look for treasures</Button>
             <Button onClick={() => this.startApp()}>Start App</Button>
+            <div>
+              <Button onClick={() => this.start()}>Start treasures</Button>
+              <Button onClick={() => this.stop()}>Stop treasures</Button>
+              <Button onClick={() => this.increment()}> +1 </Button>
+              <Button onClick={() => this.decrement()}> -1 </Button>
+              <div>loop {stressCount}</div>
+            </div>
           </div>
           {treasures.length !== 0 ? TreasureTable(treasures) : null}
         </div>
@@ -139,4 +177,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(nodeActions.setOwnerEthAddress(ethAddress))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Storage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Storage);
