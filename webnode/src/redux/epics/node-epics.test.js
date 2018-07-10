@@ -188,7 +188,7 @@ test("genesisHashOrTreasureHuntEpic", () => {
 
 test("resumeOrStartNewSectorEpic", () => {
   let state = {
-    treasureHunt: { sectorIdx: 1, chunkIdx: 2000000 }
+    treasureHunt: { sectorIdx: 1, chunkIdx: 2000000, genesisHash: "hash" }
   };
 
   let store = mockStore(state);
