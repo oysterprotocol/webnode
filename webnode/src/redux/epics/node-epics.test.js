@@ -14,7 +14,7 @@ import nodeSelectors from "../selectors/node-selectors";
 
 import { SECTOR_STATUS } from "../../config";
 
-const { UNCLAIMED, SEARCHING, TREASURE_FOUND, CLAIMED } = SECTOR_STATUS;
+const { UNCLAIMED, CLAIMED } = SECTOR_STATUS;
 
 const mockStore = configureMockStore([]);
 
@@ -25,24 +25,16 @@ test("registerWebnodeEpic", () => {
       brokerNodes: [],
       newGenesisHashes: [
         {
-          genesisHash: "genesisHash bad",
-          sectorIdx: 4,
-          sectors: [{ index: 44, status: CLAIMED }]
+          genesisHash: "claimed 1",
+          sectors: [CLAIMED]
         },
         {
-          genesisHash: "genesisHash 1",
-          sectorIdx: 1,
-          sectors: [{ index: 11, status: UNCLAIMED }]
+          genesisHash: "unclaimed 1",
+          sectors: [UNCLAIMED]
         },
         {
-          genesisHash: "genesisHash 2",
-          sectorIdx: 2,
-          sectors: [{ index: 22, status: SEARCHING }]
-        },
-        {
-          genesisHash: "genesisHash 3",
-          sectorIdx: 3,
-          sectors: [{ index: 33, status: TREASURE_FOUND }]
+          genesisHash: "claimed 2",
+          sectors: [CLAIMED]
         }
       ],
       oldGenesisHashes: [],
@@ -85,14 +77,12 @@ test("brokerNodeOrGenesisHashEpic", () => {
     node: {
       brokerNodes: [
         {
-          genesisHash: "genesisHash bad",
-          sectorIdx: 4,
-          sectors: [{ index: 44, status: CLAIMED }]
+          genesisHash: "claimed 1",
+          sectors: [CLAIMED]
         },
         {
-          genesisHash: "genesisHash 1",
-          sectorIdx: 1,
-          sectors: [{ index: 11, status: UNCLAIMED }]
+          genesisHash: "unclaimed 1",
+          sectors: [UNCLAIMED]
         }
       ]
     }
@@ -116,24 +106,16 @@ test("genesisHashOrTreasureHuntEpic", () => {
       brokerNodes: [],
       newGenesisHashes: [
         {
-          genesisHash: "genesisHash bad",
-          sectorIdx: 4,
-          sectors: [{ index: 44, status: CLAIMED }]
+          genesisHash: "claimed 1",
+          sectors: [CLAIMED]
         },
         {
-          genesisHash: "genesisHash 1",
-          sectorIdx: 1,
-          sectors: [{ index: 11, status: UNCLAIMED }]
+          genesisHash: "unclaimed 1",
+          sectors: [UNCLAIMED]
         },
         {
-          genesisHash: "genesisHash 2",
-          sectorIdx: 2,
-          sectors: [{ index: 22, status: SEARCHING }]
-        },
-        {
-          genesisHash: "genesisHash 3",
-          sectorIdx: 3,
-          sectors: [{ index: 33, status: TREASURE_FOUND }]
+          genesisHash: "claimed 2",
+          sectors: [CLAIMED]
         }
       ],
       oldGenesisHashes: [],
@@ -157,16 +139,16 @@ test("genesisHashOrTreasureHuntEpic", () => {
   );
 
   const { genesisHash, numberOfChunks } = treasureHuntableGenesisHash;
-  const { index } = treasureHuntableSector;
+  const sectorIdx = treasureHuntableSector;
 
   nodeEpics(action, store)
     .toArray()
     .subscribe(actions => {
       expect(actions).toEqual([
         nodeActions.resumeOrStartNewSector({
-          genesisHash: genesisHash,
-          numberOfChunks: numberOfChunks,
-          sectorIdx: index
+          genesisHash,
+          numberOfChunks,
+          sectorIdx
         })
       ]);
     });
@@ -213,7 +195,11 @@ test("resumeOrStartNewSectorEpic", () => {
     });
 
   state = {
-    treasureHunt: { sectorIdx: 1, chunkIdx: 1 }
+    treasureHunt: {
+      sectorIdx: 1,
+      chunkIdx: 1,
+      genesisHash: "somethingDifferent"
+    }
   };
 
   store = mockStore(state);
@@ -286,20 +272,20 @@ test("requestGenesisHashEpic", () => {
     });
 });
 
-test("markSectorAsClaimedEpic", () => {
+test("updateSectorStatusEpic", () => {
   let state = {};
 
   let store = mockStore(state);
 
   const action = ActionsObservable.of({
-    type: nodeActions.NODE_MARK_SECTOR_AS_CLAIMED
+    type: nodeActions.NODE_UPDATE_SECTOR_STATUS
   });
 
   nodeEpics(action, store)
     .toArray()
     .subscribe(actions => {
       expect(actions).toEqual([
-        {"type": nodeActions.NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT}
+        { type: nodeActions.NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT }
       ]);
     });
 });
