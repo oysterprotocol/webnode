@@ -1,3 +1,13 @@
+import { action } from "typesafe-actions";
+import {
+  AddBrokerNodeType,
+  AddNewGenesisHashType,
+  ResetNodeType,
+  ResumeOrStartNewSectorType,
+  CheckIfSectorClaimedType,
+  MarkSectorAsClaimedType
+} from "../../types";
+
 export const NODE_INITIALIZE = "directories/node/initialize";
 export const NODE_SET_OWNER_ETH_ADDRESS =
   "directories/node/set_owner_eth_address";
@@ -37,60 +47,37 @@ const ACTIONS = Object.freeze({
   NODE_MARK_SECTOR_AS_CLAIMED,
 
   // actionCreators
-  determineBrokerNodeOrGenesisHash: () => ({
-    type: NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH
-  }),
+  initialize: () => action(NODE_INITIALIZE),
 
-  determineGenesisHashOrTreasureHunt: () => ({
-    type: NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT
-  }),
+  setOwnerEthAddress: (ethAddress: string) =>
+    action(NODE_SET_OWNER_ETH_ADDRESS, { payload: ethAddress }),
 
-  requestBrokerNodes: () => ({
-    type: NODE_REQUEST_BROKER_NODES
-  }),
+  determineBrokerNodeOrGenesisHash: () =>
+    action(NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH),
 
-  requestGenesisHashes: () => ({
-    type: NODE_REQUEST_GENESIS_HASHES
-  }),
+  determineGenesisHashOrTreasureHunt: () =>
+    action(NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT),
 
-  addBrokerNode: ({ address }) => ({
-    type: NODE_ADD_BROKER_NODE,
-    payload: { address }
-  }),
+  requestBrokerNodes: () => action(NODE_REQUEST_BROKER_NODES),
 
-  addNewGenesisHash: ({ genesisHash, numberOfChunks }) => ({
-    type: NODE_ADD_NEW_GENESIS_HASH,
-    payload: { genesisHash, numberOfChunks }
-  }),
+  requestGenesisHashes: () => action(NODE_REQUEST_GENESIS_HASHES),
 
-  resetNode: ({ id, lastResetAt }) => ({
-    type: NODE_RESET,
-    payload: { id, lastResetAt }
-  }),
+  addBrokerNode: (obj: AddBrokerNodeType) =>
+    action(NODE_ADD_BROKER_NODE, { payload: obj }),
 
-  resumeOrStartNewSector: ({ genesisHash, sectorIdx, numberOfChunks }) => ({
-    type: NODE_RESUME_OR_START_NEW_SECTOR,
-    payload: { genesisHash, sectorIdx, numberOfChunks }
-  }),
+  addNewGenesisHash: (obj: AddNewGenesisHashType) =>
+    action(NODE_ADD_NEW_GENESIS_HASH, { payload: obj }),
 
-  checkIfSectorClaimed: ({ genesisHash, sectorIdx, numberOfChunks }) => ({
-    type: NODE_CHECK_IF_SECTOR_CLAIMED,
-    payload: { genesisHash, sectorIdx, numberOfChunks }
-  }),
+  resetNode: (obj: ResetNodeType) => action(NODE_RESET, { payload: obj }),
 
-  markSectorAsClaimed: ({ genesisHash, sectorIdx }) => ({
-    type: NODE_MARK_SECTOR_AS_CLAIMED,
-    payload: { genesisHash, sectorIdx }
-  }),
+  resumeOrStartNewSector: (obj: ResumeOrStartNewSectorType) =>
+    action(NODE_RESUME_OR_START_NEW_SECTOR, { payload: obj }),
 
-  setOwnerEthAddress: ethAddress => ({
-    type: NODE_SET_OWNER_ETH_ADDRESS,
-    payload: ethAddress
-  }),
+  checkIfSectorClaimed: (obj: CheckIfSectorClaimedType) =>
+    action(NODE_CHECK_IF_SECTOR_CLAIMED, { payload: obj }),
 
-  initialize: () => ({
-    type: NODE_INITIALIZE
-  })
+  markSectorAsClaimed: (obj: MarkSectorAsClaimedType) =>
+    action(NODE_MARK_SECTOR_AS_CLAIMED, { payload: obj })
 });
 
 export default ACTIONS;
