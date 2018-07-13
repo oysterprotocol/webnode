@@ -23,9 +23,7 @@ export default (state = initState, action) => {
       if (genesisHash === state.genesisHash && sectorIdx === state.sectorIdx) {
         // start from where webnode left off if it's the same
         // genesis hash and same sector index
-        return {
-          ...state
-        };
+        return state;
       } else {
         const sectorStartingIdx = sectorIdx * CHUNKS_PER_SECTOR;
         return {

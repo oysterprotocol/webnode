@@ -8,11 +8,8 @@ const getBrokerNodes = state => state.node.brokerNodes;
 
 const treasureHuntableGenesisHash = createSelector(
   [getNewGenesisHashes],
-  newGenesisHashes => {
-    return newGenesisHashes.find(gh => {
-      return gh.sectors.find(sector => sector.status === UNCLAIMED);
-    });
-  }
+  newGenesisHashes =>
+    newGenesisHashes.find(gh => gh.sectors.includes(UNCLAIMED))
 );
 
 const treasureHuntableSector = createSelector(
@@ -22,7 +19,7 @@ const treasureHuntableSector = createSelector(
       return null;
     }
 
-    return genesisHash.sectors.find(sector => sector.status === UNCLAIMED);
+    return genesisHash.sectors.findIndex(status => status === UNCLAIMED);
   }
 );
 

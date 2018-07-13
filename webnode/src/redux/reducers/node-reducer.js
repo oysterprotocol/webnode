@@ -17,13 +17,7 @@ const brokerNodeGenerator = address => {
 
 const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
   const numberOfSectors = Math.ceil(numberOfChunks / CHUNKS_PER_SECTOR);
-  const sectorIdxes = Array.from(new Array(numberOfSectors), (_x, i) => i);
-  const sectors = sectorIdxes.map(index => {
-    return {
-      index,
-      status: SECTOR_STATUS.UNCLAIMED
-    };
-  });
+  const sectors = Array(numberOfSectors).fill(SECTOR_STATUS.UNCLAIMED);
   return { genesisHash, numberOfChunks, sectors };
 };
 
@@ -63,24 +57,17 @@ export default (state = initState, action) => {
         oldGenesisHashes: []
       };
 
-    case nodeActions.NODE_MARK_SECTOR_AS_CLAIMED:
+    case nodeActions.NODE_UPDATE_SECTOR_STATUS:
       const { genesisHash: gh, sectorIdx } = action.payload;
       const updatedGenesisHashes = state.newGenesisHashes.map(
         newGenesisHash => {
           if (newGenesisHash.genesisHash === gh) {
-            const updatedSectors = newGenesisHash.sectors.map(sector => {
-              if (sector.index === sectorIdx) {
-                return {
-                  ...sector,
-                  status: SECTOR_STATUS.CLAIMED
-                };
-              } else {
-                return { ...sector };
-              }
-            });
+            const updatedSectors = newGenesisHash.sectors.map(
+              (status, i) => (i === sectorIdx ? SECTOR_STATUS.CLAIMED : status)
+            );
             return { ...newGenesisHash, sectors: updatedSectors };
           } else {
-            return { ...newGenesisHash };
+            return newGenesisHash;
           }
         }
       );

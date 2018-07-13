@@ -11,12 +11,13 @@ import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import treasureHuntEpics from "./treasure-hunt-epics";
 
-import { CHUNKS_PER_SECTOR } from "../../config/";
+import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
 
 import util from "node-forge/lib/util";
 
 import Datamap from "datamap-generator";
 
+const { CLAIMED, NO_TREASURE_FOUND } = SECTOR_STATUS;
 const mockStore = configureMockStore([]);
 
 test("performPowEpic", () => {
@@ -211,7 +212,39 @@ test("completeSectorEpic", () => {
     .toArray()
     .subscribe(actions => {
       expect(actions).toEqual([
-        nodeActions.markSectorAsClaimed({ genesisHash, sectorIdx })
+        nodeActions.updateSectorStatus({
+          genesisHash,
+          sectorIdx,
+          status: CLAIMED
+        })
+      ]);
+    });
+});
+
+test("failedSectorEpic", () => {
+  const genesisHash = "genesisHash";
+  const sectorIdx = 1;
+  const state = {};
+
+  const store = mockStore(state);
+
+  const action = ActionsObservable.of({
+    type: treasureHuntActions.TREASURE_HUNT_CLAIM_TREASURE_FAILURE,
+    payload: {
+      genesisHash: genesisHash,
+      sectorIdx: sectorIdx
+    }
+  });
+
+  treasureHuntEpics(action, store)
+    .toArray()
+    .subscribe(actions => {
+      expect(actions).toEqual([
+        nodeActions.updateSectorStatus({
+          genesisHash,
+          sectorIdx,
+          status: NO_TREASURE_FOUND
+        })
       ]);
     });
 });

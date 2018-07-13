@@ -1,7 +1,8 @@
-import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
-
 import node from "./node-reducer";
 import nodeActions from "../actions/node-actions";
+
+import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
+const { CLAIMED, UNCLAIMED } = SECTOR_STATUS;
 
 const brokerNodeGenerator = address => {
   return { address };
@@ -9,17 +10,11 @@ const brokerNodeGenerator = address => {
 
 const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
   const numberOfSectors = Math.ceil(numberOfChunks / CHUNKS_PER_SECTOR);
-  const sectorIdxes = Array.from(new Array(numberOfSectors), (_x, i) => i);
-  const sectors = sectorIdxes.map(index => {
-    return {
-      index,
-      status: SECTOR_STATUS.UNCLAIMED
-    };
-  });
+  const sectors = Array(numberOfSectors).fill(SECTOR_STATUS.UNCLAIMED);
   return { genesisHash, numberOfChunks, sectors };
 };
 
-test("node-reducer NODE_MARK_SECTOR_AS_CLAIMED", () => {
+test("node-reducer NODE_UPDATE_SECTOR_STATUS", () => {
   const genesisHash = "genesisHash";
   const sectorIdx = 2;
   const lastResetAt = new Date();
@@ -30,7 +25,7 @@ test("node-reducer NODE_MARK_SECTOR_AS_CLAIMED", () => {
       {
         genesisHash: genesisHash,
         sectorIdx: sectorIdx,
-        sectors: [{ index: sectorIdx }]
+        sectors: [CLAIMED, CLAIMED, UNCLAIMED]
       }
     ],
     oldGenesisHashes: [],
@@ -39,7 +34,7 @@ test("node-reducer NODE_MARK_SECTOR_AS_CLAIMED", () => {
   };
 
   const action = {
-    type: nodeActions.NODE_MARK_SECTOR_AS_CLAIMED,
+    type: nodeActions.NODE_UPDATE_SECTOR_STATUS,
     payload: {
       genesisHash: genesisHash,
       sectorIdx: sectorIdx
@@ -52,7 +47,7 @@ test("node-reducer NODE_MARK_SECTOR_AS_CLAIMED", () => {
       {
         genesisHash: genesisHash,
         sectorIdx: sectorIdx,
-        sectors: [{ index: sectorIdx, status: SECTOR_STATUS.CLAIMED }]
+        sectors: [CLAIMED, CLAIMED, CLAIMED]
       }
     ],
     oldGenesisHashes: [],

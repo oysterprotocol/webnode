@@ -1,4 +1,7 @@
 import actions from "./node-actions";
+import { SECTOR_STATUS } from "../../config/";
+
+const { CLAIMED } = SECTOR_STATUS;
 
 test("node-action NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH", () => {
   const expected = {
@@ -84,17 +87,19 @@ test("node-action NODE_CHECK_IF_SECTOR_CLAIMED", () => {
   ).toEqual(expected);
 });
 
-test("node-action NODE_MARK_SECTOR_AS_CLAIMED", () => {
+test("node-action NODE_UPDATE_SECTOR_STATUS", () => {
   const genesisHash = "address";
   const sectorIdx = 2;
+  const status = CLAIMED;
   const expected = {
-    type: actions.NODE_MARK_SECTOR_AS_CLAIMED,
+    type: actions.NODE_UPDATE_SECTOR_STATUS,
     payload: {
-      genesisHash: genesisHash,
-      sectorIdx: sectorIdx
+      genesisHash,
+      sectorIdx,
+      status
     }
   };
-  expect(actions.markSectorAsClaimed({ genesisHash, sectorIdx })).toEqual(
-    expected
-  );
+  expect(
+    actions.updateSectorStatus({ genesisHash, sectorIdx, status })
+  ).toEqual(expected);
 });

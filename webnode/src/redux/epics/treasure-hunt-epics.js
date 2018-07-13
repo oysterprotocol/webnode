@@ -11,7 +11,7 @@ import util from "node-forge/lib/util";
 
 import Datamap from "datamap-generator";
 
-import { CHUNKS_PER_SECTOR } from "../../config/";
+import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
 
 const performPowEpic = (action$, store) => {
   return action$
@@ -192,7 +192,9 @@ const claimTreasureEpic = (action$, store) => {
         )
         .catch(error => {
           console.log("CLAIM TREASURE ERROR: ", error);
-          return empty();
+          return of(
+            treasureHuntActions.claimTreasureFailure({ genesisHash, sectorIdx })
+          );
         });
     });
 };
@@ -202,7 +204,24 @@ const completeSectorEpic = (action$, store) => {
     .ofType(treasureHuntActions.TREASURE_HUNT_CLAIM_TREASURE_SUCCESS)
     .map(action => {
       const { genesisHash, sectorIdx } = action.payload;
-      return nodeActions.markSectorAsClaimed({ genesisHash, sectorIdx });
+      return nodeActions.updateSectorStatus({
+        genesisHash,
+        sectorIdx,
+        status: SECTOR_STATUS.CLAIMED
+      });
+    });
+};
+
+const failedSectorEpic = (action$, store) => {
+  return action$
+    .ofType(treasureHuntActions.TREASURE_HUNT_CLAIM_TREASURE_FAILURE)
+    .map(action => {
+      const { genesisHash, sectorIdx } = action.payload;
+      return nodeActions.updateSectorStatus({
+        genesisHash,
+        sectorIdx,
+        status: SECTOR_STATUS.NO_TREASURE_FOUND
+      });
     });
 };
 
@@ -211,5 +230,6 @@ export default combineEpics(
   findTreasureEpic,
   nextChunkEpic,
   completeSectorEpic,
+  failedSectorEpic,
   claimTreasureEpic
 );

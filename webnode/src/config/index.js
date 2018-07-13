@@ -3,12 +3,12 @@ export const DEBUGGING = process.env.DEBUG;
 export const API_VERSION = "api/v2";
 
 export const API_ROOT_URL =
-  (window.location && window.location.href.indexOf('localhost') > 0) > 0
+  (window.location && window.location.href.indexOf("localhost") > 0) > 0
     ? "http://18.217.133.146:3000"
     : "https://broker-1.oysternodes.com:3000";
 
 export const ASSET_URL =
-  (window.location && window.location.href.indexOf('localhost') > 0) > 0
+  (window.location && window.location.href.indexOf("localhost") > 0) > 0
     ? window.location.href
     : "https://web.oysternode.com/";
 
@@ -22,7 +22,8 @@ export const MIN_GENESIS_HASHES = 1;
 
 export const SECTOR_STATUS = {
   CLAIMED: "CLAIMED",
-  UNCLAIMED: "UNCLAIMED"
+  UNCLAIMED: "UNCLAIMED",
+  NO_TREASURE_FOUND: "NO_TREASURE_FOUND"
 };
 
 export const CONSENT_STATUS = {

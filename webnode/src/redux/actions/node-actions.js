@@ -18,7 +18,7 @@ export const NODE_RESUME_OR_START_NEW_SECTOR =
   "directories/node/resume_or_start_new_sector";
 export const NODE_CHECK_IF_SECTOR_CLAIMED =
   "directories/node/check_if_sector_claimed";
-export const NODE_MARK_SECTOR_AS_CLAIMED =
+export const NODE_UPDATE_SECTOR_STATUS =
   "directories/node/mark_sector_as_claimed";
 
 const ACTIONS = Object.freeze({
@@ -34,7 +34,7 @@ const ACTIONS = Object.freeze({
   NODE_RESET,
   NODE_RESUME_OR_START_NEW_SECTOR,
   NODE_CHECK_IF_SECTOR_CLAIMED,
-  NODE_MARK_SECTOR_AS_CLAIMED,
+  NODE_UPDATE_SECTOR_STATUS,
 
   // actionCreators
   determineBrokerNodeOrGenesisHash: () => ({
@@ -78,9 +78,9 @@ const ACTIONS = Object.freeze({
     payload: { genesisHash, sectorIdx, numberOfChunks }
   }),
 
-  markSectorAsClaimed: ({ genesisHash, sectorIdx }) => ({
-    type: NODE_MARK_SECTOR_AS_CLAIMED,
-    payload: { genesisHash, sectorIdx }
+  updateSectorStatus: ({ genesisHash, sectorIdx, status }) => ({
+    type: NODE_UPDATE_SECTOR_STATUS,
+    payload: { genesisHash, sectorIdx, status }
   }),
 
   setOwnerEthAddress: ethAddress => ({

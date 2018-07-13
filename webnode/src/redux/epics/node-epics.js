@@ -73,12 +73,12 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
         return of(nodeActions.requestGenesisHashes());
       } else {
         const { genesisHash, numberOfChunks } = treasureHuntableGenesisHash;
-        const { index } = treasureHuntableSector;
+        const sectorIdx = treasureHuntableSector;
         return of(
           nodeActions.resumeOrStartNewSector({
-            genesisHash: genesisHash,
-            numberOfChunks: numberOfChunks,
-            sectorIdx: index
+            genesisHash,
+            numberOfChunks,
+            sectorIdx
           })
         );
       }
@@ -98,7 +98,9 @@ const resumeOrStartNewSectorEpic = (action$, store) => {
       const sectorsFirstChunkIdx = sectorIdx * CHUNKS_PER_SECTOR;
 
       const alreadyStartedSector =
-        chunkIdx > sectorsFirstChunkIdx && currentSectorIdx === sectorIdx && genesisHash === currentGenesisHash;
+        chunkIdx > sectorsFirstChunkIdx &&
+        currentSectorIdx === sectorIdx &&
+        genesisHash === currentGenesisHash;
 
       return alreadyStartedSector
         ? of(treasureHuntActions.performPow())
@@ -122,7 +124,10 @@ const requestBrokerEpic = (action$, store) => {
       brokerNode.requestBrokerNodeAddressPoW({ brokerNodeUrl, currentList })
     )
       .mergeMap(({ data }) => {
-        const { id: txid, pow: { message, address, branchTx, trunkTx } } = data;
+        const {
+          id: txid,
+          pow: { message, address, branchTx, trunkTx }
+        } = data;
 
         // TODO: change this
         const value = 0;
@@ -257,7 +262,7 @@ const checkIfSectorClaimedEpic = (action$, store) => {
       return fromPromise(iota.checkIfClaimed(address)).map(
         claimed =>
           claimed
-            ? nodeActions.markSectorAsClaimed({
+            ? nodeActions.updateSectorStatus({
                 genesisHash,
                 sectorIdx
               })
@@ -271,9 +276,9 @@ const checkIfSectorClaimedEpic = (action$, store) => {
     });
 };
 
-const markSectorAsClaimedEpic = (action$, store) => {
+const updateSectorStatusEpic = (action$, store) => {
   return action$
-    .ofType(nodeActions.NODE_MARK_SECTOR_AS_CLAIMED)
+    .ofType(nodeActions.NODE_UPDATE_SECTOR_STATUS)
     .map(nodeActions.determineGenesisHashOrTreasureHunt);
 };
 
@@ -285,5 +290,5 @@ export default combineEpics(
   requestGenesisHashEpic,
   resumeOrStartNewSectorEpic,
   checkIfSectorClaimedEpic,
-  markSectorAsClaimedEpic
+  updateSectorStatusEpic
 );

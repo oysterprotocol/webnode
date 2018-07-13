@@ -1,7 +1,7 @@
 import { API_ROOT_URL, SECTOR_STATUS } from "../../config/";
 import nodeSelectors from "./node-selectors";
 
-const { UNCLAIMED, SEARCHING, TREASURE_FOUND, CLAIMED } = SECTOR_STATUS;
+const { UNCLAIMED, CLAIMED } = SECTOR_STATUS;
 
 test("node-selectors", () => {
   const lastResetAt = new Date();
@@ -10,24 +10,16 @@ test("node-selectors", () => {
       brokerNodes: [{ address: "first address" }, { address: "b" }],
       newGenesisHashes: [
         {
-          genesisHash: "genesisHash bad",
-          sectorIdx: 4,
-          sectors: [{ index: 44, status: CLAIMED }]
+          genesisHash: "claimed 1",
+          sectors: [CLAIMED]
         },
         {
-          genesisHash: "genesisHash 1",
-          sectorIdx: 1,
-          sectors: [{ index: 11, status: UNCLAIMED }]
+          genesisHash: "unclaimed 1",
+          sectors: [CLAIMED, UNCLAIMED]
         },
         {
-          genesisHash: "genesisHash 2",
-          sectorIdx: 2,
-          sectors: [{ index: 22, status: SEARCHING }]
-        },
-        {
-          genesisHash: "genesisHash 3",
-          sectorIdx: 3,
-          sectors: [{ index: 33, status: TREASURE_FOUND }]
+          genesisHash: "claimed 2",
+          sectors: [CLAIMED]
         }
       ],
       oldGenesisHashes: [],
@@ -37,15 +29,11 @@ test("node-selectors", () => {
   };
 
   const treasureHuntableGenesisHashExpected = {
-    genesisHash: "genesisHash 1",
-    sectorIdx: 1,
-    sectors: [{ index: 11, status: "UNCLAIMED" }]
+    genesisHash: "unclaimed 1",
+    sectors: [CLAIMED, UNCLAIMED]
   };
 
-  const treasureHuntableSectorExpected = {
-    index: 11,
-    status: "UNCLAIMED"
-  };
+  const treasureHuntableSectorExpected = 1;
 
   const brokerNodeUrlExpected = "first address";
   expect(nodeSelectors.treasureHuntableGenesisHash(state)).toEqual(
@@ -56,9 +44,7 @@ test("node-selectors", () => {
     treasureHuntableSectorExpected
   );
 
-  expect(nodeSelectors.brokerNodeUrl(state)).toEqual(
-    brokerNodeUrlExpected
-  );
+  expect(nodeSelectors.brokerNodeUrl(state)).toEqual(brokerNodeUrlExpected);
 
   state = {
     node: {
@@ -66,7 +52,5 @@ test("node-selectors", () => {
     }
   };
 
-  expect(nodeSelectors.brokerNodeUrl(state)).toEqual(
-    API_ROOT_URL
-  );
+  expect(nodeSelectors.brokerNodeUrl(state)).toEqual(API_ROOT_URL);
 });

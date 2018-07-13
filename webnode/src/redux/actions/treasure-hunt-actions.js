@@ -2,6 +2,8 @@ export const TREASURE_HUNT_CLAIM_TREASURE =
   "directories/treasure_hunt/claim_treasure";
 export const TREASURE_HUNT_CLAIM_TREASURE_SUCCESS =
   "directories/treasure_hunt/claim_treasure_success";
+export const TREASURE_HUNT_CLAIM_TREASURE_FAILURE =
+  "directories/treasure_hunt/claim_treasure_failure";
 export const TREASURE_HUNT_START_SECTOR =
   "directories/treasure_hunt/start_sector";
 export const TREASURE_HUNT_PERFORM_POW =
@@ -19,6 +21,7 @@ const ACTIONS = Object.freeze({
   TREASURE_HUNT_PERFORM_POW,
   TREASURE_HUNT_CLAIM_TREASURE,
   TREASURE_HUNT_CLAIM_TREASURE_SUCCESS,
+  TREASURE_HUNT_CLAIM_TREASURE_FAILURE,
   TREASURE_HUNT_FIND_TREASURE,
   TREASURE_HUNT_SAVE_TREASURE,
   TREASURE_HUNT_INCREMENT_CHUNK,
@@ -67,6 +70,10 @@ const ACTIONS = Object.freeze({
   }),
   claimTreasureSuccess: ({ genesisHash, sectorIdx }) => ({
     type: TREASURE_HUNT_CLAIM_TREASURE_SUCCESS,
+    payload: { genesisHash, sectorIdx }
+  }),
+  claimTreasureFailure: ({ genesisHash, sectorIdx }) => ({
+    type: TREASURE_HUNT_CLAIM_TREASURE_FAILURE,
     payload: { genesisHash, sectorIdx }
   })
 });
