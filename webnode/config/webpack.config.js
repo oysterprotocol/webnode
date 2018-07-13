@@ -13,6 +13,7 @@ const eslintFormatter = require("react-dev-utils/eslintFormatter");
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 const MinifyPlugin = require("babel-minify-webpack-plugin");
 const ScriptExtHtmlWebpackPlugin = require("script-ext-html-webpack-plugin");
+const { CheckerPlugin } = require('awesome-typescript-loader')
 
 const autoprefixer = require("autoprefixer");
 const path = require("path");
@@ -61,6 +62,11 @@ const common = {
               limit: 10000,
               name: "static/media/[name].[ext]"
             }
+          },
+          {
+            test: /\.tsx?$/,
+            include: paths.appSrc,
+            loader: require.resolve('awesome-typescript-loader')
           },
           // Process JS with Babel.
           {
@@ -129,10 +135,12 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
       modules: ["node_modules", paths.appNodeModules].concat(
         process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
       ),
-      extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
+      extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx", '.tsx', '.ts'],
+      mainFields: ['module', 'browser', 'main'],
       plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
     },
     plugins: [
+      new CheckerPlugin(),
       new BundleAnalyzerPlugin({
         generateStatsFile: generateStatsFile
       }),
