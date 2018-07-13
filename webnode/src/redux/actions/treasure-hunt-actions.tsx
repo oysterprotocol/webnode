@@ -1,4 +1,13 @@
-import { action } from 'typesafe-actions';
+import { action } from "typesafe-actions";
+
+import { 
+  StartSectorType,
+  FindTreasureType,
+  SaveTreasureType,
+  IncrementChunkType,
+  ClaimTreasureType,
+  ClaimTreasureSuccessType,
+} from "../../types";
 
 export const TREASURE_HUNT_CLAIM_TREASURE =
   "directories/treasure_hunt/claim_treasure";
@@ -26,51 +35,25 @@ const ACTIONS = Object.freeze({
   TREASURE_HUNT_INCREMENT_CHUNK,
 
   // actionCreators
-  startSector: (
-    dataMapHash: string,
-    message: string,
-    genesisHash: string,
-    sectorIdx: number,
-    numberOfChunks: number
-  ) => action(TREASURE_HUNT_START_SECTOR,
-    { payload: { dataMapHash, message, genesisHash, sectorIdx, numberOfChunks } }
-  ),
+  startSector: (obj: StartSectorType) =>
+    action(TREASURE_HUNT_START_SECTOR, { payload: obj }),
 
   performPow: () => action(TREASURE_HUNT_PERFORM_POW),
 
-  findTreasure: (dataMapHash: string, chunkIdx: number) => action(TREASURE_HUNT_FIND_TREASURE,
-    { payload: { dataMapHash, chunkIdx } }
-  ),
+  findTreasure: (obj: FindTreasureType) =>
+    action(TREASURE_HUNT_FIND_TREASURE, { payload: obj }),
 
-  saveTreasure: (treasure: string, nextChunkIdx: number, nextDataMapHash: string) => action(TREASURE_HUNT_SAVE_TREASURE,
-    { payload: { treasure, nextChunkIdx, nextDataMapHash } }
-  ),
+  saveTreasure: (obj: SaveTreasureType) =>
+    action(TREASURE_HUNT_SAVE_TREASURE, { payload: obj }),
 
-  incrementChunk: (nextChunkIdx: number, nextDataMapHash: string) => action(TREASURE_HUNT_INCREMENT_CHUNK,
-    { payload: { nextChunkIdx, nextDataMapHash } }
-  ),
+  incrementChunk: (obj: IncrementChunkType) =>
+    action(TREASURE_HUNT_INCREMENT_CHUNK, { payload: obj }),
 
-  claimTreasure: (
-    treasure: string,
-    genesisHash: string,
-    numberOfChunks: number,
-    receiverEthAddr: string,
-    sectorIdx: number
-  ) => action(TREASURE_HUNT_CLAIM_TREASURE,
-    {
-      payload: {
-        treasure,
-        genesisHash,
-        numberOfChunks,
-        receiverEthAddr,
-        sectorIdx
-      }
-    }
-  ),
+  claimTreasure: (obj: ClaimTreasureType) =>
+    action(TREASURE_HUNT_CLAIM_TREASURE, { payload: obj }),
 
-  claimTreasureSuccess: (genesisHash: string, sectorIdx: number) => action(TREASURE_HUNT_CLAIM_TREASURE_SUCCESS,
-    { payload: { genesisHash, sectorIdx } }
-  )
+  claimTreasureSuccess: (obj: ClaimTreasureSuccessType) =>
+    action(TREASURE_HUNT_CLAIM_TREASURE_SUCCESS, { payload: obj })
 });
 
 export default ACTIONS;

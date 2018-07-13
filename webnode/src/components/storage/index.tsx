@@ -2,7 +2,7 @@ import * as React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 
-import { RootState } from "../../types";
+import { RootState, FindTreasureType, StartSectorType } from "../../types";
 
 import Semantic from "semantic-ui-react";
 import { CONSENT_STATUS } from "../../config";
@@ -28,10 +28,10 @@ interface StorageProps {
   consent: string;
   giveConsent: () => any;
   denyConsent: () => any;
-  findTreasure: (obj: string) => any;
+  findTreasure: (obj: FindTreasureType) => any;
   initialize: () => any;
   setOwnerEthAddress: (ethAddress: string) => any;
-  startSector: (obj: string) => any;
+  startSector: (obj: StartSectorType) => any;
 }
 
 interface State {
@@ -178,8 +178,8 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<StorageProps>) => 
   bindActionCreators(
     {
-      findTreasure: (obj: string) => treasureHuntActions.findTreasure(obj),
-      startSector: (obj: string) => treasureHuntActions.startSector(obj),
+      findTreasure: (obj: FindTreasureType) => treasureHuntActions.findTreasure(obj),
+      startSector: (obj: StartSectorType) => treasureHuntActions.startSector(obj),
       initialize: nodeActions.initialize,
       giveConsent: consentActions.giveConsent,
       denyConsent: consentActions.denyConsent,

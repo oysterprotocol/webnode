@@ -1,4 +1,5 @@
-import { action } from 'typesafe-actions';
+import { action } from "typesafe-actions";
+import { RequestPoWType, RequestPoWSuccessType } from "../../types";
 
 export const IOTA_POW = "directories/pow/iota_pow";
 export const IOTA_POW_SUCCESS = "directories/pow/iota_pow_success";
@@ -11,27 +12,11 @@ const ACTIONS = Object.freeze({
   IOTA_COMPLETE,
 
   // actionCreators
-  requestPoW: (
-    branchTransaction: string,
-    broadcastingNodes: string,
-    mwm: number,
-    trunkTransaction: string,
-    trytes: any
-  ) => action(IOTA_POW,
-    {
-      payload: {
-        branchTransaction,
-        broadcastingNodes,
-        mwm,
-        trunkTransaction,
-        trytes
-      }
-    }
-  ),
+  requestPoW: (obj: RequestPoWType) =>
+    action(IOTA_POW, { payload: obj }),
 
-  requestPoWSuccess: (arrayOfTrytes: any, broadcastingNodes: any) => action(IOTA_POW_SUCCESS, 
-    { payload: { arrayOfTrytes, broadcastingNodes } }
-  ),
+  requestPoWSuccess: (obj: RequestPoWSuccessType) =>
+    action(IOTA_POW_SUCCESS, { payload: obj }),
 
   powComplete: () => action(IOTA_COMPLETE)
 });
