@@ -211,6 +211,9 @@ if (env.stringified["process.env"].NODE_ENV === '"development"') {
       port: 3001,
       open: true
     },
+    resolve: {
+      extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx", ".ts", ".tsx"]
+    },
     devtool: "cheap-module-source-map",
     entry: paths.appIndexJs,
     output: {
