@@ -56,11 +56,7 @@ const common = {
           {
             test: /\.tsx?$/,
             include: paths.appSrc,
-            loader: "awesome-typescript-loader",
-            options: {
-              silent: true,
-              useBabel: true
-            }
+            loader: "awesome-typescript-loader"
           },
           // "url" loader works just like "file" loader but it also embeds
           // assets smaller than specified size as data URLs to avoid requests.
@@ -234,9 +230,6 @@ if (env.stringified["process.env"].NODE_ENV === '"development"') {
       chunkFilename: "static/js/[name].chunk.[chunkhash:8].js"
     },
     resolve: {
-      modules: ["node_modules", paths.appNodeModules].concat(
-        process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
-      ),
       extensions: [
         ".web.js",
         ".mjs",
@@ -246,9 +239,7 @@ if (env.stringified["process.env"].NODE_ENV === '"development"') {
         ".jsx",
         ".tsx",
         ".ts"
-      ],
-      mainFields: ["module", "browser", "main"],
-      plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
+      ]
     },
     plugins: [
       new CheckerPlugin(),
