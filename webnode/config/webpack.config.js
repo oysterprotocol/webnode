@@ -35,11 +35,6 @@ const common = {
     strictExportPresence: true,
     rules: [
       {
-        test: /\.tsx?$/,
-        include: paths.appSrc,
-        loader: "awesome-typescript-loader"
-      },
-      {
         test: /\.(js|jsx|mjs)$/,
         enforce: "pre",
         use: [
@@ -58,6 +53,15 @@ const common = {
         // match the requirements. When no loader matches it will fall
         // back to the "file" loader at the end of the loader list.
         oneOf: [
+          {
+            test: /\.tsx?$/,
+            include: paths.appSrc,
+            loader: "awesome-typescript-loader",
+            options: {
+              silent: true,
+              useBabel: true
+            }
+          },
           // "url" loader works just like "file" loader but it also embeds
           // assets smaller than specified size as data URLs to avoid requests.
           {
