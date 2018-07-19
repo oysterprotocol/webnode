@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import * as React from "react";
+import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import nodeActions from "../../redux/actions/node-actions";
@@ -6,8 +7,20 @@ import consentActions from "../../redux/actions/consent-actions";
 import ConsentOverlay from "../consent-overlay";
 
 import { CONSENT_STATUS } from "../../config";
+import { RootState } from "../../types";
 
-class Overlay extends Component {
+interface OverlayProps {
+  setOwnerEthAddress: (ethAddress: string) => any;
+  giveConsent: () => any;
+  denyConsent: () => any;
+  ethAddress: string;
+  status: string;
+}
+
+interface State {
+}
+
+export class Overlay extends React.Component<OverlayProps, State> {
   componentDidMount() {
     const { setOwnerEthAddress, ethAddress } = this.props;
     setOwnerEthAddress(ethAddress);
@@ -29,15 +42,19 @@ class Overlay extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: RootState) => ({
   status: state.consent.status
 });
 
-const mapDispatchToProps = dispatch => ({
-  setOwnerEthAddress: ethAddress =>
-    dispatch(nodeActions.setOwnerEthAddress(ethAddress)),
-  giveConsent: obj => dispatch(consentActions.giveConsent()),
-  denyConsent: obj => dispatch(consentActions.denyConsent())
-});
+const mapDispatchToProps = (dispatch: Dispatch<OverlayProps>) =>
+  bindActionCreators(
+    {
+      setOwnerEthAddress: (ethAddress: string) =>
+        nodeActions.setOwnerEthAddress(ethAddress),
+      giveConsent: consentActions.giveConsent,
+      denyConsent: consentActions.denyConsent
+    },
+    dispatch
+  );
 
 export default connect(mapStateToProps, mapDispatchToProps)(Overlay);

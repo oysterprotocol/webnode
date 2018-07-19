@@ -1,7 +1,7 @@
-import React from "react";
-import { Table, Header } from "semantic-ui-react";
+import * as React from "react";
+import { Table, Header }  from "semantic-ui-react";
 
-const TreasureTable = treasures => (
+const TreasureTable = (treasures: any) => (
   <Table celled padded>
     <Table.Header>
       <Table.Row>
@@ -10,7 +10,7 @@ const TreasureTable = treasures => (
       </Table.Row>
     </Table.Header>
     <Table.Body>
-      {treasures.map(s => (
+      {treasures.map((s: any) => (
         <Table.Row key={s.nextChunkIdx - 1}>
           <Table.Cell>
             {" "}

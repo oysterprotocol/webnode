@@ -1,6 +1,10 @@
-import React, { Component } from "react";
+import * as React from "react";
+import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
-import { Input, Button, Container, Header, Image } from "semantic-ui-react";
+
+import { RootState, FindTreasureType, StartSectorType } from "../../types";
+
+import { Header, Container, Image, Button, Input } from "semantic-ui-react";
 import { CONSENT_STATUS } from "../../config";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
@@ -13,48 +17,50 @@ import { TEST_ETH_ADDRESS } from "../../config";
 
 import TreasureTable from "./toolbox/TreasureTable";
 import ConsentOverlay from "../consent-overlay";
-
 import LOGO from "../../assets/images/logo.svg";
 
-const GenesisHashInput = onChange => (
-  <Input
-    style={{ width: 1000, paddingBottom: 20 }}
-    onChange={onChange}
-    label={{ tag: true, content: "Genesis Hash" }}
-    labelPosition="right"
-    placeholder=""
-  />
-);
+interface StorageProps {
+  treasures: any;
+  numberOfCalls: number;
+  statuses: any;
+  status: string;
+  consent: string;
+  giveConsent: () => any;
+  denyConsent: () => any;
+  findTreasure: (obj: FindTreasureType) => any;
+  initialize: () => any;
+  setOwnerEthAddress: (ethAddress: string) => any;
+  startSector: (obj: StartSectorType) => any;
+}
 
-const NumberofChunksInput = onChange => (
-  <Input
-    onChange={onChange}
-    style={{ paddingRight: 50, paddingBottom: 50 }}
-    label={{ tag: true, content: "Number of Chunks" }}
-    labelPosition="right"
-    placeholder=""
-  />
-);
+interface State {
+  genesisHash: string;
+  numberOfChunks: number;
+  stressCount: number;
+  intervalStress: number;
+}
 
-class Storage extends Component {
-  constructor(props) {
+export class Storage extends React.Component<StorageProps, State> {
+
+  constructor(props: StorageProps) {
     super(props);
     this.state = {
       genesisHash: "",
       numberOfChunks: 0,
-      stressCount: 2
+      stressCount: 2,
+      intervalStress: 0
     };
   }
 
-  onGenesisHashChange = (e, data) => {
+  onGenesisHashChange = (e: any, data: any) => {
     this.setState({ genesisHash: data.value });
   };
 
-  onNumberOfChunksChange = (e, data) => {
+  onNumberOfChunksChange = (e: any, data: any) => {
     this.setState({ numberOfChunks: parseInt(data.value, 10) });
   };
 
-  renderProgress(current, max) {
+  renderProgress(current: number, max: number) {
     if (current > -1) {
       return (
         <div>
@@ -80,16 +86,17 @@ class Storage extends Component {
   }
 
   start() {
-    let { stressCount, ticks} = this.state;
+    let { stressCount} = this.state;
     if (stressCount > 0) {
-      this.intervalStress = setInterval(() => {
+      const intervalStress = window.setInterval(() => {
         this.onClick();
       }, stressCount);
+      this.setState({ intervalStress: intervalStress });
     }
   }
 
   stop() {
-    clearInterval(this.intervalStress)
+    clearInterval(this.state.intervalStress)
   }
 
   async onClick() {
@@ -100,11 +107,11 @@ class Storage extends Component {
     );
 
     const transformedMap = Object.values(generatedMap)
-      .map((value, index) => ({
+      .map((value: any, index: any) => ({
         dataMapHash: value,
         chunkIdx: index
       }))
-      .map(obj => findTreasure(obj));
+      .map( (obj: any) => findTreasure(obj));
 
     Promise.all(transformedMap); //TODO better implementation
   }
@@ -152,14 +159,14 @@ class Storage extends Component {
           {treasures.length !== 0 ? TreasureTable(treasures) : null}
         </div>
         {status === CONSENT_STATUS.PENDING ? (
-          <ConsentOverlay giveConsent={giveConsent} denyConsent={denyConsent} />
+          <ConsentOverlay status={status} giveConsent={giveConsent} denyConsent={denyConsent} />
         ) : null}
       </Container>
     );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: RootState) => ({
   statuses: state.pow.statuses,
   status: state.consent.status,
   treasures: state.test.treasures,
@@ -167,17 +174,38 @@ const mapStateToProps = state => ({
   consent: state.pow.consent
 });
 
-const mapDispatchToProps = dispatch => ({
-  findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
-  startSector: obj => dispatch(treasureHuntActions.startSector(obj)),
-  initialize: () => dispatch(nodeActions.initialize()),
-  giveConsent: () => dispatch(consentActions.giveConsent()),
-  denyConsent: () => dispatch(consentActions.denyConsent()),
-  setOwnerEthAddress: ethAddress =>
-    dispatch(nodeActions.setOwnerEthAddress(ethAddress))
-});
+const mapDispatchToProps = (dispatch: Dispatch<StorageProps>) => 
+  bindActionCreators(
+    {
+      findTreasure: (obj: FindTreasureType) => treasureHuntActions.findTreasure(obj),
+      startSector: (obj: StartSectorType) => treasureHuntActions.startSector(obj),
+      initialize: nodeActions.initialize,
+      giveConsent: consentActions.giveConsent,
+      denyConsent: consentActions.denyConsent,
+      setOwnerEthAddress: (ethAddress: string) => nodeActions.setOwnerEthAddress(ethAddress)
+    }
+    , dispatch
+  );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Storage);
+const GenesisHashInput = (onChange: any) => (
+  <Input
+    style={{ width: 1000, paddingBottom: 20 }}
+    onChange={onChange}
+    label={{ tag: true, content: "Genesis Hash" }}
+    labelPosition="right"
+    placeholder=""
+  />
+);
+
+const NumberofChunksInput = (onChange: any) => (
+  <Input
+    onChange={onChange}
+    style={{ paddingRight: 50, paddingBottom: 50 }}
+    label={{ tag: true, content: "Number of Chunks" }}
+    labelPosition="right"
+    placeholder=""
+  />
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Storage);
+
