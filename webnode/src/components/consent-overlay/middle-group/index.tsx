@@ -1,6 +1,4 @@
 import * as React from "react";
-import * as Radium from "radium";
-import StyledComponent, { InternalStyle } from "../../styledComponent";
 
 interface MiddleGroupProps {
 }
@@ -8,10 +6,52 @@ interface MiddleGroupProps {
 interface State {
 }
 
-@Radium
-class MiddleGroup extends StyledComponent<MiddleGroupProps, State> {
+
+class MiddleGroup extends React.Component<MiddleGroupProps, State> {
   render() {
-    const style = this.getStyle(MiddleGroup.style);
+    const style = {
+      container: {
+        width: "45%",
+        "@media (max-width: 1200px)": {
+          width: "90%"
+        }
+      } as CSSProperties,
+      textDesktop: {
+        color: "#778291",
+        fontSize: 16,
+        fontFamily: "Open Sans",
+        textAlign: "justify",
+        lineHeight: 1.5,
+        "@media (max-width: 1200px)": {
+          display: "none"
+        }
+      } as CSSProperties,
+      textMobile: {
+        color: "#778291",
+        fontSize: 12,
+        fontFamily: "Open Sans",
+        textAlign: "justify",
+        lineHeight: 1.5,
+        "@media (min-width: 1201px)": {
+          display: "none"
+        }
+      } as CSSProperties,
+      headline: {
+        fontSize: 18,
+        fontFamily: "Poppins",
+        fontWeight: 600,
+        color: "#088ffc",
+        textAlign: "left",
+        paddingBottom: 10,
+        "@media (max-width: 1200px)": {
+          fontSize: 12
+        }
+      } as CSSProperties,
+      link: {
+        color: "#778291",
+        fontWeight: 600,
+      } as CSSProperties
+    };
     return (
       <div style={style.container}>
         <div style={style.headline}>Consent to an Ad-Free Experience</div>
@@ -36,50 +76,6 @@ class MiddleGroup extends StyledComponent<MiddleGroupProps, State> {
       </div>
     );
   }
-
-  static style: InternalStyle = () => ({
-    container: {
-      width: "45%",
-      "@media (max-width: 1200px)": {
-        width: "90%"
-      }
-    },
-    textDesktop: {
-      color: "#778291",
-      fontSize: 16,
-      fontFamily: "Open Sans",
-      textAlign: "justify",
-      lineHeight: 1.5,
-      "@media (max-width: 1200px)": {
-        display: "none"
-      }
-    },
-    textMobile: {
-      color: "#778291",
-      fontSize: 12,
-      fontFamily: "Open Sans",
-      textAlign: "justify",
-      lineHeight: 1.5,
-      "@media (min-width: 1201px)": {
-        display: "none"
-      }
-    },
-    headline: {
-      fontSize: 18,
-      fontFamily: "Poppins",
-      fontWeight: 600,
-      color: "#088ffc",
-      textAlign: "left",
-      paddingBottom: 10,
-      "@media (max-width: 1200px)": {
-        fontSize: 12
-      }
-    },
-    link: {
-      color: "#778291",
-      fontWeight: 600,
-    }
-  });
 }
 
 export default MiddleGroup;
