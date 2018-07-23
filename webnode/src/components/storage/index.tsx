@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import { RootState, FindTreasureType, StartSectorType } from "../../types";
 
-import { Header, Container, Button, Input } from "semantic-ui-react";
+import { Header, Container, Image, Button, Input } from "semantic-ui-react";
 import { CONSENT_STATUS } from "../../config";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
@@ -17,6 +17,8 @@ import { TEST_ETH_ADDRESS } from "../../config";
 
 import TreasureTable from "./toolbox/TreasureTable";
 import ConsentOverlay from "../consent-overlay";
+
+import LOGO from "../../assets/images/logo.svg";
 
 interface StorageProps {
   treasures: any;
@@ -138,6 +140,7 @@ export class Storage extends React.Component<StorageProps, State> {
       <Container style={{ backgroundColor: "#0267ea" }}>
         <div style={{ padding: 50 }}>
           <Header as="h1" style={{ color: "#ffffff" }}>
+            <Image src={LOGO} /> Oyster Toolbox{" "}
             {this.renderProgress(numberOfCalls, this.state.numberOfChunks)}
           </Header>{" "}
           <div style={{ paddingTop: 50 }}>

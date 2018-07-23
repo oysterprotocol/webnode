@@ -1,5 +1,6 @@
 import * as React from "react";
 import color from "colors";
+import Radium from 'radium';
 
 interface ButtonProps {
   onClick: () => void;
@@ -10,7 +11,7 @@ interface ButtonProps {
 interface ButtonState {
 }
 
-class Button extends React.Component<ButtonProps, ButtonState> {
+class Btn extends React.Component<ButtonProps, ButtonState> {
   render() {
     const style = {
       base: {
@@ -32,7 +33,7 @@ class Button extends React.Component<ButtonProps, ButtonState> {
           height: 40,
           minWidth: 180
         }
-      } as CSSProperties
+      }
     };
     const { onClick, children } = this.props;
     // TODO base[kind]
@@ -43,6 +44,8 @@ class Button extends React.Component<ButtonProps, ButtonState> {
     );
   }
 }
+
+const Button = Radium(Btn);
 
 interface ButtonGroupProps {
   giveConsent: () => void;
@@ -64,7 +67,7 @@ class ButtonGroup extends React.Component<ButtonGroupProps, ButtonGroupState> {
             .hexString()
         },
         border: "none"
-      } as CSSProperties,
+      },
       deny: {
         background: "#ffffff",
         color: "#f76868",
@@ -78,7 +81,7 @@ class ButtonGroup extends React.Component<ButtonGroupProps, ButtonGroupState> {
             .lighten(0.2)
             .hexString()
         }
-      } as CSSProperties,
+      },
       containerDesktop: {
         marginRight: 0,
         listStyleType: "none",
@@ -87,17 +90,16 @@ class ButtonGroup extends React.Component<ButtonGroupProps, ButtonGroupState> {
         "@media (max-width: 1200px)": {
           display: "none"
         }
-      } as CSSProperties,
+      },
       containerMobile: {
         marginRight: 0,
-        flexDirection: "row",
         display: "flex",
         width: "90%",
         minWidth: 200,
         "@media (min-width: 1201px)": {
           display: "none"
         }
-      } as CSSProperties
+      }
     };
     const { giveConsent, denyConsent } = this.props;
     return (
@@ -129,4 +131,4 @@ class ButtonGroup extends React.Component<ButtonGroupProps, ButtonGroupState> {
   }
 }
 
-export default ButtonGroup;
+export default Radium(ButtonGroup);

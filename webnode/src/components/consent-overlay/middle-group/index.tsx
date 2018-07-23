@@ -1,4 +1,5 @@
 import * as React from "react";
+import Radium from 'radium';
 
 interface MiddleGroupProps {
 }
@@ -15,42 +16,39 @@ class MiddleGroup extends React.Component<MiddleGroupProps, State> {
         "@media (max-width: 1200px)": {
           width: "90%"
         }
-      } as CSSProperties,
+      },
       textDesktop: {
         color: "#778291",
         fontSize: 16,
         fontFamily: "Open Sans",
-        textAlign: "justify",
         lineHeight: 1.5,
         "@media (max-width: 1200px)": {
           display: "none"
         }
-      } as CSSProperties,
+      },
       textMobile: {
         color: "#778291",
         fontSize: 12,
         fontFamily: "Open Sans",
-        textAlign: "justify",
         lineHeight: 1.5,
         "@media (min-width: 1201px)": {
           display: "none"
         }
-      } as CSSProperties,
+      },
       headline: {
         fontSize: 18,
         fontFamily: "Poppins",
         fontWeight: 600,
         color: "#088ffc",
-        textAlign: "left",
         paddingBottom: 10,
         "@media (max-width: 1200px)": {
           fontSize: 12
         }
-      } as CSSProperties,
+      },
       link: {
         color: "#778291",
         fontWeight: 600,
-      } as CSSProperties
+      }
     };
     return (
       <div style={style.container}>
@@ -78,4 +76,4 @@ class MiddleGroup extends React.Component<MiddleGroupProps, State> {
   }
 }
 
-export default MiddleGroup;
+export default Radium(MiddleGroup);

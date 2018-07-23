@@ -4,6 +4,7 @@ import ButtonGroup from "./button-group";
 import MiddleGroup from "./middle-group";
 import LogoGroup from "./logo-group";
 import * as WebFont from "webfontloader";
+import Radium from 'radium';
 
 WebFont.load({
   google: {
@@ -30,16 +31,13 @@ class ConsentOverlay extends React.Component<ConsentOverlayProps, State> {
         bottom: 0,
         left: 0,
         right: 0,
-        position: "fixed",
         backgroundColor: "#ffffff",
-        textAlign: "center",
         height: 300,
         "@media (max-width: 1200px)": {
           height: 200
         }
-      } as CSSProperties
+      },
       consentInner: {
-        flexDirection: "row",
         display: "flex",
         justifyContent: "space-evenly",
         alignItems: "center",
@@ -48,16 +46,16 @@ class ConsentOverlay extends React.Component<ConsentOverlayProps, State> {
           flexDirection: "column",
           height: 200
         }
-      } as CSSProperties,
+      },
       blueBar: {
         top: 0,
         height: 6,
         width: "100%",
         borderBottom: "solid 6px #088ffc"
-      } as CSSProperties
+      }
     };
     return (
-      <div>
+      <Radium.StyleRoot>
         <div style={style.ConsentOverlayStyle}>
           <div style={style.blueBar} />
           <div style={style.consentInner}>
@@ -66,10 +64,10 @@ class ConsentOverlay extends React.Component<ConsentOverlayProps, State> {
             <ButtonGroup giveConsent={giveConsent} denyConsent={denyConsent} />
           </div>
         </div>
-      </div>
+      </Radium.StyleRoot>
     );
   }
 }
 
-export default ConsentOverlay;
+export default Radium(ConsentOverlay);
 
