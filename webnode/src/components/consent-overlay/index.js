@@ -3,7 +3,6 @@ import React from "react";
 import ButtonGroup from "./button-group";
 import MiddleGroup from "./middle-group";
 import LogoGroup from "./logo-group";
-import { StyleRoot } from "radium";
 import WebFont from "webfontloader";
 import styled from "styled-components";
 
@@ -49,16 +48,14 @@ const Inner = styled.div`
 
 const ConsentOverlay = ({ giveConsent, denyConsent }) => {
   return (
-    <StyleRoot>
-      <Container>
-        <BlueBar />
-        <Inner>
-          <LogoGroup />
-          <MiddleGroup />
-          <ButtonGroup giveConsent={giveConsent} denyConsent={denyConsent} />
-        </Inner>
-      </Container>
-    </StyleRoot>
+    <Container>
+      <BlueBar />
+      <Inner>
+        <LogoGroup />
+        <MiddleGroup />
+        <ButtonGroup giveConsent={giveConsent} denyConsent={denyConsent} />
+      </Inner>
+    </Container>
   );
 };
 
