@@ -14,7 +14,7 @@ const Container = styled.div`
 `;
 
 const Logo = styled.img`
-  height: 100;
+  height: 100px;
 `;
 
 const Text = styled.div`

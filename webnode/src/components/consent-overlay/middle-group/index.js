@@ -9,14 +9,14 @@ const Container = styled.div`
 `;
 
 const Headline = styled.div`
-  font-size: 18;
+  font-size: 18px;
   font-family: Poppins;
   font-weight: 600;
   color: #088ffc;
   text-align: left;
-  padding-bottom: 10;
+  padding-bottom: 10px;
   @media (max-width: 1200px) {
-    font-size: 12;
+    font-size: 12px;
   }
 `;
 
