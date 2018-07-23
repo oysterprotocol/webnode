@@ -23,7 +23,7 @@ const Button = styled.button`
   }
 `;
 
-const ContinueButton = Button.extend`
+const ContinueButton = styled(Button)`
   background: #088ffc;
   background: rgba(8, 143, 252);
   border: none;
@@ -33,7 +33,7 @@ const ContinueButton = Button.extend`
   }
 `;
 
-const DenyButton = Button.extend`
+const DenyButton = styled(Button)`
   background: #ffffff;
   border-color: #f76868;
   border-style: solid;
