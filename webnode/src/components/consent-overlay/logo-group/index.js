@@ -25,6 +25,7 @@ const Text = styled.div`
   line-height: 1.25;
   color: #088ffc;
 `;
+
 const LogoGroup = () => (
   <Container>
     <Logo src={`${ASSET_URL}${LogoImg}`} alt="logo" />
