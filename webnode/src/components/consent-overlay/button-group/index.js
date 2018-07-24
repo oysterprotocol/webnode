@@ -2,12 +2,10 @@ import React from "react";
 import styled from "styled-components";
 
 const Button = styled.button`
-  border-radius: 12px;
   border: none;
+  border-radius: 12px;
   cursor: pointer;
-  font-family: Poppins;
-  font-size: 23px;
-  font-weight: 600;
+  font: 600 23px Poppins;
   height: 50px;
   margin: 15px;
   min-width: 300px;
@@ -24,9 +22,7 @@ const Button = styled.button`
 `;
 
 const ContinueButton = styled(Button)`
-  background: #088ffc;
   background: rgba(8, 143, 252);
-  border: none;
   color: white;
   :hover: {
     background: #088ffc;
@@ -35,9 +31,7 @@ const ContinueButton = styled(Button)`
 
 const DenyButton = styled(Button)`
   background: #ffffff;
-  border-color: #f76868;
-  border-style: solid;
-  border-width: 1px;
+  border: 1px solid #f76868;
   color: #f76868;
   :hover: {
     background: #f76868;

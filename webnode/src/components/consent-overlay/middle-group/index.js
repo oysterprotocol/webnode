@@ -9,9 +9,7 @@ const Container = styled.div`
 `;
 
 const Headline = styled.div`
-  font-size: 18px;
-  font-family: Poppins;
-  font-weight: 600;
+  font: 600 18px Poppins;
   color: #088ffc;
   text-align: left;
   padding-bottom: 10px;

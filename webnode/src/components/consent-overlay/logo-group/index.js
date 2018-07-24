@@ -18,9 +18,7 @@ const Logo = styled.img`
 `;
 
 const Text = styled.div`
-  font-family: Poppins;
-  font-size: 32px;
-  font-weight: 600;
+  font: 600 32px Poppins;
   padding-top: 25px;
   line-height: 1.25;
   color: #088ffc;
