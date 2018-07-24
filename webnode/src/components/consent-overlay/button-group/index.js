@@ -1,118 +1,82 @@
 import React from "react";
-import Radium from "radium";
-import color from "color";
+import styled from "styled-components";
 
-class Button extends React.Component {
-  render() {
-    const { onClick, kind, children } = this.props;
-    return (
-      <button onClick={onClick} style={[styles.base, styles[kind]]}>
-        {children}
-      </button>
-    );
+const Button = styled.button`
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font: 600 23px Poppins;
+  height: 50px;
+  margin: 15px;
+  min-width: 300px;
+  outline: none;
+  padding: 0;
+  width: 100%;
+  @media (max-width: 1200px) {
+    border-radius: 8px;
+    font-size: 16px;
+    height: 40px;
+    margin: 5px;
+    min-width: 180px;
   }
-}
+`;
 
-Button = Radium(Button);
-
-class ButtonGroup extends React.Component {
-  render() {
-    const { giveConsent, denyConsent } = this.props;
-    return (
-      <div>
-        <div style={styles.containerDesktop}>
-          <li>
-            {" "}
-            <Button onClick={giveConsent} kind="continue">
-              Continue Ad-Free
-            </Button>
-          </li>
-          <li>
-            {" "}
-            <Button onClick={denyConsent} kind="deny">
-              Deny Consent
-            </Button>
-          </li>
-        </div>
-        <div style={styles.containerMobile}>
-          <Button onClick={giveConsent} kind="continue">
-            Continue Ad-Free
-          </Button>
-          <Button onClick={denyConsent} kind="deny">
-            Deny Consent
-          </Button>
-        </div>
-      </div>
-    );
+const ContinueButton = styled(Button)`
+  background: rgba(8, 143, 252);
+  color: white;
+  :hover: {
+    background: #088ffc;
   }
-}
+`;
 
-const styles = {
-  base: {
-    cursor: "pointer",
-    borderRadius: 12,
-    outline: "none",
-    padding: 0,
-    fontFamily: "Poppins",
-    fontSize: 23,
-    fontWeight: 600,
-    minWidth: 300,
-    width: "100%",
-    height: 50,
-    margin: 15,
-    "@media (max-width: 1200px)": {
-      fontSize: 16,
-      margin: 5,
-      borderRadius: 8,
-      height: 40,
-      minWidth: 180
-    }
-  },
-
-  continue: {
-    background: "#088ffc",
-    color: "#ffffff",
-    ":hover": {
-      background: color("#088ffc")
-        .lighten(0.2)
-        .hexString()
-    },
-    border: "none"
-  },
-
-  deny: {
-    background: "#ffffff",
-    color: "#f76868",
-    borderColor: "#f76868",
-    borderStyle: "solid",
-    ":hover": {
-      color: color("#f76868")
-        .lighten(0.2)
-        .hexString(),
-      borderColor: color("#f76868")
-        .lighten(0.2)
-        .hexString()
-    }
-  },
-  containerDesktop: {
-    marginRight: 0,
-    listStyleType: "none",
-    width: "15%",
-    minWidth: 200,
-    "@media (max-width: 1200px)": {
-      display: "none"
-    }
-  },
-  containerMobile: {
-    marginRight: 0,
-    flexDirection: "row",
-    display: "flex",
-    width: "90%",
-    minWidth: 200,
-    "@media (min-width: 1201px)": {
-      display: "none"
-    }
+const DenyButton = styled(Button)`
+  background: #ffffff;
+  border: 1px solid #f76868;
+  color: #f76868;
+  :hover: {
+    background: #f76868;
+    border-color: #f76868;
   }
-};
+`;
 
-export default Radium(ButtonGroup);
+const DesktopContainer = styled.div`
+  list-style-type: none;
+  margin-right: 0;
+  min-width: 200px;
+  width: 15%;
+  @media (max-width: 1200px) {
+    display: none;
+  }
+`;
+
+const MobileContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-right: 0;
+  min-width: 200px;
+  width: 90%;
+  @media (min-width: 1201px) {
+    display: none;
+  }
+`;
+
+const ButtonGroup = ({ giveConsent, denyConsent }) => (
+  <div>
+    <DesktopContainer>
+      <li>
+        {" "}
+        <ContinueButton onClick={giveConsent}>Continue Ad-Free</ContinueButton>
+      </li>
+      <li>
+        {" "}
+        <DenyButton onClick={denyConsent}>Deny Consent</DenyButton>
+      </li>
+    </DesktopContainer>
+    <MobileContainer>
+      <ContinueButton onClick={giveConsent}>Continue Ad-Free</ContinueButton>
+      <DenyButton onClick={denyConsent}>Deny Consent</DenyButton>
+    </MobileContainer>
+  </div>
+);
+
+export default ButtonGroup;

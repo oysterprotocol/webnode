@@ -1,36 +1,34 @@
 import React from "react";
-import Radium from "radium";
+import styled from "styled-components";
 
 import { ASSET_URL } from "../../../config";
-import Logo from "../../../assets/images/oyster-logo-with-dot.svg";
+import LogoImg from "../../../assets/images/oyster-logo-with-dot.svg";
+
+const Container = styled.div`
+  width: 20%;
+  flex-direction: column;
+  justify-content: space-around;
+  @media (max-width: 1200px) {
+    display: none;
+  }
+`;
+
+const Logo = styled.img`
+  height: 100px;
+`;
+
+const Text = styled.div`
+  font: 600 32px Poppins;
+  padding-top: 25px;
+  line-height: 1.25;
+  color: #088ffc;
+`;
 
 const LogoGroup = () => (
-  <div style={style.container}>
-    <img src={ASSET_URL + Logo} style={style.logo} alt="logo"/>
-    <div style={style.text}>Oyster Protocol in use</div>
-  </div>
+  <Container>
+    <Logo src={`${ASSET_URL}${LogoImg}`} alt="logo" />
+    <Text>Oyster Protocol in use</Text>
+  </Container>
 );
 
-const style = {
-  container: {
-    width: "20%",
-    flexDirection: "column",
-    justifyContent: "space-around",
-    "@media (max-width: 1200px)": {
-      display: "none"
-    }
-  },
-  text: {
-    fontFamily: "Poppins",
-    fontSize: 32,
-    fontWeight: 600,
-    paddingTop: 25,
-    lineHeight: 1.25,
-    color: "#088ffc"
-  },
-  logo: {
-    height: 100
-  }
-};
-
-export default Radium(LogoGroup);
+export default LogoGroup;

@@ -3,8 +3,8 @@ import React from "react";
 import ButtonGroup from "./button-group";
 import MiddleGroup from "./middle-group";
 import LogoGroup from "./logo-group";
-import { StyleRoot } from "radium";
 import WebFont from "webfontloader";
+import styled from "styled-components";
 
 WebFont.load({
   google: {
@@ -12,53 +12,51 @@ WebFont.load({
   }
 });
 
+const Container = styled.div`
+  font-family: Poppins;
+  overflow: hidden;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  background-color: #ffffff;
+  text-align: center;
+  height: 300px;
+  @media (max-width: 1200px) {
+    height: 200px;
+  }
+`;
+
+const BlueBar = styled.div`
+  top: 0;
+  height: 6px;
+  width: 100%;
+  border-bottom: solid 6px #088ffc;
+`;
+
+const Inner = styled.div`
+  flex-direction: row;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 300px;
+  @media (max-width: 1200px) {
+    flex-direction: column;
+    height: 200px;
+  }
+`;
+
 const ConsentOverlay = ({ giveConsent, denyConsent }) => {
   return (
-    <StyleRoot>
-      <div style={style.ConsentOverlayStyle}>
-        <div style={style.blueBar} />
-        <div style={style.consentInner}>
-          <LogoGroup />
-          <MiddleGroup />
-          <ButtonGroup giveConsent={giveConsent} denyConsent={denyConsent} />
-        </div>
-      </div>
-    </StyleRoot>
+    <Container>
+      <BlueBar />
+      <Inner>
+        <LogoGroup />
+        <MiddleGroup />
+        <ButtonGroup giveConsent={giveConsent} denyConsent={denyConsent} />
+      </Inner>
+    </Container>
   );
-};
-
-const style = {
-  ConsentOverlayStyle: {
-    fontFamily: "Poppins",
-    overflow: "hidden",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    position: "fixed",
-    backgroundColor: "#ffffff",
-    textAlign: "center",
-    height: 300,
-    "@media (max-width: 1200px)": {
-      height: 200
-    }
-  },
-  consentInner: {
-    flexDirection: "row",
-    display: "flex",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    height: 300,
-    "@media (max-width: 1200px)": {
-      flexDirection: "column",
-      height: 200
-    }
-  },
-  blueBar: {
-    top: 0,
-    height: 6,
-    width: "100%",
-    borderBottom: "solid 6px #088ffc"
-  }
 };
 
 export default ConsentOverlay;
