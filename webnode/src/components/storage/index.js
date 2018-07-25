@@ -80,7 +80,7 @@ class Storage extends Component {
   }
 
   start() {
-    let { stressCount, ticks} = this.state;
+    let { stressCount, ticks } = this.state;
     if (stressCount > 0) {
       this.intervalStress = setInterval(() => {
         this.onClick();
@@ -89,7 +89,7 @@ class Storage extends Component {
   }
 
   stop() {
-    clearInterval(this.intervalStress)
+    clearInterval(this.intervalStress);
   }
 
   async onClick() {
@@ -146,7 +146,6 @@ class Storage extends Component {
               <Button onClick={() => this.stop()}>Stop treasures</Button>
               <Button onClick={() => this.increment()}> +1 </Button>
               <Button onClick={() => this.decrement()}> -1 </Button>
-              <div>loop {stressCount}</div>
             </div>
           </div>
           {treasures.length !== 0 ? TreasureTable(treasures) : null}
