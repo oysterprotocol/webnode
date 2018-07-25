@@ -1,5 +1,6 @@
 import React from "react";
 import { Table, Header } from "semantic-ui-react";
+import "semantic-ui-css/semantic.min.css";
 
 const TreasureTable = treasures => (
   <Table celled padded>
