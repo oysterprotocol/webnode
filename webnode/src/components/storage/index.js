@@ -122,14 +122,8 @@ class Storage extends Component {
   renderForm() {
     if (!IS_DEV) return;
 
-    const { numberOfCalls } = this.props;
-
     return (
       <div style={{ padding: 50 }}>
-        <Header as="h1" style={{ color: "#ffffff" }}>
-          <Image src={LOGO} /> Oyster Toolbox{" "}
-          {this.renderProgress(numberOfCalls, this.state.numberOfChunks)}
-        </Header>
         <div style={{ paddingTop: 50 }}>
           {" "}
           {GenesisHashInput(this.onGenesisHashChange)}
@@ -148,10 +142,20 @@ class Storage extends Component {
   }
 
   render() {
-    const { giveConsent, denyConsent, status, treasures } = this.props;
+    const {
+      giveConsent,
+      denyConsent,
+      status,
+      treasures,
+      numberOfCalls
+    } = this.props;
     const { stressCount } = this.state;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
+        <Header as="h1" style={{ color: "#ffffff" }}>
+          <Image src={LOGO} /> Oyster Webnode Demo{" "}
+          {this.renderProgress(numberOfCalls, this.state.numberOfChunks)}
+        </Header>
         {this.renderForm()}
         <TreasureTable treasures={!!treasures ? treasures : []} />
         {status === CONSENT_STATUS.PENDING ? (

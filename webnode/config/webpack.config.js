@@ -120,9 +120,10 @@ if (env.stringified["process.env"].NODE_ENV === '"production"') {
     bail: true,
     devtool: shouldUseSourceMap ? "source-map" : false,
     devtool: "cheap-module-source-map",
-    entry: paths.appSrc + "/script.js",
+    // entry: paths.appSrc + "/script.js",
+    entry: paths.appIndexJs,
     output: {
-      path: paths.appBuild,
+      path: paths.appDemoBuild,
       filename: `static/js/oyster-webnode-${APP_VERSION}.min.js`,
       chunkFilename: "static/js/[name].chunk.js",
       publicPath: publicPath,
