@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Storage from "./storage";
 
 class Root extends React.Component {

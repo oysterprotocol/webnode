@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import color from "colors";
 import Radium from 'radium';
 

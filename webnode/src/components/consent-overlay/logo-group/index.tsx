@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Logo from "../../../assets/images/oyster-logo-with-dot.svg";
 import Radium from 'radium';
 import { ASSET_URL } from "../../../config";
