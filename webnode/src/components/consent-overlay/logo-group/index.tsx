@@ -3,13 +3,7 @@ import Logo from "../../../assets/images/oyster-logo-with-dot.svg";
 import Radium from 'radium';
 import { ASSET_URL } from "../../../config";
 
-interface LogoGroupProps {
-}
-
-interface State {
-}
-
-class LogoGroup extends React.Component<LogoGroupProps, State> {
+class LogoGroup extends React.Component {
   render() {
     const style = {
       container: {

@@ -8,10 +8,7 @@ interface ButtonProps {
   kind: string;
 }
 
-interface ButtonState {
-}
-
-class Btn extends React.Component<ButtonProps, ButtonState> {
+class Btn extends React.Component<ButtonProps> {
   render() {
     const style = {
       base: {
@@ -52,10 +49,7 @@ interface ButtonGroupProps {
   denyConsent: () => void;
 }
 
-interface ButtonGroupState {
-}
-
-class ButtonGroup extends React.Component<ButtonGroupProps, ButtonGroupState> {
+class ButtonGroup extends React.Component<ButtonGroupProps> {
   render() {
     const style = {
       continue: {

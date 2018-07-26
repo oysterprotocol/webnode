@@ -1,14 +1,8 @@
 import * as React from "react";
 import Radium from 'radium';
 
-interface MiddleGroupProps {
-}
 
-interface State {
-}
-
-
-class MiddleGroup extends React.Component<MiddleGroupProps, State> {
+class MiddleGroup extends React.Component {
   render() {
     const style = {
       container: {
