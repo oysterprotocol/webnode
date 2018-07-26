@@ -148,7 +148,7 @@ class Storage extends Component {
               <Button onClick={() => this.decrement()}> -1 </Button>
             </div>
           </div>
-          {treasures.length !== 0 ? TreasureTable(treasures) : null}
+          <TreasureTable treasures={!!treasures ? treasures : []} />
         </div>
         {status === CONSENT_STATUS.PENDING ? (
           <ConsentOverlay giveConsent={giveConsent} denyConsent={denyConsent} />
