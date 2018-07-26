@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Input, Button, Container, Header, Image } from "semantic-ui-react";
-import { CONSENT_STATUS } from "../../config";
+import { IS_DEV, CONSENT_STATUS } from "../../config";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 import nodeActions from "../../redux/actions/node-actions";
@@ -80,7 +80,7 @@ class Storage extends Component {
   }
 
   start() {
-    let { stressCount, ticks} = this.state;
+    let { stressCount, ticks } = this.state;
     if (stressCount > 0) {
       this.intervalStress = setInterval(() => {
         this.onClick();
@@ -89,7 +89,7 @@ class Storage extends Component {
   }
 
   stop() {
-    clearInterval(this.intervalStress)
+    clearInterval(this.intervalStress);
   }
 
   async onClick() {
@@ -119,38 +119,41 @@ class Storage extends Component {
     setOwnerEthAddress(TEST_ETH_ADDRESS);
   }
 
+  renderForm() {
+    if (!IS_DEV) return;
+
+    const { numberOfCalls } = this.props;
+
+    return (
+      <div style={{ padding: 50 }}>
+        <Header as="h1" style={{ color: "#ffffff" }}>
+          <Image src={LOGO} /> Oyster Toolbox{" "}
+          {this.renderProgress(numberOfCalls, this.state.numberOfChunks)}
+        </Header>
+        <div style={{ paddingTop: 50 }}>
+          {" "}
+          {GenesisHashInput(this.onGenesisHashChange)}
+          {NumberofChunksInput(this.onNumberOfChunksChange)}
+          <Button onClick={() => this.onClick()}>Look for treasures</Button>
+          <Button onClick={() => this.startApp()}>Start App</Button>
+          <div>
+            <Button onClick={() => this.start()}>Start treasures</Button>
+            <Button onClick={() => this.stop()}>Stop treasures</Button>
+            <Button onClick={() => this.increment()}> +1 </Button>
+            <Button onClick={() => this.decrement()}> -1 </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
-    const {
-      treasures,
-      numberOfCalls,
-      giveConsent,
-      denyConsent,
-      status
-    } = this.props;
+    const { giveConsent, denyConsent, status, treasures } = this.props;
     const { stressCount } = this.state;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
-        <div style={{ padding: 50 }}>
-          <Header as="h1" style={{ color: "#ffffff" }}>
-            <Image src={LOGO} /> Oyster Toolbox{" "}
-            {this.renderProgress(numberOfCalls, this.state.numberOfChunks)}
-          </Header>{" "}
-          <div style={{ paddingTop: 50 }}>
-            {" "}
-            {GenesisHashInput(this.onGenesisHashChange)}
-            {NumberofChunksInput(this.onNumberOfChunksChange)}
-            <Button onClick={() => this.onClick()}>Look for treasures</Button>
-            <Button onClick={() => this.startApp()}>Start App</Button>
-            <div>
-              <Button onClick={() => this.start()}>Start treasures</Button>
-              <Button onClick={() => this.stop()}>Stop treasures</Button>
-              <Button onClick={() => this.increment()}> +1 </Button>
-              <Button onClick={() => this.decrement()}> -1 </Button>
-              <div>loop {stressCount}</div>
-            </div>
-          </div>
-          {treasures.length !== 0 ? TreasureTable(treasures) : null}
-        </div>
+        {this.renderForm()}
+        <TreasureTable treasures={!!treasures ? treasures : []} />
         {status === CONSENT_STATUS.PENDING ? (
           <ConsentOverlay giveConsent={giveConsent} denyConsent={denyConsent} />
         ) : null}
