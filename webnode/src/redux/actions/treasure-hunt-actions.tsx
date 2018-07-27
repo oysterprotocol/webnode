@@ -7,6 +7,7 @@ import {
   IncrementChunkType,
   ClaimTreasureType,
   ClaimTreasureSuccessType,
+  ClaimTreasureFailureType,
 
   StartSectorAction,
   PerformPowAction,
@@ -14,7 +15,8 @@ import {
   SaveTreasureAction,
   IncrementChunkAction,
   ClaimTreasureAction,
-  ClaimTreasureSuccessAction
+  ClaimTreasureSuccessAction,
+  ClaimTreasureFailureAction
 } from "../../types";
 
 export const TREASURE_HUNT_START_SECTOR =
@@ -31,6 +33,8 @@ export const TREASURE_HUNT_CLAIM_TREASURE =
   "directories/treasure_hunt/claim_treasure";
 export const TREASURE_HUNT_CLAIM_TREASURE_SUCCESS =
   "directories/treasure_hunt/claim_treasure_success";
+export const TREASURE_HUNT_CLAIM_TREASURE_FAILURE =
+  "directories/treasure_hunt/claim_treasure_failure";
 
 export const startSector: ActionCreator<StartSectorAction> = (obj: StartSectorType) => ({
   type: TREASURE_HUNT_START_SECTOR,
@@ -66,6 +70,11 @@ export const claimTreasureSuccess: ActionCreator<ClaimTreasureSuccessAction> = (
   payload: { obj }
 });
 
+export const claimTreasureFailure: ActionCreator<ClaimTreasureFailureAction> = (obj: ClaimTreasureFailureType) => ({
+  type: TREASURE_HUNT_CLAIM_TREASURE_FAILURE,
+  payload: { obj }
+});
+
 const ACTIONS = Object.freeze({
   // actions
   TREASURE_HUNT_START_SECTOR,
@@ -75,6 +84,7 @@ const ACTIONS = Object.freeze({
   TREASURE_HUNT_FIND_TREASURE,
   TREASURE_HUNT_SAVE_TREASURE,
   TREASURE_HUNT_INCREMENT_CHUNK,
+  TREASURE_HUNT_CLAIM_TREASURE_FAILURE,
 
   // actionCreators
   startSector,
@@ -83,7 +93,8 @@ const ACTIONS = Object.freeze({
   saveTreasure,
   incrementChunk,
   claimTreasure,
-  claimTreasureSuccess
+  claimTreasureSuccess,
+  claimTreasureFailure
 });
 
 export default ACTIONS;

@@ -261,6 +261,12 @@ export interface ClaimTreasureSuccessType {
   sectorIdx: number;
 }
 
+export interface ClaimTreasureFailureType {
+  genesisHash: string;
+  sectorIdx: number;
+}
+
+
 // treasure-hunt actions
 export interface StartSectorAction extends Action {
   type: string;
@@ -308,6 +314,13 @@ export interface ClaimTreasureSuccessAction extends Action {
   };
 }
 
+export interface ClaimTreasureFailureAction extends Action {
+  type: string;
+  payload: {
+    obj: ClaimTreasureFailureType;
+  };
+}
+
 export type TreasureHuntActions =
   | StartSectorAction
   | PerformPowAction
@@ -315,4 +328,5 @@ export type TreasureHuntActions =
   | SaveTreasureAction
   | IncrementChunkAction
   | ClaimTreasureAction
-  | ClaimTreasureSuccessAction;
+  | ClaimTreasureSuccessAction
+  | ClaimTreasureFailureAction;

@@ -1,22 +1,29 @@
+import "rxjs/add/operator/map";
+import "rxjs/add/operator/mergeMap";
+import "rxjs/add/operator/catch";
+
 import { fromPromise } from "rxjs/observable/fromPromise";
 import { of } from "rxjs/observable/of";
 import { empty } from "rxjs/observable/empty";
-import { combineEpics } from "redux-observable"; //TODO remove store as dependency
+
+import { Action } from "redux";
+import { combineEpics, Epic } from "redux-observable"; //TODO remove store as dependency
 
 import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
-import util from "node-forge/lib/util";
+import { util } from "node-forge";
 
 import Datamap from "datamap-generator";
 
 import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
+import { RootState } from "../../types";
 
-const performPowEpic = (action$, store) => {
+const performPowEpic: Epic<any, RootState> = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_PERFORM_POW)
-    .mergeMap(action => {
+    .mergeMap((action: any) => {
       const { treasureHunt } = store.getState();
       const { dataMapHash, treasure, chunkIdx } = treasureHunt;
 
@@ -31,22 +38,22 @@ const performPowEpic = (action$, store) => {
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
       return fromPromise(iota.findMostRecentTransaction(address))
-        .map(transaction => transaction.signatureMessageFragment)
-        .mergeMap(message =>
+        .map((transaction: any) => transaction.signatureMessageFragment)
+        .mergeMap((message: any) =>
           fromPromise(iota.getTransactionsToApprove(1)).map(
-            ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) => {
+            ({ trunkTransaction: trunkTx, branchTransaction: branchTx} : any) => {
               return { message, trunkTx, branchTx };
             }
           )
         )
-        .mergeMap(({ trunkTx, branchTx, message }) =>
+        .mergeMap(({ trunkTx, branchTx, message }: any) =>
           fromPromise(
             iota.prepareTransfers({ address, message, value, tag, seed })
-          ).map(trytes => {
+          ).map((trytes: any) => {
             return { trytes, trunkTx, branchTx };
           })
         )
-        .mergeMap(({ trytes, trunkTx, branchTx }) =>
+        .mergeMap(({ trytes, trunkTx, branchTx }: any) =>
           fromPromise(
             iota.localPow({
               trunkTx,
@@ -56,7 +63,7 @@ const performPowEpic = (action$, store) => {
             })
           )
         )
-        .mergeMap(trytesArray =>
+        .mergeMap( (trytesArray: any) =>
           fromPromise(iota.broadcastTransactions(trytesArray))
         )
         .mergeMap(() =>
@@ -72,18 +79,18 @@ const performPowEpic = (action$, store) => {
                 })
           )
         )
-        .catch(error => {
+        .catch((error: any) => {
           console.log("TREASURE HUNTING ERROR", error);
           return empty();
         });
     });
 };
 
-const findTreasureEpic = (action$, store) => {
+const findTreasureEpic: Epic<Action, RootState> = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_FIND_TREASURE)
-    .mergeMap(action => {
-      const { dataMapHash, chunkIdx } = action.payload;
+    .mergeMap((action: any) => {
+      const { dataMapHash, chunkIdx } = action.payload.obj;
 
       const hashInBytes = util.hexToBytes(dataMapHash);
       const [obfuscatedHash, nextDataMapHashInBytes] = Datamap.hashChain(
@@ -93,7 +100,7 @@ const findTreasureEpic = (action$, store) => {
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       return fromPromise(iota.findMostRecentTransaction(address)).mergeMap(
-        transaction => {
+        (transaction: any) => {
           const sideChain = Datamap.sideChainGenerate(dataMapHash);
 
           store.dispatch({
@@ -101,7 +108,7 @@ const findTreasureEpic = (action$, store) => {
             type: "IOTA_RETURN"
           });
 
-          const chainWithTreasure = sideChain.find(hashedAddress => {
+          const chainWithTreasure = sideChain.find((hashedAddress: any) => {
             return !!Datamap.decryptTreasure(
               hashedAddress,
               transaction.signatureMessageFragment,
@@ -130,7 +137,7 @@ const findTreasureEpic = (action$, store) => {
     });
 };
 
-const nextChunkEpic = (action$, store) => {
+const nextChunkEpic: Epic<Action, RootState> = (action$, store) => {
   return action$
     .ofType(
       treasureHuntActions.TREASURE_HUNT_START_SECTOR,
@@ -165,27 +172,27 @@ const nextChunkEpic = (action$, store) => {
     });
 };
 
-const claimTreasureEpic = (action$, store) => {
+const claimTreasureEpic: Epic<Action, RootState> = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_CLAIM_TREASURE)
-    .mergeMap(action => {
+    .mergeMap((action: any) => {
       const {
         receiverEthAddr,
         genesisHash,
         numberOfChunks,
         sectorIdx,
         treasure
-      } = action.payload;
+      } = action.payload.obj;
       const ethKey = treasure;
 
       return fromPromise(
-        BrokerNode.claimTreasure({
+        BrokerNode.claimTreasure(
           receiverEthAddr,
           genesisHash,
           numberOfChunks,
           sectorIdx,
           ethKey
-        })
+        )
       )
         .map(() =>
           treasureHuntActions.claimTreasureSuccess({ genesisHash, sectorIdx })
@@ -199,11 +206,11 @@ const claimTreasureEpic = (action$, store) => {
     });
 };
 
-const completeSectorEpic = (action$, store) => {
+const completeSectorEpic: Epic<Action, RootState> = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_CLAIM_TREASURE_SUCCESS)
-    .map(action => {
-      const { genesisHash, sectorIdx } = action.payload;
+    .map((action: any) => {
+      const { genesisHash, sectorIdx } = action.payload.obj;
       return nodeActions.updateSectorStatus({
         genesisHash,
         sectorIdx,
@@ -212,11 +219,11 @@ const completeSectorEpic = (action$, store) => {
     });
 };
 
-const failedSectorEpic = (action$, store) => {
+const failedSectorEpic: Epic<Action, RootState> = (action$, store) => {
   return action$
     .ofType(treasureHuntActions.TREASURE_HUNT_CLAIM_TREASURE_FAILURE)
-    .map(action => {
-      const { genesisHash, sectorIdx } = action.payload;
+    .map((action: any) => {
+      const { genesisHash, sectorIdx } = action.payload.obj;
       return nodeActions.updateSectorStatus({
         genesisHash,
         sectorIdx,
