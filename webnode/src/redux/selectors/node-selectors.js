@@ -1,16 +1,15 @@
 import { createSelector } from "reselect";
 import { API_ROOT_URL, SECTOR_STATUS } from "../../config/";
-import { RootState } from "../../types";
 
 const { UNCLAIMED } = SECTOR_STATUS;
 
-const getNewGenesisHashes = (state: RootState) => state.node.newGenesisHashes;
-const getBrokerNodes = (state: RootState) => state.node.brokerNodes;
+const getNewGenesisHashes = state => state.node.newGenesisHashes;
+const getBrokerNodes = state => state.node.brokerNodes;
 
 const treasureHuntableGenesisHash = createSelector(
   [getNewGenesisHashes],
   newGenesisHashes =>
-    newGenesisHashes.find((gh: any) => gh.sectors.includes(UNCLAIMED))
+    newGenesisHashes.find(gh => gh.sectors.includes(UNCLAIMED))
 );
 
 const treasureHuntableSector = createSelector(
@@ -20,7 +19,7 @@ const treasureHuntableSector = createSelector(
       return null;
     }
 
-    return genesisHash.sectors.findIndex((status: string) => status === UNCLAIMED);
+    return genesisHash.sectors.findIndex(status => status === UNCLAIMED);
   }
 );
 

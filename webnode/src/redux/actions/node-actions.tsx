@@ -6,7 +6,6 @@ import {
   ResumeOrStartNewSectorType,
   CheckIfSectorClaimedType,
   MarkSectorAsClaimedType,
-  UpdateSectorStatusType,
 
   InitializeAction,
   SetOwnerEthAddressAction,
@@ -19,8 +18,7 @@ import {
   ResetNodeAction,
   ResumeOrStartNewSectorAction,
   CheckIfSectorClaimedAction,
-  MarkSectorAsClaimedAction,
-  UpdateSectorStatusAction
+  MarkSectorAsClaimedAction
 } from "../../types";
 
 export const NODE_INITIALIZE = "directories/node/initialize";
@@ -44,8 +42,6 @@ export const NODE_RESUME_OR_START_NEW_SECTOR =
 export const NODE_CHECK_IF_SECTOR_CLAIMED =
   "directories/node/check_if_sector_claimed";
 export const NODE_MARK_SECTOR_AS_CLAIMED =
-  "directories/node/mark_sector_as_claimed";
-export const NODE_UPDATE_SECTOR_STATUS =
   "directories/node/mark_sector_as_claimed";
 
 export const initialize: ActionCreator<InitializeAction> = () => ({
@@ -106,11 +102,6 @@ export const markSectorAsClaimed: ActionCreator<MarkSectorAsClaimedAction> = (ob
   payload: { obj }
 });
 
-export const updateSectorStatus: ActionCreator<UpdateSectorStatusAction> = (obj: UpdateSectorStatusType) => ({
-  type: NODE_UPDATE_SECTOR_STATUS,
-  payload: { obj }
-});
-
 const ACTIONS = Object.freeze({
   // actions
   NODE_INITIALIZE,
@@ -125,7 +116,6 @@ const ACTIONS = Object.freeze({
   NODE_RESUME_OR_START_NEW_SECTOR,
   NODE_CHECK_IF_SECTOR_CLAIMED,
   NODE_MARK_SECTOR_AS_CLAIMED,
-  NODE_UPDATE_SECTOR_STATUS,
 
   // actionCreators
   initialize,
@@ -139,8 +129,7 @@ const ACTIONS = Object.freeze({
   resetNode,
   resumeOrStartNewSector,
   checkIfSectorClaimed,
-  markSectorAsClaimed,
-  updateSectorStatus
+  markSectorAsClaimed
 });
 
 export default ACTIONS;

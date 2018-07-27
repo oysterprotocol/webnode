@@ -9,8 +9,8 @@ import * as uuidv1 from "uuid/v1";
 
 import nodeActions from "../actions/node-actions";
 import consentActions from "../actions/consent-actions";
-
 import { IS_DEV, CONSENT_STATUS } from "../../config";
+
 import { RootState } from "../../types";
 
 const startAppEpic: Epic<Action, RootState> = (action$, store) => {
