@@ -1,7 +1,7 @@
 import React from "react";
 import Storage from "./storage";
 
-class Root extends React.Component<RootProps, State> {
+class Root extends React.Component {
   render() {
     return (
       <div className="App">
