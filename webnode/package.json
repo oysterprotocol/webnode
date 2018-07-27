@@ -60,6 +60,7 @@
     "@types/color": "^3.0.0",
     "@types/colors": "^1.2.1",
     "@types/jest": "^23.3.0",
+    "@types/node-forge": "0.7.4",
     "@types/prop-types": "^15.5.3",
     "@types/radium": "^0.24.0",
     "@types/react": "^16.4.6",

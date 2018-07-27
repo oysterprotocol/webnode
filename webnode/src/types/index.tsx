@@ -1,5 +1,3 @@
-import { Action } from "redux";
-
 export type RootState = {
   consent: ConsentState;
   node: NodeState;
@@ -8,7 +6,7 @@ export type RootState = {
   test: TestState;
 };
 
-export interface ExtendAction {
+export interface Action {
   type: string;
   payload?: {};
   params?: {};
@@ -92,6 +90,13 @@ export interface MarkSectorAsClaimedType {
   sectorIdx: number;
 }
 
+export interface UpdateSectorStatusType {
+  genesisHash: string;
+  sectorIdx: number;
+  status: string;
+}
+
+
 // node actions
 export interface InitializeAction extends Action {
   type: string;
@@ -162,6 +167,13 @@ export interface MarkSectorAsClaimedAction extends Action {
   };
 }
 
+export interface UpdateSectorStatusAction extends Action {
+  type: string;
+  payload: {
+    obj: UpdateSectorStatusType;
+  };
+}
+
 export type NodeActions =
   | InitializeAction
   | SetOwnerEthAddressAction
@@ -174,7 +186,8 @@ export type NodeActions =
   | ResetNodeAction
   | ResumeOrStartNewSectorAction
   | CheckIfSectorClaimedAction
-  | MarkSectorAsClaimedAction;
+  | MarkSectorAsClaimedAction
+  | UpdateSectorStatusAction;
 
 // pow types
 export interface RequestPoWType {

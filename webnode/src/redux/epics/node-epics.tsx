@@ -1,15 +1,20 @@
+import "rxjs/add/operator/map";
+import "rxjs/add/operator/mergeMap";
+import "rxjs/add/operator/catch";
+
 import { fromPromise } from "rxjs/observable/fromPromise";
 import { of } from "rxjs/observable/of";
 import { empty } from "rxjs/observable/empty";
 
-import { combineEpics } from "redux-observable";
+import { Action } from "redux";
+import { combineEpics, Epic } from "redux-observable";
 
 import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import nodeSelectors from "../selectors/node-selectors";
 import brokerNode from "../services/broker-node";
 import iota from "../services/iota";
-import util from "node-forge/lib/util";
+import { util } from "node-forge";
 
 import Datamap from "datamap-generator";
 
@@ -18,16 +23,17 @@ import {
   MIN_BROKER_NODES,
   CHUNKS_PER_SECTOR
 } from "../../config/";
+import { RootState } from "../../types";
 
-const registerWebnodeEpic = (action$, store) => {
+const registerWebnodeEpic: Epic<Action, RootState> = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_INITIALIZE, nodeActions.NODE_RESET)
-    .mergeMap(action => {
+    .mergeMap(() => {
       const { id } = store.getState().node;
       const brokerNodeUrl = nodeSelectors.brokerNodeUrl(store.getState());
 
       return fromPromise(
-        brokerNode.registerWebnode({ brokerNodeUrl, address: id })
+        brokerNode.registerWebnode(brokerNodeUrl, id)
       )
         .map(({ data }) => {
           console.log("/api/v1/supply/webnodes response:", data);
@@ -41,7 +47,7 @@ const registerWebnodeEpic = (action$, store) => {
     });
 };
 
-const brokerNodeOrGenesisHashEpic = (action$, store) => {
+const brokerNodeOrGenesisHashEpic: Epic<Action, RootState> = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_DETERMINE_BROKER_NODE_OR_GENESIS_HASH)
     .mergeMap(() => {
@@ -54,7 +60,7 @@ const brokerNodeOrGenesisHashEpic = (action$, store) => {
     });
 };
 
-const genesisHashOrTreasureHuntEpic = (action$, store) => {
+const genesisHashOrTreasureHuntEpic: Epic<Action, RootState> = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_DETERMINE_GENESIS_HASH_OR_TREASURE_HUNT)
     .mergeMap(() => {
@@ -85,11 +91,11 @@ const genesisHashOrTreasureHuntEpic = (action$, store) => {
     });
 };
 
-const resumeOrStartNewSectorEpic = (action$, store) => {
+const resumeOrStartNewSectorEpic: Epic<Action, RootState> = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_RESUME_OR_START_NEW_SECTOR)
-    .mergeMap(action => {
-      const { genesisHash, numberOfChunks, sectorIdx } = action.payload;
+    .mergeMap((action: any) => {
+      const { genesisHash, numberOfChunks, sectorIdx } = action.payload.obj;
       const {
         chunkIdx,
         sectorIdx: currentSectorIdx,
@@ -114,14 +120,14 @@ const resumeOrStartNewSectorEpic = (action$, store) => {
     });
 };
 
-const requestBrokerEpic = (action$, store) => {
+const requestBrokerEpic: Epic<any, RootState> = (action$, store) => {
   return action$.ofType(nodeActions.NODE_REQUEST_BROKER_NODES).mergeMap(() => {
     const { brokerNodes } = store.getState().node;
     const currentList = brokerNodes.map(bn => bn.address);
     const brokerNodeUrl = nodeSelectors.brokerNodeUrl(store.getState());
 
     return fromPromise(
-      brokerNode.requestBrokerNodeAddressPoW({ brokerNodeUrl, currentList })
+      brokerNode.requestBrokerNodeAddressPoW(brokerNodeUrl, currentList)
     )
       .mergeMap(({ data }) => {
         const {
@@ -149,17 +155,17 @@ const requestBrokerEpic = (action$, store) => {
             mwm: 9,
             trytes
           })
-        ).map(trytesArray => {
+        ).map((trytesArray: any) => {
           return { txid, trytesArray };
         })
       )
       .mergeMap(({ txid, trytesArray }) =>
         fromPromise(
-          brokerNode.completeBrokerNodeAddressPoW({
+          brokerNode.completeBrokerNodeAddressPoW(
             brokerNodeUrl,
             txid,
-            trytes: trytesArray[0]
-          })
+            trytesArray[0]
+          )
         ).mergeMap(({ data }) => {
           const { purchase: address } = data;
           return [
@@ -175,7 +181,7 @@ const requestBrokerEpic = (action$, store) => {
   });
 };
 
-const requestGenesisHashEpic = (action$, store) => {
+const requestGenesisHashEpic: Epic<any, RootState> = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_REQUEST_GENESIS_HASHES)
     .mergeMap(() => {
@@ -184,7 +190,7 @@ const requestGenesisHashEpic = (action$, store) => {
       const brokerNodeUrl = nodeSelectors.brokerNodeUrl(store.getState());
 
       return fromPromise(
-        brokerNode.requestGenesisHashPoW({ brokerNodeUrl, currentList })
+        brokerNode.requestGenesisHashPoW(brokerNodeUrl, currentList)
       )
         .mergeMap(({ data }) => {
           const {
@@ -212,25 +218,25 @@ const requestGenesisHashEpic = (action$, store) => {
               mwm: 9,
               trytes
             })
-          ).map(trytesArray => {
+          ).map((trytesArray: any) => {
             return { txid, trytesArray };
           })
         )
         .mergeMap(({ txid, trytesArray }) =>
           fromPromise(
-            brokerNode.completeGenesisHashPoW({
+            brokerNode.completeGenesisHashPoW(
               brokerNodeUrl,
               txid,
-              trytes: trytesArray[0]
-            })
+              trytesArray[0]
+            )
           )
             .mergeMap(({ data }) => {
               const { purchase: genesisHash, numberOfChunks } = data;
               return [
-                nodeActions.addNewGenesisHash({
+                nodeActions.addNewGenesisHash(
                   genesisHash,
                   numberOfChunks
-                }),
+                ),
                 nodeActions.determineGenesisHashOrTreasureHunt()
               ];
             })
@@ -246,17 +252,17 @@ const requestGenesisHashEpic = (action$, store) => {
     });
 };
 
-const checkIfSectorClaimedEpic = (action$, store) => {
+const checkIfSectorClaimedEpic: Epic<Action, RootState> = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_CHECK_IF_SECTOR_CLAIMED)
-    .mergeMap(action => {
-      const { genesisHash, numberOfChunks, sectorIdx } = action.payload;
+    .mergeMap((action: any) => {
+      const { genesisHash, numberOfChunks, sectorIdx } = action.payload.obj;
       const specialChunkIdx = sectorIdx * CHUNKS_PER_SECTOR;
       const dataMap = Datamap.rawGenerate(genesisHash, numberOfChunks);
       const dataMapHash = dataMap[specialChunkIdx];
 
       const hashInBytes = util.hexToBytes(dataMapHash);
-      const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes); //eslint-ignore-line
+      const [obfuscatedHash] = Datamap.hashChain(hashInBytes); //eslint-ignore-line
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       return fromPromise(iota.checkIfClaimed(address)).map(
@@ -276,7 +282,7 @@ const checkIfSectorClaimedEpic = (action$, store) => {
     });
 };
 
-const updateSectorStatusEpic = (action$, store) => {
+const updateSectorStatusEpic: Epic<Action, RootState> = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_UPDATE_SECTOR_STATUS)
     .map(nodeActions.determineGenesisHashOrTreasureHunt);
