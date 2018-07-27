@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import color from "colors";
 import Radium from 'radium';
 
@@ -8,10 +8,7 @@ interface ButtonProps {
   kind: string;
 }
 
-interface ButtonState {
-}
-
-class Btn extends React.Component<ButtonProps, ButtonState> {
+class Btn extends React.Component<ButtonProps> {
   render() {
     const style = {
       base: {

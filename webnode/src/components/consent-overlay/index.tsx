@@ -1,9 +1,9 @@
-import * as React from "react";
+import React from "react";
 
 import ButtonGroup from "./button-group";
 import MiddleGroup from "./middle-group";
 import LogoGroup from "./logo-group";
-import * as WebFont from "webfontloader";
+import WebFont from "webfontloader";
 import Radium from 'radium';
 
 WebFont.load({
