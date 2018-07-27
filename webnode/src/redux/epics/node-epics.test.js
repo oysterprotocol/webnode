@@ -4,7 +4,7 @@ import "rxjs/add/operator/mergeMap";
 import "rxjs/add/operator/catch";
 import "rxjs/add/operator/toArray";
 
-import { ActionsObservable, combineEpics } from "redux-observable";
+import { ActionsObservable } from "redux-observable";
 import configureMockStore from "redux-mock-store";
 
 import nodeActions from "../actions/node-actions";
