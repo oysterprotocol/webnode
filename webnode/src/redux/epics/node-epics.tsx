@@ -23,7 +23,6 @@ import {
   MIN_BROKER_NODES,
   CHUNKS_PER_SECTOR
 } from "../../config/";
-
 import { RootState } from "../../types";
 
 const registerWebnodeEpic: Epic<Action, RootState> = (action$, store) => {

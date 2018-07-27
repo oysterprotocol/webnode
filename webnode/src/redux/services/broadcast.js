@@ -4,16 +4,16 @@ const axiosInstance = axios.create({
   timeout: 200000
 });
 
-export const broadcastToHooks = (trytes: any, nodes: any) => {
-  const broadcasts = nodes.map((node: any) => {
+export const broadcastToHooks = (trytes, nodes) => {
+  const broadcasts = nodes.map(node => {
     let url = `http://${node}:3000/broadcast/`;
     return broadcastTransaction(trytes, url);
   });
   return Promise.all(broadcasts);
 };
 
-const broadcastTransaction = (trytes: any, nodeUrl: any) => {
-  new Promise((resolve: any, reject: any) => {
+const broadcastTransaction = (trytes, nodeUrl) => {
+  new Promise((resolve, reject) => {
     axiosInstance
       .post(nodeUrl, trytes)
       .then(response => {
