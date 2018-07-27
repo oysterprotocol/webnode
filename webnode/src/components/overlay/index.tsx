@@ -17,10 +17,7 @@ interface OverlayProps {
   status: string;
 }
 
-interface State {
-}
-
-export class Overlay extends React.Component<OverlayProps, State> {
+export class Overlay extends React.Component<OverlayProps, {} > {
   componentDidMount() {
     const { setOwnerEthAddress, ethAddress } = this.props;
     setOwnerEthAddress(ethAddress);

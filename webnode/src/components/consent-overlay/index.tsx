@@ -18,10 +18,7 @@ interface ConsentOverlayProps {
   status: string;
 }
 
-interface State {
-}
-
-class ConsentOverlay extends React.Component<ConsentOverlayProps, State> {
+class ConsentOverlay extends React.Component<ConsentOverlayProps, {} > {
   render() {
     const { denyConsent, giveConsent } = this.props;
     const style = {

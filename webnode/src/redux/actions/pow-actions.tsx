@@ -1,9 +1,34 @@
-import { action } from "typesafe-actions";
-import { RequestPoWType, RequestPoWSuccessType } from "../../types";
+import { ActionCreator } from "redux";
+import {
+  RequestPoWType,
+  RequestPoWSuccessType,
+
+  RequestPoWAction,
+  RequestPoWSuccessAction,
+  PowCompleteAction
+} from "../../types";
 
 export const IOTA_POW = "directories/pow/iota_pow";
 export const IOTA_POW_SUCCESS = "directories/pow/iota_pow_success";
 export const IOTA_COMPLETE = "directories/pow/iota_complete";
+
+export const requestPoW: ActionCreator<RequestPoWAction> = (
+  obj: RequestPoWType
+) => ({
+  type: IOTA_POW,
+  payload: { obj }
+});
+
+export const requestPoWSuccess: ActionCreator<RequestPoWSuccessAction> = (
+  obj: RequestPoWSuccessType
+) => ({
+  type: IOTA_POW_SUCCESS,
+  payload: { obj }
+});
+
+export const powComplete: ActionCreator<PowCompleteAction> = () => ({
+  type: IOTA_COMPLETE
+});
 
 const ACTIONS = Object.freeze({
   // actions
@@ -12,13 +37,9 @@ const ACTIONS = Object.freeze({
   IOTA_COMPLETE,
 
   // actionCreators
-  requestPoW: (obj: RequestPoWType) =>
-    action(IOTA_POW, { payload: obj }),
-
-  requestPoWSuccess: (obj: RequestPoWSuccessType) =>
-    action(IOTA_POW_SUCCESS, { payload: obj }),
-
-  powComplete: () => action(IOTA_COMPLETE)
+  requestPoW,
+  requestPoWSuccess,
+  powComplete
 });
 
 export default ACTIONS;

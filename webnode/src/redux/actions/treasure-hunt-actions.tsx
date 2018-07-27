@@ -1,4 +1,4 @@
-import { action } from "typesafe-actions";
+import { ActionCreator } from "redux";
 
 import { 
   StartSectorType,
@@ -7,12 +7,16 @@ import {
   IncrementChunkType,
   ClaimTreasureType,
   ClaimTreasureSuccessType,
+
+  StartSectorAction,
+  PerformPowAction,
+  FindTreasureAction,
+  SaveTreasureAction,
+  IncrementChunkAction,
+  ClaimTreasureAction,
+  ClaimTreasureSuccessAction
 } from "../../types";
 
-export const TREASURE_HUNT_CLAIM_TREASURE =
-  "directories/treasure_hunt/claim_treasure";
-export const TREASURE_HUNT_CLAIM_TREASURE_SUCCESS =
-  "directories/treasure_hunt/claim_treasure_success";
 export const TREASURE_HUNT_START_SECTOR =
   "directories/treasure_hunt/start_sector";
 export const TREASURE_HUNT_PERFORM_POW =
@@ -23,6 +27,44 @@ export const TREASURE_HUNT_SAVE_TREASURE =
   "directories/treasure_hunt/save_treasure";
 export const TREASURE_HUNT_INCREMENT_CHUNK =
   "directories/treasure_hunt/increment_chunk";
+export const TREASURE_HUNT_CLAIM_TREASURE =
+  "directories/treasure_hunt/claim_treasure";
+export const TREASURE_HUNT_CLAIM_TREASURE_SUCCESS =
+  "directories/treasure_hunt/claim_treasure_success";
+
+export const startSector: ActionCreator<StartSectorAction> = (obj: StartSectorType) => ({
+  type: TREASURE_HUNT_START_SECTOR,
+  payload: { obj }
+});
+
+export const performPow: ActionCreator<PerformPowAction> = () => ({
+  type: TREASURE_HUNT_PERFORM_POW
+});
+
+export const findTreasure: ActionCreator<FindTreasureAction> = (obj: FindTreasureType) => ({
+  type: TREASURE_HUNT_FIND_TREASURE,
+  payload: { obj }
+});
+
+export const saveTreasure: ActionCreator<SaveTreasureAction> = (obj: SaveTreasureType) => ({
+  type: TREASURE_HUNT_SAVE_TREASURE,
+  payload: { obj }
+});
+
+export const incrementChunk: ActionCreator<IncrementChunkAction> = (obj: IncrementChunkType) => ({
+  type: TREASURE_HUNT_INCREMENT_CHUNK,
+  payload: { obj }
+});
+
+export const claimTreasure: ActionCreator<ClaimTreasureAction> = (obj: ClaimTreasureType) => ({
+  type: TREASURE_HUNT_CLAIM_TREASURE,
+  payload: { obj }
+});
+
+export const claimTreasureSuccess: ActionCreator<ClaimTreasureSuccessAction> = (obj: ClaimTreasureSuccessType) => ({
+  type: TREASURE_HUNT_CLAIM_TREASURE_SUCCESS,
+  payload: { obj }
+});
 
 const ACTIONS = Object.freeze({
   // actions
@@ -35,25 +77,13 @@ const ACTIONS = Object.freeze({
   TREASURE_HUNT_INCREMENT_CHUNK,
 
   // actionCreators
-  startSector: (obj: StartSectorType) =>
-    action(TREASURE_HUNT_START_SECTOR, { payload: obj }),
-
-  performPow: () => action(TREASURE_HUNT_PERFORM_POW),
-
-  findTreasure: (obj: FindTreasureType) =>
-    action(TREASURE_HUNT_FIND_TREASURE, { payload: obj }),
-
-  saveTreasure: (obj: SaveTreasureType) =>
-    action(TREASURE_HUNT_SAVE_TREASURE, { payload: obj }),
-
-  incrementChunk: (obj: IncrementChunkType) =>
-    action(TREASURE_HUNT_INCREMENT_CHUNK, { payload: obj }),
-
-  claimTreasure: (obj: ClaimTreasureType) =>
-    action(TREASURE_HUNT_CLAIM_TREASURE, { payload: obj }),
-
-  claimTreasureSuccess: (obj: ClaimTreasureSuccessType) =>
-    action(TREASURE_HUNT_CLAIM_TREASURE_SUCCESS, { payload: obj })
+  startSector,
+  performPow,
+  findTreasure,
+  saveTreasure,
+  incrementChunk,
+  claimTreasure,
+  claimTreasureSuccess
 });
 
 export default ACTIONS;

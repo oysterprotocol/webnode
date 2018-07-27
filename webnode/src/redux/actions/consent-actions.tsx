@@ -1,7 +1,16 @@
-import { action } from 'typesafe-actions';
+import { ActionCreator } from "redux";
+import { GiveConsentAction, DenyConsentAction } from "../../types";
 
 export const GIVE_CONSENT = "directories/app/give-consent";
 export const DENY_CONSENT = "directories/app/deny-consent";
+
+export const giveConsent: ActionCreator<GiveConsentAction> = () => ({
+  type: GIVE_CONSENT
+});
+
+export const denyConsent: ActionCreator<DenyConsentAction> = () => ({
+  type: DENY_CONSENT
+});
 
 const ACTIONS = Object.freeze({
   // actions
@@ -9,9 +18,8 @@ const ACTIONS = Object.freeze({
   DENY_CONSENT,
  
   // actionCreators
-  giveConsent: () => action(GIVE_CONSENT),
-
-  denyConsent: () => action(DENY_CONSENT)
+  giveConsent,
+  denyConsent
 });
 
 export default ACTIONS;

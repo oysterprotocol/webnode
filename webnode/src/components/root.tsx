@@ -4,10 +4,7 @@ import Storage from "./storage";
 interface RootProps {
 }
 
-interface State {
-}
-
-class Root extends React.Component<RootProps, State> {
+class Root extends React.Component<RootProps, {} > {
   render() {
     return (
       <div className="App">

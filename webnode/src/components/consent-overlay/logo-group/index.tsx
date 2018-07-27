@@ -6,10 +6,7 @@ import { ASSET_URL } from "../../../config";
 interface LogoGroupProps {
 }
 
-interface State {
-}
-
-class LogoGroup extends React.Component<LogoGroupProps, State> {
+class LogoGroup extends React.Component<LogoGroupProps, {} > {
   render() {
     const style = {
       container: {
