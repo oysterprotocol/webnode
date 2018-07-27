@@ -8,7 +8,10 @@ interface ButtonProps {
   kind: string;
 }
 
-class Btn extends React.Component<ButtonProps, {} > {
+interface ButtonState {
+}
+
+class Btn extends React.Component<ButtonProps, ButtonState> {
   render() {
     const style = {
       base: {

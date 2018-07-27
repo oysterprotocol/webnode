@@ -1,22 +1,17 @@
 import consentActions from "../actions/consent-actions";
-import { Reducer } from 'redux';
-import { ConsentState, ConsentActions } from "../../types";
 import { CONSENT_STATUS } from "../../config";
 
-export const initState : ConsentState = {
+const initState = {
   status: CONSENT_STATUS.PENDING
 };
 
-export const consentReducer: Reducer<ConsentState> = (state: ConsentState = initState, action) => {
-
-  switch ((action as ConsentActions).type) {
-
+export default (state = initState, action) => {
+  switch (action.type) {
     case consentActions.GIVE_CONSENT:
-       return {
+      return {
         ...state,
         status: CONSENT_STATUS.APPROVED
-      }
-
+      };
     case consentActions.DENY_CONSENT:
       return {
         ...state,

@@ -1,15 +1,12 @@
 import nodeActions from "../actions/node-actions";
-import { Reducer } from 'redux';
-import { PowState, PowActions } from "../../types";
 
-export const initState: PowState = {
+const initState = {
   powResults: [],
-  statuses: ["Initializing"],
-  consent: ""
+  statuses: ["Initializing"]
 };
 
-export const powReducer: Reducer<PowState> = (state: PowState = initState, action) => {
-  switch ((action as PowActions).type) {
+export default (state = initState, action) => {
+  switch (action.type) {
     case nodeActions.NODE_REQUEST_BROKER_NODES:
       return {
         ...state,

@@ -1,32 +1,29 @@
 import treasureHuntActions from "../actions/treasure-hunt-actions";
-import { Reducer } from 'redux';
-import { TreasureHuntState, TreasureHuntActions } from "../../types";
+
 import { CHUNKS_PER_SECTOR } from "../../config/";
 
-export const initState: TreasureHuntState = {
-  dataMapHash: {},
-  genesisHash: {},
+const initState = {
+  dataMapHash: null,
+  genesisHash: null,
   chunkIdx: 0,
   numberOfChunks: 1,
   sectorIdx: 0,
-  treasure: {}
+  treasure: null
 };
 
-export const treasureHuntReducer: Reducer<TreasureHuntState> = (state: TreasureHuntState = initState, action) => {
-  switch ((action as TreasureHuntActions).type) {
+export default (state = initState, action) => {
+  switch (action.type) {
     case treasureHuntActions.TREASURE_HUNT_START_SECTOR:
       const {
         dataMapHash,
         genesisHash,
         sectorIdx,
         numberOfChunks
-      } = action.payload.obj;
+      } = action.payload;
       if (genesisHash === state.genesisHash && sectorIdx === state.sectorIdx) {
         // start from where webnode left off if it's the same
         // genesis hash and same sector index
-        return {
-          ...state
-        };
+        return state;
       } else {
         const sectorStartingIdx = sectorIdx * CHUNKS_PER_SECTOR;
         return {
@@ -44,7 +41,7 @@ export const treasureHuntReducer: Reducer<TreasureHuntState> = (state: TreasureH
       const {
         nextChunkIdx: nxtChunkIdx,
         nextDataMapHash: nextDataMapHsh
-      } = action.payload.obj;
+      } = action.payload;
       return {
         ...state,
         chunkIdx: nxtChunkIdx,
@@ -52,7 +49,7 @@ export const treasureHuntReducer: Reducer<TreasureHuntState> = (state: TreasureH
       };
 
     case treasureHuntActions.TREASURE_HUNT_SAVE_TREASURE:
-      const { treasure, nextChunkIdx, nextDataMapHash } = action.payload.obj;
+      const { treasure, nextChunkIdx, nextDataMapHash } = action.payload;
       return {
         ...state,
         treasure,
