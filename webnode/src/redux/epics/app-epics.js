@@ -11,7 +11,7 @@ const startAppEpic = (action$, store) => {
     .ofType(nodeActions.NODE_SET_OWNER_ETH_ADDRESS, consentActions.GIVE_CONSENT)
     .filter(() => {
       const { consent } = store.getState();
-      return consent.status === CONSENT_STATUS.APPROVED && IS_DEV;
+      return consent.status === CONSENT_STATUS.APPROVED && !IS_DEV;
     })
     .map(() => {
       const { node } = store.getState();
