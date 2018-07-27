@@ -38,13 +38,231 @@
     lodash "^4.17.5"
     to-fast-properties "^2.0.0"
 
+"@types/color-convert@*":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@types/color-convert/-/color-convert-1.9.0.tgz#bfa8203e41e7c65471e9841d7e306a7cd8b5172d"
+  dependencies:
+    "@types/color-name" "*"
+
+"@types/color-name@*":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.0.tgz#926f76f7e66f49cc59ad880bb15b030abbf0b66d"
+
+"@types/color@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/color/-/color-3.0.0.tgz#40f8a6bf2fd86e969876b339a837d8ff1b0a6e30"
+  dependencies:
+    "@types/color-convert" "*"
+
+"@types/colors@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@types/colors/-/colors-1.2.1.tgz#57703f1a9f7f5fc40afb81eef13e96acdd1016a6"
+  dependencies:
+    colors "*"
+
 "@types/jest@^23.3.0":
   version "23.3.0"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.0.tgz#5dd70033b616a6228042244ebd992f6426808810"
 
+"@types/jquery@*":
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/@types/jquery/-/jquery-3.3.5.tgz#75cfec8c5ee38355d14296ada7e7e2fb8bd3ac2f"
+
 "@types/node@*":
   version "10.3.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.4.tgz#c74e8aec19e555df44609b8057311052a2c84d9e"
+
+"@types/prop-types@^15.5.3":
+  version "15.5.4"
+  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.5.4.tgz#9e6199bad131786e24c2baa2a82705a02139fbf8"
+  dependencies:
+    "@types/react" "*"
+
+"@types/radium@^0.24.0":
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/@types/radium/-/radium-0.24.0.tgz#856d52c19ec0b81108400c0ef465c8e170d8ba8b"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-color@^2.13.5":
+  version "2.13.5"
+  resolved "https://registry.yarnpkg.com/@types/react-color/-/react-color-2.13.5.tgz#38a5bcbb00c5de85d696a3f5adcd619256a57083"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-dom@^16.0.6":
+  version "16.0.6"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.0.6.tgz#f1a65a4e7be8ed5d123f8b3b9eacc913e35a1a3c"
+  dependencies:
+    "@types/node" "*"
+    "@types/react" "*"
+
+"@types/react-redux@^6.0.4":
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-6.0.5.tgz#bb44679588554f3b686666c0484a960aa7a47b86"
+  dependencies:
+    "@types/react" "*"
+    redux "^4.0.0"
+
+"@types/react@*", "@types/react@^16.4.6":
+  version "16.4.7"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.4.7.tgz#f33f6d759a7e1833befa15224d68942d178a5a3f"
+  dependencies:
+    csstype "^2.2.0"
+
+"@types/semantic-ui-accordion@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-accordion/-/semantic-ui-accordion-2.2.2.tgz#2f3b9d60a981d9eddc3705619079defaacc3aee0"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-api@*":
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-api/-/semantic-ui-api-2.2.4.tgz#ea9cad381b38b77f95fa3bf679d7c5273c7b20dd"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-checkbox@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-checkbox/-/semantic-ui-checkbox-2.2.2.tgz#bb19b20d503103a724c9dc79f71132edb092a362"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-dimmer@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-dimmer/-/semantic-ui-dimmer-2.2.2.tgz#667185161c31d046a51a6d71097d2909829e1423"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-dropdown@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-dropdown/-/semantic-ui-dropdown-2.2.2.tgz#455c95c2cb1dc665e80746fa5117aa850156da4c"
+  dependencies:
+    "@types/jquery" "*"
+    "@types/semantic-ui-api" "*"
+
+"@types/semantic-ui-embed@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-embed/-/semantic-ui-embed-2.2.2.tgz#5b851bc966c06812550410348da7f8ea866e0c02"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-form@*":
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-form/-/semantic-ui-form-2.2.4.tgz#81ef02ff35c21c7aa102483463800a68cc0863b8"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-modal@*":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-modal/-/semantic-ui-modal-2.2.3.tgz#482e8ca3323b22e7247ff92249a52a8bc2fccc6d"
+  dependencies:
+    "@types/jquery" "*"
+    "@types/semantic-ui-dimmer" "*"
+
+"@types/semantic-ui-nag@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-nag/-/semantic-ui-nag-2.2.2.tgz#93e9cc410aa17b273ef73a705666815a7c2a09a6"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-popup@*":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-popup/-/semantic-ui-popup-2.2.3.tgz#cdf391d0e16ffbfdc34c7fee85e85d20a9323c5a"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-progress@*":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-progress/-/semantic-ui-progress-2.2.3.tgz#2ad3e2b69c5c5927aa4c11634cdf0a04ab53b36f"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-rating@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-rating/-/semantic-ui-rating-2.2.2.tgz#d35807b61ebc6b4f2a977b430fbd862fa5f5b5a7"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-search@*":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-search/-/semantic-ui-search-2.2.3.tgz#7da1a62ed116a1aa0baee2a9c66196b16f643e13"
+  dependencies:
+    "@types/jquery" "*"
+    "@types/semantic-ui-api" "*"
+
+"@types/semantic-ui-shape@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-shape/-/semantic-ui-shape-2.2.2.tgz#ce3bd95e4ec1127380343910c4766a4f070c1336"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-sidebar@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-sidebar/-/semantic-ui-sidebar-2.2.2.tgz#792464d6e381354c8c1e935635c9010b1366f4a9"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-site@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-site/-/semantic-ui-site-2.2.2.tgz#25a358ca572aa0e811f2f912ab6872ef897c8bbe"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-sticky@*":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-sticky/-/semantic-ui-sticky-2.2.3.tgz#1317d2eac9b42d8088f8f0f3228684efa0ce6a84"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-tab@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-tab/-/semantic-ui-tab-2.2.2.tgz#4bae0c8ac1e970cd93fc31cf99f546e29ac9a069"
+  dependencies:
+    "@types/jquery" "*"
+    "@types/semantic-ui-api" "*"
+
+"@types/semantic-ui-transition@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-transition/-/semantic-ui-transition-2.2.2.tgz#e03d9eec32c962a5c862112f75a53879c3628406"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui-visibility@*":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui-visibility/-/semantic-ui-visibility-2.2.2.tgz#57934496df3b2b89f1c932cd886a5b011efe22ce"
+  dependencies:
+    "@types/jquery" "*"
+
+"@types/semantic-ui@^2.2.6":
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/@types/semantic-ui/-/semantic-ui-2.2.6.tgz#5c38b2c3a92e28501972e3b19c7c8687f68ee2cb"
+  dependencies:
+    "@types/jquery" "*"
+    "@types/semantic-ui-accordion" "*"
+    "@types/semantic-ui-api" "*"
+    "@types/semantic-ui-checkbox" "*"
+    "@types/semantic-ui-dimmer" "*"
+    "@types/semantic-ui-dropdown" "*"
+    "@types/semantic-ui-embed" "*"
+    "@types/semantic-ui-form" "*"
+    "@types/semantic-ui-modal" "*"
+    "@types/semantic-ui-nag" "*"
+    "@types/semantic-ui-popup" "*"
+    "@types/semantic-ui-progress" "*"
+    "@types/semantic-ui-rating" "*"
+    "@types/semantic-ui-search" "*"
+    "@types/semantic-ui-shape" "*"
+    "@types/semantic-ui-sidebar" "*"
+    "@types/semantic-ui-site" "*"
+    "@types/semantic-ui-sticky" "*"
+    "@types/semantic-ui-tab" "*"
+    "@types/semantic-ui-transition" "*"
+    "@types/semantic-ui-visibility" "*"
+
+"@types/webfontloader@^1.6.29":
+  version "1.6.29"
+  resolved "https://registry.yarnpkg.com/@types/webfontloader/-/webfontloader-1.6.29.tgz#c6b5f6eb8ca31d0aae6b02b6c1300349dd93ea8e"
 
 "@webassemblyjs/ast@1.5.13":
   version "1.5.13"
@@ -2238,6 +2456,10 @@ colormin@^1.0.5:
     css-color-names "0.0.4"
     has "^1.0.1"
 
+colors@*:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/colors/-/colors-1.3.1.tgz#4accdb89cf2cabc7f982771925e9468784f32f3d"
+
 colors@0.5.x:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/colors/-/colors-0.5.1.tgz#7d0023eaeb154e8ee9fce75dcb923d0ed1667774"
@@ -2614,6 +2836,10 @@ cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-0.3.1.tgz#6da9b4cff1bc5d716e6e5fe8e04fcb1b50a49adf"
   dependencies:
     cssom "0.3.x"
+
+csstype@^2.2.0:
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.5.6.tgz#2ae1db2319642d8b80a668d2d025c6196071e788"
 
 curl.lib.js@^1.0.22:
   version "1.0.22"
@@ -7465,6 +7691,13 @@ redux@^3.7.2:
     loose-envify "^1.1.0"
     symbol-observable "^1.0.3"
 
+redux@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.0.tgz#aa698a92b729315d22b34a0553d7e6533555cc03"
+  dependencies:
+    loose-envify "^1.1.0"
+    symbol-observable "^1.2.0"
+
 regenerate@^1.2.1:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.0.tgz#4a856ec4b56e4077c557589cae85e7a4c8869a11"
@@ -8352,7 +8585,7 @@ symbol-observable@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.1.tgz#8340fc4702c3122df5d22288f88283f513d3fdd4"
 
-symbol-observable@^1.0.3:
+symbol-observable@^1.0.3, symbol-observable@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
 
@@ -8589,6 +8822,10 @@ type-is@~1.6.15, type-is@~1.6.16:
 typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
+
+typesafe-actions@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/typesafe-actions/-/typesafe-actions-2.0.4.tgz#31c8f8df3566d549eb52edb64a75997e970c17d0"
 
 typescript@^2.9.2:
   version "2.9.2"

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import color from "colors";
 import Radium from 'radium';
 
@@ -8,7 +8,7 @@ interface ButtonProps {
   kind: string;
 }
 
-class Btn extends React.Component<ButtonProps, {} > {
+class Btn extends React.Component<ButtonProps> {
   render() {
     const style = {
       base: {
@@ -49,10 +49,7 @@ interface ButtonGroupProps {
   denyConsent: () => void;
 }
 
-interface ButtonGroupState {
-}
-
-class ButtonGroup extends React.Component<ButtonGroupProps, ButtonGroupState> {
+class ButtonGroup extends React.Component<ButtonGroupProps> {
   render() {
     const style = {
       continue: {

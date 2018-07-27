@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 
@@ -17,7 +17,7 @@ interface OverlayProps {
   status: string;
 }
 
-export class Overlay extends React.Component<OverlayProps, {} > {
+export class Overlay extends React.Component<OverlayProps> {
   componentDidMount() {
     const { setOwnerEthAddress, ethAddress } = this.props;
     setOwnerEthAddress(ethAddress);
