@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Table, Header }  from "semantic-ui-react";
 
 const TreasureTable = (treasures: any) => (

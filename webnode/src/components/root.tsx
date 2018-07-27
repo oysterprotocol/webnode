@@ -1,7 +1,10 @@
-import React from "react";
+import * as React from "react";
 import Storage from "./storage";
 
-class Root extends React.Component {
+interface RootProps {
+}
+
+class Root extends React.Component<RootProps, {} > {
   render() {
     return (
       <div className="App">

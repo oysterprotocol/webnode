@@ -1,9 +1,12 @@
-import React from "react";
+import * as React from "react";
 import Logo from "../../../assets/images/oyster-logo-with-dot.svg";
 import Radium from 'radium';
 import { ASSET_URL } from "../../../config";
 
-class LogoGroup extends React.Component {
+interface LogoGroupProps {
+}
+
+class LogoGroup extends React.Component<LogoGroupProps, {} > {
   render() {
     const style = {
       container: {
