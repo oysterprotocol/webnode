@@ -8,12 +8,6 @@ export type RootState = {
   test: TestState;
 };
 
-export interface ExtendAction {
-  type: string;
-  payload?: {};
-  params?: {};
-}
-
 // state
 export interface PowState {
   powResults: any[];

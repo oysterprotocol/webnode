@@ -1,19 +1,12 @@
-import "rxjs/add/operator/filter";
-import "rxjs/add/operator/map";
+import { combineEpics } from "redux-observable";
+import subDays from 'date-fns/sub_days'
 
-import { Action } from "redux";
-import { combineEpics, Epic } from "redux-observable";
-
-import * as subDays from 'date-fns/sub_days'
-import * as uuidv1 from "uuid/v1";
-
+import uuidv1 from "uuid/v1";
 import nodeActions from "../actions/node-actions";
 import consentActions from "../actions/consent-actions";
 import { IS_DEV, CONSENT_STATUS } from "../../config";
 
-import { RootState } from "../../types";
-
-const startAppEpic: Epic<Action, RootState> = (action$, store) => {
+const startAppEpic = (action$, store) => {
   return action$
     .ofType(nodeActions.NODE_SET_OWNER_ETH_ADDRESS, consentActions.GIVE_CONSENT)
     .filter(() => {
