@@ -1,11 +1,7 @@
-import React from "react";
-import { bindActionCreators, Dispatch } from "redux";
+import React, { Component } from "react";
 import { connect } from "react-redux";
-
-import { RootState, FindTreasureType, StartSectorType } from "../../types";
-
-import { Header, Container, Image, Button, Input } from "semantic-ui-react";
-import { CONSENT_STATUS } from "../../config";
+import { Input, Button, Container, Header, Image } from "semantic-ui-react";
+import { IS_DEV, CONSENT_STATUS } from "../../config";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 import nodeActions from "../../redux/actions/node-actions";
@@ -20,48 +16,45 @@ import ConsentOverlay from "../consent-overlay";
 
 import LOGO from "../../assets/images/logo.svg";
 
-interface StorageProps {
-  treasures: any;
-  numberOfCalls: number;
-  statuses: any;
-  status: string;
-  consent: string;
-  giveConsent: () => any;
-  denyConsent: () => any;
-  findTreasure: (obj: FindTreasureType) => any;
-  initialize: () => any;
-  setOwnerEthAddress: (ethAddress: string) => any;
-  startSector: (obj: StartSectorType) => any;
-}
+const GenesisHashInput = onChange => (
+  <Input
+    style={{ width: 1000, paddingBottom: 20 }}
+    onChange={onChange}
+    label={{ tag: true, content: "Genesis Hash" }}
+    labelPosition="right"
+    placeholder=""
+  />
+);
 
-interface State {
-  genesisHash: string;
-  numberOfChunks: number;
-  stressCount: number;
-  intervalStress: number;
-}
+const NumberofChunksInput = onChange => (
+  <Input
+    onChange={onChange}
+    style={{ paddingRight: 50, paddingBottom: 50 }}
+    label={{ tag: true, content: "Number of Chunks" }}
+    labelPosition="right"
+    placeholder=""
+  />
+);
 
-export class Storage extends React.Component<StorageProps, State> {
-
-  constructor(props: StorageProps) {
+class Storage extends Component {
+  constructor(props) {
     super(props);
     this.state = {
       genesisHash: "",
       numberOfChunks: 0,
-      stressCount: 2,
-      intervalStress: 0
+      stressCount: 2
     };
   }
 
-  onGenesisHashChange = (e: any, data: any) => {
+  onGenesisHashChange = (e, data) => {
     this.setState({ genesisHash: data.value });
   };
 
-  onNumberOfChunksChange = (e: any, data: any) => {
+  onNumberOfChunksChange = (e, data) => {
     this.setState({ numberOfChunks: parseInt(data.value, 10) });
   };
 
-  renderProgress(current: number, max: number) {
+  renderProgress(current, max) {
     if (current > -1) {
       return (
         <div>
@@ -87,17 +80,16 @@ export class Storage extends React.Component<StorageProps, State> {
   }
 
   start() {
-    let { stressCount} = this.state;
+    let { stressCount, ticks } = this.state;
     if (stressCount > 0) {
-      const intervalStress = window.setInterval(() => {
+      this.intervalStress = setInterval(() => {
         this.onClick();
       }, stressCount);
-      this.setState({ intervalStress: intervalStress });
     }
   }
 
   stop() {
-    clearInterval(this.state.intervalStress)
+    clearInterval(this.intervalStress);
   }
 
   async onClick() {
@@ -108,11 +100,11 @@ export class Storage extends React.Component<StorageProps, State> {
     );
 
     const transformedMap = Object.values(generatedMap)
-      .map((value: any, index: any) => ({
+      .map((value, index) => ({
         dataMapHash: value,
         chunkIdx: index
       }))
-      .map( (obj: any) => findTreasure(obj));
+      .map(obj => findTreasure(obj));
 
     Promise.all(transformedMap); //TODO better implementation
   }
@@ -127,47 +119,50 @@ export class Storage extends React.Component<StorageProps, State> {
     setOwnerEthAddress(TEST_ETH_ADDRESS);
   }
 
+  renderForm() {
+    if (!IS_DEV) return;
+
+    const { numberOfCalls } = this.props;
+
+    return (
+      <div style={{ padding: 50 }}>
+        <Header as="h1" style={{ color: "#ffffff" }}>
+          <Image src={LOGO} /> Oyster Toolbox{" "}
+          {this.renderProgress(numberOfCalls, this.state.numberOfChunks)}
+        </Header>
+        <div style={{ paddingTop: 50 }}>
+          {" "}
+          {GenesisHashInput(this.onGenesisHashChange)}
+          {NumberofChunksInput(this.onNumberOfChunksChange)}
+          <Button onClick={() => this.onClick()}>Look for treasures</Button>
+          <Button onClick={() => this.startApp()}>Start App</Button>
+          <div>
+            <Button onClick={() => this.start()}>Start treasures</Button>
+            <Button onClick={() => this.stop()}>Stop treasures</Button>
+            <Button onClick={() => this.increment()}> +1 </Button>
+            <Button onClick={() => this.decrement()}> -1 </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
-    const {
-      treasures,
-      numberOfCalls,
-      giveConsent,
-      denyConsent,
-      status
-    } = this.props;
+    const { giveConsent, denyConsent, status, treasures } = this.props;
     const { stressCount } = this.state;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
-        <div style={{ padding: 50 }}>
-          <Header as="h1" style={{ color: "#ffffff" }}>
-            <Image src={LOGO} /> Oyster Toolbox{" "}
-            {this.renderProgress(numberOfCalls, this.state.numberOfChunks)}
-          </Header>{" "}
-          <div style={{ paddingTop: 50 }}>
-            {" "}
-            {GenesisHashInput(this.onGenesisHashChange)}
-            {NumberofChunksInput(this.onNumberOfChunksChange)}
-            <Button onClick={() => this.onClick()}>Look for treasures</Button>
-            <Button onClick={() => this.startApp()}>Start App</Button>
-            <div>
-              <Button onClick={() => this.start()}>Start treasures</Button>
-              <Button onClick={() => this.stop()}>Stop treasures</Button>
-              <Button onClick={() => this.increment()}> +1 </Button>
-              <Button onClick={() => this.decrement()}> -1 </Button>
-              <div>loop {stressCount}</div>
-            </div>
-          </div>
-          {treasures.length !== 0 ? TreasureTable(treasures) : null}
-        </div>
+        {this.renderForm()}
+        <TreasureTable treasures={!!treasures ? treasures : []} />
         {status === CONSENT_STATUS.PENDING ? (
-          <ConsentOverlay status={status} giveConsent={giveConsent} denyConsent={denyConsent} />
+          <ConsentOverlay giveConsent={giveConsent} denyConsent={denyConsent} />
         ) : null}
       </Container>
     );
   }
 }
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = state => ({
   statuses: state.pow.statuses,
   status: state.consent.status,
   treasures: state.test.treasures,
@@ -175,38 +170,17 @@ const mapStateToProps = (state: RootState) => ({
   consent: state.pow.consent
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<StorageProps>) => 
-  bindActionCreators(
-    {
-      findTreasure: (obj: FindTreasureType) => treasureHuntActions.findTreasure(obj),
-      startSector: (obj: StartSectorType) => treasureHuntActions.startSector(obj),
-      initialize: nodeActions.initialize,
-      giveConsent: consentActions.giveConsent,
-      denyConsent: consentActions.denyConsent,
-      setOwnerEthAddress: (ethAddress: string) => nodeActions.setOwnerEthAddress(ethAddress)
-    }
-    , dispatch
-  );
+const mapDispatchToProps = dispatch => ({
+  findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
+  startSector: obj => dispatch(treasureHuntActions.startSector(obj)),
+  initialize: () => dispatch(nodeActions.initialize()),
+  giveConsent: () => dispatch(consentActions.giveConsent()),
+  denyConsent: () => dispatch(consentActions.denyConsent()),
+  setOwnerEthAddress: ethAddress =>
+    dispatch(nodeActions.setOwnerEthAddress(ethAddress))
+});
 
-const GenesisHashInput = (onChange: any) => (
-  <Input
-    style={{ width: 1000, paddingBottom: 20 }}
-    onChange={onChange}
-    label={{ tag: true, content: "Genesis Hash" }}
-    labelPosition="right"
-    placeholder=""
-  />
-);
-
-const NumberofChunksInput = (onChange: any) => (
-  <Input
-    onChange={onChange}
-    style={{ paddingRight: 50, paddingBottom: 50 }}
-    label={{ tag: true, content: "Number of Chunks" }}
-    labelPosition="right"
-    placeholder=""
-  />
-);
-
-export default connect(mapStateToProps, mapDispatchToProps)(Storage);
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Storage);
