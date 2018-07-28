@@ -16,7 +16,28 @@ import ConsentOverlay from "../consent-overlay";
 
 import LOGO from "../../assets/images/logo.svg";
 
-const GenesisHashInput = onChange => (
+interface StorageProps {
+    treasures: any;
+    numberOfCalls: number;
+    statuses: any;
+    status: string;
+    consent: string;
+    giveConsent: () => any;
+    denyConsent: () => any;
+    findTreasure: (obj: any) => any;
+    initialize: () => any;
+    setOwnerEthAddress: (ethAddress: string) => any;
+    startSector: (obj: any) => any;
+}
+
+interface State {
+    genesisHash: string;
+    numberOfChunks: number;
+    stressCount: number;
+    intervalStress: number;
+}
+
+const GenesisHashInput = (onChange: any) => (
   <Input
     style={{ width: 1000, paddingBottom: 20 }}
     onChange={onChange}
@@ -26,7 +47,7 @@ const GenesisHashInput = onChange => (
   />
 );
 
-const NumberofChunksInput = onChange => (
+const NumberofChunksInput = (onChange: any) => (
   <Input
     onChange={onChange}
     style={{ paddingRight: 50, paddingBottom: 50 }}
@@ -36,25 +57,26 @@ const NumberofChunksInput = onChange => (
   />
 );
 
-class Storage extends Component {
-  constructor(props) {
+export class Storage extends Component<StorageProps, State> {
+  constructor(props: any) {
     super(props);
     this.state = {
       genesisHash: "",
       numberOfChunks: 0,
-      stressCount: 2
+      stressCount: 2,
+      intervalStress: 0
     };
   }
 
-  onGenesisHashChange = (e, data) => {
+  onGenesisHashChange = (e: any, data: any) => {
     this.setState({ genesisHash: data.value });
   };
 
-  onNumberOfChunksChange = (e, data) => {
+  onNumberOfChunksChange = (e: any, data: any) => {
     this.setState({ numberOfChunks: parseInt(data.value, 10) });
   };
 
-  renderProgress(current, max) {
+  renderProgress(current: number, max: number) {
     if (current > -1) {
       return (
         <div>
@@ -80,16 +102,17 @@ class Storage extends Component {
   }
 
   start() {
-    let { stressCount, ticks } = this.state;
-    if (stressCount > 0) {
-      this.intervalStress = setInterval(() => {
-        this.onClick();
-      }, stressCount);
-    }
+      let { stressCount} = this.state;
+      if (stressCount > 0) {
+          const intervalStress = window.setInterval(() => {
+              this.onClick();
+          }, stressCount);
+          this.setState({ intervalStress: intervalStress });
+      }
   }
 
   stop() {
-    clearInterval(this.intervalStress);
+    clearInterval(this.state.intervalStress)
   }
 
   async onClick() {
@@ -100,11 +123,11 @@ class Storage extends Component {
     );
 
     const transformedMap = Object.values(generatedMap)
-      .map((value, index) => ({
+      .map((value: any, index: any) => ({
         dataMapHash: value,
         chunkIdx: index
       }))
-      .map(obj => findTreasure(obj));
+      .map( (obj: any) => findTreasure(obj));
 
     Promise.all(transformedMap); //TODO better implementation
   }
@@ -149,7 +172,6 @@ class Storage extends Component {
 
   render() {
     const { giveConsent, denyConsent, status, treasures } = this.props;
-    const { stressCount } = this.state;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
         {this.renderForm()}
@@ -162,7 +184,7 @@ class Storage extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: any) => ({
   statuses: state.pow.statuses,
   status: state.consent.status,
   treasures: state.test.treasures,
@@ -170,13 +192,13 @@ const mapStateToProps = state => ({
   consent: state.pow.consent
 });
 
-const mapDispatchToProps = dispatch => ({
-  findTreasure: obj => dispatch(treasureHuntActions.findTreasure(obj)),
-  startSector: obj => dispatch(treasureHuntActions.startSector(obj)),
+const mapDispatchToProps = (dispatch:any) => ({
+  findTreasure: (obj: any) => dispatch(treasureHuntActions.findTreasure(obj)),
+  startSector: (obj: any) => dispatch(treasureHuntActions.startSector(obj)),
   initialize: () => dispatch(nodeActions.initialize()),
   giveConsent: () => dispatch(consentActions.giveConsent()),
   denyConsent: () => dispatch(consentActions.denyConsent()),
-  setOwnerEthAddress: ethAddress =>
+  setOwnerEthAddress: (ethAddress: any) =>
     dispatch(nodeActions.setOwnerEthAddress(ethAddress))
 });
 
