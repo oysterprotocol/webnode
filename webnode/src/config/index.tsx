@@ -2,7 +2,7 @@ export const IS_DEV = process.env.NODE_ENV === "development";
 export const DEBUGGING = process.env.DEBUG;
 export const API_VERSION = "api/v2";
 
-export const API_ROOT_URL = "https://18.217.133.146:3000";
+export const API_ROOT_URL = "https://broker-2.oysternodes.com:3000";
 
 export const ASSET_URL =
   window.location && window.location.href.indexOf("localhost") > 0
@@ -11,7 +11,7 @@ export const ASSET_URL =
 
 export const SCRIPT_ATTRIBUTE_ETH_ADDRESS = "data-eth-address";
 
-export const IOTA_API_PROVIDER = "https://18.217.133.146:14265";
+export const IOTA_API_PROVIDER = "https://broker-2.oysternodes.com:14265";
 export const IOTA_ADDRESS_LENGTH = 81;
 
 export const MIN_BROKER_NODES = 1;
