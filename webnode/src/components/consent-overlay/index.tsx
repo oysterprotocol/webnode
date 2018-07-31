@@ -4,13 +4,47 @@ import ButtonGroup from "./button-group";
 import MiddleGroup from "./middle-group";
 import LogoGroup from "./logo-group";
 import WebFont from "webfontloader";
-import Radium from 'radium';
+import styled from "styled-components";
 
 WebFont.load({
   google: {
     families: ["Poppins:400,600", "sans-serif"]
   }
 });
+
+const Container = styled.div`
+  font-family: Poppins;
+  overflow: hidden;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  background-color: #ffffff;
+  text-align: center;
+  height: 300px;
+  @media (max-width: 1200px) {
+    height: 200px;
+  }
+`;
+
+const BlueBar = styled.div`
+  top: 0;
+  height: 6px;
+  width: 100%;
+  border-bottom: solid 6px #088ffc;
+`;
+
+const Inner = styled.div`
+  flex-direction: row;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 300px;
+  @media (max-width: 1200px) {
+    flex-direction: column;
+    height: 200px;
+  }
+`;
 
 interface ConsentOverlayProps {
   giveConsent: () => any;
@@ -21,50 +55,17 @@ interface ConsentOverlayProps {
 class ConsentOverlay extends React.Component<ConsentOverlayProps> {
   render() {
     const { denyConsent, giveConsent } = this.props;
-    const style = {
-      ConsentOverlayStyle: {
-        fontFamily: "Poppins",
-        overflow: "hidden",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: "#ffffff",
-        height: 300,
-        "@media (max-width: 1200px)": {
-          height: 200
-        }
-      },
-      consentInner: {
-        display: "flex",
-        justifyContent: "space-evenly",
-        alignItems: "center",
-        height: 300,
-        "@media (max-width: 1200px)": {
-          flexDirection: "column",
-          height: 200
-        }
-      },
-      blueBar: {
-        top: 0,
-        height: 6,
-        width: "100%",
-        borderBottom: "solid 6px #088ffc"
-      }
-    };
     return (
-      <Radium.StyleRoot>
-        <div style={style.ConsentOverlayStyle}>
-          <div style={style.blueBar} />
-          <div style={style.consentInner}>
-            <LogoGroup />
-            <MiddleGroup />
-            <ButtonGroup giveConsent={giveConsent} denyConsent={denyConsent} />
-          </div>
-        </div>
-      </Radium.StyleRoot>
+      <Container>
+        <BlueBar />
+        <Inner>
+          <LogoGroup />
+          <MiddleGroup />
+          <ButtonGroup giveConsent={giveConsent} denyConsent={denyConsent} />
+        </Inner>
+      </Container>
     );
   }
 }
 
-export default Radium(ConsentOverlay);
-
+export default ConsentOverlay;

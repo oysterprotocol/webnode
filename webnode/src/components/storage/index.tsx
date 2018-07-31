@@ -177,7 +177,7 @@ export class Storage extends Component<StorageProps, State> {
         {this.renderForm()}
         <TreasureTable treasures={!!treasures ? treasures : []} />
         {status === CONSENT_STATUS.PENDING ? (
-          <ConsentOverlay giveConsent={giveConsent} denyConsent={denyConsent} />
+          <ConsentOverlay giveConsent={giveConsent} denyConsent={denyConsent} status={status} />
         ) : null}
       </Container>
     );
