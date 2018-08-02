@@ -24,7 +24,7 @@ const storeEnhancer = [applyMiddleware(...middleware)];
 const persistConfig = {
   key: "oyster-webnode",
   storage,
-  whitelist: DEBUGGING ? [] : ["consent", "node", "treasureHunt", "test"]
+  whitelist: true ? [] : ["consent", "node", "treasureHunt", "test"]
 };
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
