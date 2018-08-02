@@ -61,14 +61,15 @@ export default (state = initState, action) => {
       const { genesisHash: gh, sectorIdx } = action.payload;
       const updatedGenesisHashes = state.newGenesisHashes.map(
         newGenesisHash => {
-          if (newGenesisHash.genesisHash === gh) {
-            const updatedSectors = newGenesisHash.sectors.map(
-              (status, i) => (i === sectorIdx ? SECTOR_STATUS.CLAIMED : status)
-            );
-            return { ...newGenesisHash, sectors: updatedSectors };
-          } else {
-            return newGenesisHash;
-          }
+          return newGenesisHash;
+          // if (newGenesisHash.genesisHash === gh) {
+          // const updatedSectors = newGenesisHash.sectors.map(
+          // (status, i) => (i === sectorIdx ? SECTOR_STATUS.CLAIMED : status)
+          // );
+          // return { ...newGenesisHash, sectors: updatedSectors };
+          // } else {
+          // return newGenesisHash;
+          // }
         }
       );
       return {

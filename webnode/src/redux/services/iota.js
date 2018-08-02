@@ -9,10 +9,9 @@ const iotaProvider = new IOTA({
   provider: IOTA_API_PROVIDER
 });
 
-
 try {
   curl.init();
-} catch(e) {
+} catch (e) {
   console.log("ERROR INITIALIZING CURL: ", e);
 }
 
@@ -63,7 +62,7 @@ const checkIfClaimed = address =>
     const lastEpoch = subMinutes(new Date(), 1).valueOf();
     const afterLastEpoch = lastEpoch < attachedAt;
 
-    return workedOnByOtherWebnode && afterLastEpoch;
+    return false; //workedOnByOtherWebnode && afterLastEpoch;
   });
 
 const findMostRecentTransaction = address =>

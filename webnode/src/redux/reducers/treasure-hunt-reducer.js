@@ -20,22 +20,32 @@ export default (state = initState, action) => {
         sectorIdx,
         numberOfChunks
       } = action.payload;
-      if (genesisHash === state.genesisHash && sectorIdx === state.sectorIdx) {
-        // start from where webnode left off if it's the same
-        // genesis hash and same sector index
-        return state;
-      } else {
-        const sectorStartingIdx = sectorIdx * CHUNKS_PER_SECTOR;
-        return {
-          ...state,
-          dataMapHash,
-          genesisHash,
-          sectorIdx,
-          numberOfChunks,
-          treasure: null,
-          chunkIdx: sectorStartingIdx
-        };
-      }
+      const sectorStartingIdx = sectorIdx * CHUNKS_PER_SECTOR;
+      return {
+        ...state,
+        dataMapHash,
+        genesisHash,
+        sectorIdx,
+        numberOfChunks,
+        treasure: null,
+        chunkIdx: sectorStartingIdx
+      };
+    // if (genesisHash === state.genesisHash && sectorIdx === state.sectorIdx) {
+    // // start from where webnode left off if it's the same
+    // // genesis hash and same sector index
+    // return state;
+    // } else {
+    // const sectorStartingIdx = sectorIdx * CHUNKS_PER_SECTOR;
+    // return {
+    // ...state,
+    // dataMapHash,
+    // genesisHash,
+    // sectorIdx,
+    // numberOfChunks,
+    // treasure: null,
+    // chunkIdx: sectorStartingIdx
+    // };
+    // }
 
     case treasureHuntActions.TREASURE_HUNT_INCREMENT_CHUNK:
       const {
