@@ -147,13 +147,17 @@ class Storage extends Component {
       denyConsent,
       status,
       treasures,
-      numberOfCalls
+      numberOfCalls,
+      currentStatus
     } = this.props;
     const { stressCount } = this.state;
     return (
       <Container style={{ backgroundColor: "#0267ea" }}>
         <Header as="h1" style={{ color: "#ffffff" }}>
           <Image src={LOGO} /> Oyster Webnode Demo{" "}
+          <p style={{ margin: "0", marginTop: "25px" }}>
+            Status: {currentStatus}
+          </p>
         </Header>
         {this.renderForm()}
         <TreasureTable treasures={!!treasures ? treasures : []} />
@@ -166,7 +170,7 @@ class Storage extends Component {
 }
 
 const mapStateToProps = state => ({
-  statuses: state.pow.statuses,
+  currentStatus: state.pow.currentStatus,
   status: state.consent.status,
   treasures: state.test.treasures,
   numberOfCalls: state.test.numberOfCalls, //TODO remove for production

@@ -44,7 +44,7 @@ const findAllTransactions = address =>
           (a, b) => b.attachmentTimestamp - a.attachmentTimestamp
         );
 
-        console.log("IOTA TRANSACTIONS: ", ordered);
+        // console.log("IOTA TRANSACTIONS: ", ordered);
         resolve(ordered);
       }
     );
@@ -85,7 +85,7 @@ const prepareTransfers = data => {
           console.log("IOTA prepareTransfers error ", error);
           reject(error);
         } else {
-          console.log("IOTA prepareTransfers data ", arrayOfTrytes);
+          // console.log("IOTA prepareTransfers data ", arrayOfTrytes);
           resolve(arrayOfTrytes);
         }
       }
@@ -226,16 +226,16 @@ export const attachToTangle = data => {
           if (error) {
             console.log("IOTA attachToTangle error ", error);
           } else {
-            console.log("IOTA attachToTangle data ", attachToTangle);
+            // console.log("IOTA attachToTangle data ", attachToTangle);
             resolve(attachToTangle);
           }
         }
       )
       .then(nonce => {
-        console.log(
-          "attachToTangle nonce ",
-          data.tryte.substr(0, 2187 - 81).concat(nonce)
-        );
+        // console.log(
+        // "attachToTangle nonce ",
+        // data.tryte.substr(0, 2187 - 81).concat(nonce)
+        // );
       })
       .catch(error => {
         console.log("attachToTangle error ", error);
