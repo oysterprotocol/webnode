@@ -30,7 +30,7 @@ const registerWebnodeEpic = (action$, store) => {
         brokerNode.registerWebnode({ brokerNodeUrl, address: id })
       )
         .map(({ data }) => {
-          console.log("/api/v1/supply/webnodes response:", data);
+          // console.log("/api/v1/supply/webnodes response:", data);
           return nodeActions.determineBrokerNodeOrGenesisHash();
         })
         .catch(error => {

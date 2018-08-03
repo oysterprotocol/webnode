@@ -155,9 +155,20 @@ class Storage extends Component {
       <Container style={{ backgroundColor: "#0267ea" }}>
         <Header as="h1" style={{ color: "#ffffff" }}>
           <Image src={LOGO} /> Oyster Webnode Demo{" "}
-          <p style={{ margin: "0", marginTop: "25px" }}>
-            Status: {currentStatus}
-          </p>
+          <div
+            style={{
+              marginTop: "25px",
+              display: "flex",
+              justifyContent: "space-between"
+            }}
+          >
+            <span>Status: {currentStatus}</span>
+            <span style={{ fontSize: "13px", width: "300px" }}>
+              *For demo purposes, we have set up the webnode to repeatedly do
+              proof of work for the same sector of a stubbed genesis hash and
+              disabled passing of PRL.
+            </span>
+          </div>
         </Header>
         {this.renderForm()}
         <TreasureTable treasures={!!treasures ? treasures : []} />
