@@ -12,7 +12,7 @@ const TreasureTable = ({ treasures }) => (
     </Table.Header>
     <Table.Body>
       {treasures.map(s => (
-        <Table.Row key={s.nextChunkIdx - 1}>
+        <Table.Row key={s.nextChunkIdx + Math.random()}>
           <Table.Cell>
             {" "}
             <Header as="h2" textAlign="center">
