@@ -154,7 +154,6 @@ class Storage extends Component {
       <Container style={{ backgroundColor: "#0267ea" }}>
         <Header as="h1" style={{ color: "#ffffff" }}>
           <Image src={LOGO} /> Oyster Webnode Demo{" "}
-          {this.renderProgress(numberOfCalls, this.state.numberOfChunks)}
         </Header>
         {this.renderForm()}
         <TreasureTable treasures={!!treasures ? treasures : []} />
