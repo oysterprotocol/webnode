@@ -22,7 +22,7 @@ const Button = styled.button`
 `;
 
 const ContinueButton = styled(Button)`
-  background: rgba(8, 143, 252);
+  background: rgb(8, 143, 252);
   color: white;
   :hover: {
     background: #088ffc;

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Input, Button, Container, Header, Image } from "semantic-ui-react";
 import { IS_DEV, CONSENT_STATUS } from "../../config";
+import styled from "styled-components";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 import nodeActions from "../../redux/actions/node-actions";
@@ -15,6 +16,16 @@ import TreasureTable from "./toolbox/TreasureTable";
 import ConsentOverlay from "../consent-overlay";
 
 import LOGO from "../../assets/images/logo.svg";
+
+const DemoDisclaimer = styled.span`
+  font-size: 10px;
+  line-height: 14px;
+  width: 230px;
+  @media (max-width: 1200px) {
+    font-size: 13px;
+    width: 300px;
+  }
+`;
 
 const GenesisHashInput = onChange => (
   <Input
@@ -163,11 +174,11 @@ class Storage extends Component {
             }}
           >
             <span>Status: {currentStatus}</span>
-            <span style={{ fontSize: "13px", width: "300px" }}>
+            <DemoDisclaimer>
               *For demo purposes, we have set up the webnode to repeatedly do
               proof of work for the same sector of a stubbed genesis hash and
               disabled passing of PRL.
-            </span>
+            </DemoDisclaimer>
           </div>
         </Header>
         {this.renderForm()}
