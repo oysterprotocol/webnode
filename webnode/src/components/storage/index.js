@@ -21,7 +21,7 @@ const DemoDisclaimer = styled.span`
   font-size: 10px;
   line-height: 14px;
   width: 230px;
-  @media (max-width: 1200px) {
+  @media (min-width: 600px) {
     font-size: 13px;
     width: 300px;
   }
