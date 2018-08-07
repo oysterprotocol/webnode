@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_ROOT_URL, API_VERSION } from "../../config/";
+import { API_ROOT_URL, API_VERSION } from "../../config";
 
 const registerWebnode = ({ brokerNodeUrl, address }) =>
   axios({

@@ -1,4 +1,4 @@
-import Web3 from "web3";
+import Web3 from "../../../../../AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/web3";
 
 const initWeb3 = () => {
   if (typeof web3 !== "undefined")

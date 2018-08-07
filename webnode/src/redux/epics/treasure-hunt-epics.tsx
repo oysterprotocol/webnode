@@ -11,7 +11,7 @@ import util from "node-forge/lib/util";
 
 import Datamap from "datamap-generator";
 
-import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
+import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config";
 
 const performPowEpic = (action$, store) => {
   return action$

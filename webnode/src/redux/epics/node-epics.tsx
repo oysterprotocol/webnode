@@ -17,7 +17,7 @@ import {
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
   CHUNKS_PER_SECTOR
-} from "../../config/";
+} from "../../config";
 
 const registerWebnodeEpic = (action$, store) => {
   return action$

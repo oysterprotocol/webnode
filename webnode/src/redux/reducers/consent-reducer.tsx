@@ -5,7 +5,7 @@ const initState = {
   status: CONSENT_STATUS.PENDING
 };
 
-export default (state = initState, action) => {
+const consentReducer = (state = initState, action) => {
   switch (action.type) {
     case consentActions.GIVE_CONSENT:
       return {
@@ -22,3 +22,4 @@ export default (state = initState, action) => {
       return state;
   }
 };
+export default consentReducer;

@@ -5,7 +5,7 @@ const initState = {
   numberOfCalls: -1 //number of calls for progress
 };
 
-export default (state = initState, action) => {
+const testReducer = (state = initState, action) => {
   switch (action.type) {
     case TREASURE_HUNT_SAVE_TREASURE: //
       const { treasure, nextChunkIdx } = action.payload;
@@ -22,3 +22,5 @@ export default (state = initState, action) => {
       return { ...state };
   }
 };
+
+export default testReducer;

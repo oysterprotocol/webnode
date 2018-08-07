@@ -65,6 +65,8 @@
     "@types/react-redux": "^6.0.4",
     "@types/semantic-ui": "^2.2.6",
     "@types/webfontloader": "^1.6.29",
+    "@types/node": "^10.5.7",
+    "@types/uuid": "^3.4.3",
     "assert": "^1.4.1",
     "awesome-typescript-loader": "^5.2.0",
     "babel-cli": "^6.26.0",
