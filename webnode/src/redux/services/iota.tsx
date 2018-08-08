@@ -1,6 +1,6 @@
-import IOTA from "iota.lib.js";
+import * as IOTA from "iota.lib.js";
 import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
-import curl from "curl.lib.js";
+import * as curl from "curl.lib.js";
 import * as subMinutes from "date-fns/sub_minutes";
 
 const iota = new IOTA();
@@ -8,7 +8,6 @@ const iota = new IOTA();
 const iotaProvider = new IOTA({
   provider: IOTA_API_PROVIDER
 });
-
 
 try {
   curl.init();
