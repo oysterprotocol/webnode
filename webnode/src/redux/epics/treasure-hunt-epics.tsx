@@ -7,7 +7,7 @@ import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
-import util from "node-forge/lib/util";
+import * as util from "node-forge/lib/util";
 
 import Datamap from "datamap-generator";
 

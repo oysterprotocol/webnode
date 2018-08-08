@@ -1,7 +1,7 @@
 import { combineEpics } from "redux-observable";
-import subDays from 'date-fns/sub_days'
+import * as subDays from "date-fns/sub_days";
 
-import uuidv1 from "uuid/v1";
+import * as uuidv1 from "uuid/v1";
 import nodeActions from "../actions/node-actions";
 import consentActions from "../actions/consent-actions";
 import { IS_DEV, CONSENT_STATUS } from "../../config";
