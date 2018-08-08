@@ -1,7 +1,7 @@
 import IOTA from "iota.lib.js";
 import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
 import curl from "curl.lib.js";
-import subMinutes from "date-fns";
+import * as subMinutes from "date-fns/sub_minutes";
 
 const iota = new IOTA();
 
@@ -52,7 +52,7 @@ const findAllTransactions = address =>
   });
 
 const checkIfClaimed = address =>
-  findAllTransactions(address).then(transactions => {
+  findAllTransactions(address).then((transactions: any) => {
     if (!transactions.length) return false;
 
     const mostRecentTransaction = transactions[0];
@@ -116,7 +116,7 @@ export const localPow = data => {
     if (!iota.valid.isValue(minWeightMagnitude)) {
       return callback(new Error("Invalid minWeightMagnitude"));
     }
-    let finalBundleTrytes = [];
+    let finalBundleTrytes: any = [];
     let previousTxHash;
     let i = 0;
 

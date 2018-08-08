@@ -33,7 +33,7 @@ const performPowEpic = (action$, store) => {
       return fromPromise(iota.findMostRecentTransaction(address))
         .map((transaction: any) => transaction.signatureMessageFragment)
         .mergeMap((message: any) =>
-          fromPromise(iota.getTransactionsToApprove(1)).map(
+          fromPromise(iota.getTransactionsToApprove(1, null)).map(
             ({ trunkTransaction: trunkTx, branchTransaction: branchTx }: any) => {
               return { message, trunkTx, branchTx };
             }
