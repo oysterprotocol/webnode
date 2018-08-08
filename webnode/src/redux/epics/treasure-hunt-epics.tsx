@@ -31,10 +31,10 @@ const performPowEpic = (action$, store) => {
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
       return fromPromise(iota.findMostRecentTransaction(address))
-        .map(transaction => transaction.signatureMessageFragment)
-        .mergeMap(message =>
+        .map((transaction: any) => transaction.signatureMessageFragment)
+        .mergeMap((message: any) =>
           fromPromise(iota.getTransactionsToApprove(1)).map(
-            ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) => {
+            ({ trunkTransaction: trunkTx, branchTransaction: branchTx }: any) => {
               return { message, trunkTx, branchTx };
             }
           )
@@ -93,7 +93,7 @@ const findTreasureEpic = (action$, store) => {
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       return fromPromise(iota.findMostRecentTransaction(address)).mergeMap(
-        transaction => {
+        (transaction: any) => {
           const sideChain = Datamap.sideChainGenerate(dataMapHash);
 
           store.dispatch({

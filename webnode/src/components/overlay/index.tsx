@@ -2,8 +2,8 @@ import React from "react";
 import { bindActionCreators, Dispatch } from "redux";
 import { connect } from "react-redux";
 
-import nodeActions from "redux/actions/node-actions";
-import consentActions from "redux/actions/consent-actions";
+import nodeActions from "../../redux/actions/node-actions";
+import consentActions from "../../redux/actions/consent-actions";
 import ConsentOverlay from "../consent-overlay";
 
 import { CONSENT_STATUS } from "../../config";

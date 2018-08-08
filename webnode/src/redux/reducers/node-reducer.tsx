@@ -5,7 +5,7 @@ import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config";
 const initState = {
   ethAddress: null,
   brokerNodes: [],
-  newGenesisHashes: [],
+  newGenesisHashes: [{ genesisHash: "",  sectors: [] }],
   oldGenesisHashes: [],
   id: null,
   lastResetAt: null
