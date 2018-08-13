@@ -1,19 +1,13 @@
 import * as IOTA from "iota.lib.js";
 import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
-import * as curl from "curl.lib.js";
 import * as subMinutes from "date-fns/sub_minutes";
+import * as IotaPico from "@iota-pico/lib-browser";
 
 const iota = new IOTA();
 
 const iotaProvider = new IOTA({
   provider: IOTA_API_PROVIDER
 });
-
-try {
-  curl.init();
-} catch(e) {
-  console.log("ERROR INITIALIZING CURL: ", e);
-}
 
 const MAX_TIMESTAMP_VALUE = (Math.pow(3, 27) - 1) / 2;
 
@@ -135,16 +129,25 @@ export const localPow = data => {
     }
 
     function getBundleTrytes(thisTrytes, callback) {
-      let txObject = iota.utils.transactionObject(thisTrytes);
+      console.log("uuuuuuuuuuuuuuuu", thisTrytes);
+      let txObject = IotaPico.Transaction.fromTrytes(thisTrytes);
+      console.log("ppppppppppppppp", txObject);
 
       /*Commenting this out.  We potentially want to be able to search
             using tags, at least until mainnet comes out.*/
 
       //txObject.tag = txObject.obsoleteTag;
 
-      txObject.attachmentTimestamp = Date.now();
-      txObject.attachmentTimestampLowerBound = 0;
-      txObject.attachmentTimestampUpperBound = MAX_TIMESTAMP_VALUE;
+      txObject.attachmentTimestamp = IotaPico.TryteNumber.fromNumber(
+        Date.now()
+      );
+      txObject.attachmentTimestampLowerBound = IotaPico.TryteNumber.fromNumber(
+        0
+      );
+      txObject.attachmentTimestampUpperBound = IotaPico.TryteNumber.fromNumber(
+        MAX_TIMESTAMP_VALUE
+      );
+      console.log("xxxxxxxxxxxxxx");
       if (!previousTxHash) {
         if (txObject.lastIndex !== txObject.currentIndex) {
           return callback(
@@ -159,14 +162,15 @@ export const localPow = data => {
         txObject.trunkTransaction = previousTxHash;
         txObject.branchTransaction = trunkTransaction;
       }
-      let newTrytes = iota.utils.transactionTrytes(txObject);
-      curl
-        .pow({ trytes: newTrytes, minWeight: minWeightMagnitude })
-        .then(nonce => {
-          let returnedTrytes = newTrytes.substr(0, 2673 - 81).concat(nonce);
-          let newTxObject = iota.utils.transactionObject(returnedTrytes);
-          let txHash = newTxObject.hash;
-          previousTxHash = txHash;
+
+      console.log("mmmmmmmmmmmmmm");
+      let newTrytes = txObject.toTrytes();
+
+      console.log("ffffffffffffffff");
+      const pow = new IotaPico.ProofOfWorkJs();
+      pow
+        .singlePow(newTrytes, minWeightMagnitude)
+        .then(returnedTrytes => {
           finalBundleTrytes.push(returnedTrytes);
           callback(null);
         })
