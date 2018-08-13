@@ -1,43 +1,27 @@
-import IOTA from "iota.lib.js";
 import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
-import curl from "curl.lib.js";
 import subMinutes from "date-fns/sub_minutes";
+import * as IotaPico from "@iota-pico/lib-browser";
+import asciiToTrytes from "../../utils/asciiToTrytes";
 
-const iota = new IOTA();
-
-const iotaProvider = new IOTA({
-  provider: IOTA_API_PROVIDER
-});
-
-
-try {
-  curl.init();
-} catch(e) {
-  console.log("ERROR INITIALIZING CURL: ", e);
-}
+const networkEndpoint = new IotaPico.NetworkEndPoint(
+  "https",
+  "broker-qa-2.oysternodes.com",
+  14265
+);
+const networkClient = IotaPico.NetworkClientFactory.instance().create(
+  "default",
+  networkEndpoint
+);
+const apiClient = new IotaPico.ApiClient(networkClient);
+const transactionClient = new IotaPico.TransactionClient(apiClient);
 
 const MAX_TIMESTAMP_VALUE = (Math.pow(3, 27) - 1) / 2;
 
 const toAddress = string => string.substr(0, IOTA_ADDRESS_LENGTH);
 
-const parseMessage = message => {
-  const characters = message.split("");
-  const reversedCharacters = [...characters].reverse();
-  const notNineIndexReversed = reversedCharacters.findIndex(c => c !== "9");
-  const notNineIndex = characters.length - notNineIndexReversed - 1;
-
-  const choppedArray = characters.slice(0, notNineIndex + 1);
-  const choppedMessage = choppedArray.join("");
-
-  const evenChars =
-    choppedMessage.length % 2 === 0 ? choppedMessage : choppedMessage + "9";
-
-  return iota.utils.fromTrytes(evenChars);
-};
-
 const findAllTransactions = address =>
   new Promise((resolve, reject) => {
-    iotaProvider.api.findTransactionObjects(
+    transactionClient.findTransactionObjects(
       { addresses: [address] },
       (error, transactionObjects) => {
         const settledTransactions = transactionObjects || [];
@@ -69,28 +53,31 @@ const checkIfClaimed = address =>
 const findMostRecentTransaction = address =>
   findAllTransactions(address).then(transactions => transactions[0]);
 
+global.IotaPico = IotaPico;
+global.transactionClient = transactionClient;
+
 const prepareTransfers = data => {
   return new Promise((resolve, reject) => {
-    iotaProvider.api.prepareTransfers(
-      data.seed,
-      [
-        {
-          address: data.address,
-          value: data.value,
-          message: data.message,
-          tag: data.tag
-        }
-      ],
-      (error, arrayOfTrytes) => {
-        if (error) {
-          console.log("IOTA prepareTransfers error ", error);
-          reject(error);
-        } else {
-          console.log("IOTA prepareTransfers data ", arrayOfTrytes);
-          resolve(arrayOfTrytes);
-        }
-      }
-    );
+    console.log("xxxxxxxxxxxxxxx", data);
+    global.data = data;
+    global.transactionClient = transactionClient;
+    transactionClient
+      .prepareTransfers(new IotaPico.Hash(data.seed), [
+        IotaPico.Transfer.fromParams(
+          new IotaPico.Address(data.address),
+          data.value,
+          new IotaPico.Trytes(data.message),
+          new IotaPico.Tag(data.tag)
+        )
+      ])
+      .then(bundle => {
+        console.log("IOTA prepareTransfers data ", bundle);
+        resolve(bundle.transactions);
+      })
+      .catch(error => {
+        console.log("IOTA prepareTransfers error ", error);
+        reject(error);
+      });
   });
 };
 
@@ -107,15 +94,15 @@ export const localPow = data => {
     trytes,
     callback
   ) => {
-    if (!iota.valid.isHash(trunkTransaction)) {
-      return callback(new Error("Invalid trunkTransaction"));
-    }
-    if (!iota.valid.isHash(branchTransaction)) {
-      return callback(new Error("Invalid branchTransaction"));
-    }
-    if (!iota.valid.isValue(minWeightMagnitude)) {
-      return callback(new Error("Invalid minWeightMagnitude"));
-    }
+    // if (!iota.valid.isHash(trunkTransaction)) {
+    // return callback(new Error("Invalid trunkTransaction"));
+    // }
+    // if (!iota.valid.isHash(branchTransaction)) {
+    // return callback(new Error("Invalid branchTransaction"));
+    // }
+    // if (!iota.valid.isValue(minWeightMagnitude)) {
+    // return callback(new Error("Invalid minWeightMagnitude"));
+    // }
     let finalBundleTrytes = [];
     let previousTxHash;
     let i = 0;
@@ -136,8 +123,7 @@ export const localPow = data => {
     }
 
     function getBundleTrytes(thisTrytes, callback) {
-      let txObject = iota.utils.transactionObject(thisTrytes);
-
+      let txObject = IotaPico.Transaction.fromTrytes(thisTrytes);
       /*Commenting this out.  We potentially want to be able to search
             using tags, at least until mainnet comes out.*/
 
@@ -160,14 +146,15 @@ export const localPow = data => {
         txObject.trunkTransaction = previousTxHash;
         txObject.branchTransaction = trunkTransaction;
       }
-      let newTrytes = iota.utils.transactionTrytes(txObject);
-      curl
-        .pow({ trytes: newTrytes, minWeight: minWeightMagnitude })
-        .then(nonce => {
-          let returnedTrytes = newTrytes.substr(0, 2673 - 81).concat(nonce);
-          let newTxObject = iota.utils.transactionObject(returnedTrytes);
-          let txHash = newTxObject.hash;
-          previousTxHash = txHash;
+      let newTrytes = IotaPico.Transaction.toTrytes(txObject);
+      const pow = new IotaPico.ProofOfWorkJs();
+      pow
+        .singlePow(newTrytes, minWeightMagnitude)
+        .then(returnedTrytes => {
+          // let returnedTrytes = newTrytes.substr(0, 2673 - 81).concat(nonce);
+          // let newTxObject = IotaPico.Transaction.fromTrytes(returnedTrytes);
+          // let txHash = newTxObject.hash;
+          // previousTxHash = txHash;
           finalBundleTrytes.push(returnedTrytes);
           callback(null);
         })
@@ -193,11 +180,9 @@ export const localPow = data => {
   });
 };
 
-iota.api.attachToTangle = localPow;
-
 export const getTransactionsToApprove = (depth, reference) => {
   return new Promise((resolve, reject) => {
-    iotaProvider.api.getTransactionsToApprove(
+    transactionClient.getTransactionsToApprove(
       depth,
       reference,
       (error, transactions) => {
@@ -209,7 +194,7 @@ export const getTransactionsToApprove = (depth, reference) => {
 
 export const broadcastTransactions = trytes => {
   return new Promise((resolve, reject) => {
-    iotaProvider.api.broadcastTransactions(trytes, (error, success) => {
+    transactionClient.broadcastTransactions(trytes, (error, success) => {
       error ? reject(error) : resolve(success);
     });
   });
@@ -217,7 +202,7 @@ export const broadcastTransactions = trytes => {
 
 export const attachToTangle = data => {
   return new Promise((resolve, reject) => {
-    iota.api
+    transactionClient
       .attachToTangle(
         data.trunkTransaction,
         data.branchTransaction,
@@ -245,13 +230,12 @@ export const attachToTangle = data => {
 };
 
 export default {
-  parseMessage,
   prepareTransfers,
   localPow,
   checkIfClaimed,
   getTransactionsToApprove,
   broadcastTransactions,
   findMostRecentTransaction,
-  utils: iota.utils,
+  utils: { toTrytes: asciiToTrytes.toTrytes },
   toAddress: toAddress
 };
