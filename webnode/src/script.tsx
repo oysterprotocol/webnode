@@ -16,7 +16,7 @@ const App = ({ ethAddress }) => (
 );
 
 if (!module.parent) {
-  const script = document.currentScript;
+  const script: any = document.currentScript;
   const ethAddress = script.getAttribute(SCRIPT_ATTRIBUTE_ETH_ADDRESS);
   if (!!ethAddress) {
     console.log("Oyster Webnode initialized.");

@@ -7,6 +7,7 @@ import toJson from "enzyme-to-json";
 Enzyme.configure({ adapter: new Adapter() });
 
 // // Make Enzyme functions available in all test files without importing
+declare const global:any;
 global.shallow = shallow;
 global.render = render;
 global.mount = mount;

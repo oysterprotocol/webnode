@@ -5,7 +5,7 @@ const initState = {
   statuses: ["Initializing"]
 };
 
-export default (state = initState, action) => {
+const powReducer = (state = initState, action) => {
   switch (action.type) {
     case nodeActions.NODE_REQUEST_BROKER_NODES:
       return {
@@ -22,3 +22,5 @@ export default (state = initState, action) => {
       return state;
   }
 };
+
+export default powReducer;

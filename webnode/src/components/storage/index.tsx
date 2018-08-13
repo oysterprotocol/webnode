@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Input, Button, Container, Header, Image } from "semantic-ui-react";
-import { IS_DEV, CONSENT_STATUS } from "../../config";
+import { IS_DEV, CONSENT_STATUS, TEST_ETH_ADDRESS } from "../../config";
 
 import treasureHuntActions from "../../redux/actions/treasure-hunt-actions";
 import nodeActions from "../../redux/actions/node-actions";
 import consentActions from "../../redux/actions/consent-actions";
 
 import Datamap from "datamap-generator";
-
-import { TEST_ETH_ADDRESS } from "../../config";
 
 import TreasureTable from "./toolbox/TreasureTable";
 import ConsentOverlay from "../consent-overlay";

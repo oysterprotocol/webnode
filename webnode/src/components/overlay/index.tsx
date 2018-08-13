@@ -7,7 +7,7 @@ import consentActions from "../../redux/actions/consent-actions";
 import ConsentOverlay from "../consent-overlay";
 
 import { CONSENT_STATUS } from "../../config";
-import { RootState } from "../../types";
+import { RootState } from "types";
 
 interface OverlayProps {
   setOwnerEthAddress: (ethAddress: string) => any;

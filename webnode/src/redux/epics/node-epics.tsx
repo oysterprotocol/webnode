@@ -17,7 +17,7 @@ import {
   MIN_GENESIS_HASHES,
   MIN_BROKER_NODES,
   CHUNKS_PER_SECTOR
-} from "../../config/";
+} from "../../config";
 
 const registerWebnodeEpic = (action$, store) => {
   return action$
@@ -29,7 +29,7 @@ const registerWebnodeEpic = (action$, store) => {
       return fromPromise(
         brokerNode.registerWebnode({ brokerNodeUrl, address: id })
       )
-        .map(({ data }) => {
+        .map(({ data }: any) => {
           console.log("/api/v1/supply/webnodes response:", data);
           return nodeActions.determineBrokerNodeOrGenesisHash();
         })
@@ -123,7 +123,7 @@ const requestBrokerEpic = (action$, store) => {
     return fromPromise(
       brokerNode.requestBrokerNodeAddressPoW({ brokerNodeUrl, currentList })
     )
-      .mergeMap(({ data }) => {
+      .mergeMap(({ data }: any) => {
         const {
           id: txid,
           pow: { message, address, branchTx, trunkTx }
@@ -160,7 +160,7 @@ const requestBrokerEpic = (action$, store) => {
             txid,
             trytes: trytesArray[0]
           })
-        ).mergeMap(({ data }) => {
+        ).mergeMap(({ data }: any) => {
           const { purchase: address } = data;
           return [
             nodeActions.addBrokerNode({ address }),
@@ -186,7 +186,7 @@ const requestGenesisHashEpic = (action$, store) => {
       return fromPromise(
         brokerNode.requestGenesisHashPoW({ brokerNodeUrl, currentList })
       )
-        .mergeMap(({ data }) => {
+        .mergeMap(({ data }: any) => {
           const {
             id: txid,
             pow: { message, address, branchTx, trunkTx }
@@ -224,7 +224,7 @@ const requestGenesisHashEpic = (action$, store) => {
               trytes: trytesArray[0]
             })
           )
-            .mergeMap(({ data }) => {
+            .mergeMap(({ data }: any) => {
               const { purchase: genesisHash, numberOfChunks } = data;
               return [
                 nodeActions.addNewGenesisHash({
@@ -256,7 +256,7 @@ const checkIfSectorClaimedEpic = (action$, store) => {
       const dataMapHash = dataMap[specialChunkIdx];
 
       const hashInBytes = util.hexToBytes(dataMapHash);
-      const [obfuscatedHash, _nextHash] = Datamap.hashChain(hashInBytes); //eslint-ignore-line
+      const [obfuscatedHash] = Datamap.hashChain(hashInBytes); //eslint-ignore-line
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       return fromPromise(iota.checkIfClaimed(address)).map(

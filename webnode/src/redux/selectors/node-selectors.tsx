@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { API_ROOT_URL, SECTOR_STATUS } from "../../config/";
+import { API_ROOT_URL, SECTOR_STATUS } from "../../config";
 
 const { UNCLAIMED } = SECTOR_STATUS;
 

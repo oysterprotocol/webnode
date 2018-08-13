@@ -1,6 +1,6 @@
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 
-import { CHUNKS_PER_SECTOR } from "../../config/";
+import { CHUNKS_PER_SECTOR } from "../../config";
 
 const initState = {
   dataMapHash: null,
@@ -11,7 +11,7 @@ const initState = {
   treasure: null
 };
 
-export default (state = initState, action) => {
+const treasureHuntReducer = (state = initState, action) => {
   switch (action.type) {
     case treasureHuntActions.TREASURE_HUNT_START_SECTOR:
       const {
@@ -61,3 +61,5 @@ export default (state = initState, action) => {
       return state;
   }
 };
+
+export default treasureHuntReducer;

@@ -7,11 +7,11 @@ import nodeActions from "../actions/node-actions";
 import treasureHuntActions from "../actions/treasure-hunt-actions";
 import iota from "../services/iota";
 import BrokerNode from "../services/broker-node";
-import util from "node-forge/lib/util";
+import * as util from "node-forge/lib/util";
 
 import Datamap from "datamap-generator";
 
-import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
+import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config";
 
 const performPowEpic = (action$, store) => {
   return action$
@@ -31,10 +31,10 @@ const performPowEpic = (action$, store) => {
         "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
       return fromPromise(iota.findMostRecentTransaction(address))
-        .map(transaction => transaction.signatureMessageFragment)
-        .mergeMap(message =>
-          fromPromise(iota.getTransactionsToApprove(1)).map(
-            ({ trunkTransaction: trunkTx, branchTransaction: branchTx }) => {
+        .map((transaction: any) => transaction.signatureMessageFragment)
+        .mergeMap((message: any) =>
+          fromPromise(iota.getTransactionsToApprove(1, null)).map(
+            ({ trunkTransaction: trunkTx, branchTransaction: branchTx }: any) => {
               return { message, trunkTx, branchTx };
             }
           )
@@ -93,7 +93,7 @@ const findTreasureEpic = (action$, store) => {
       const address = iota.toAddress(iota.utils.toTrytes(obfuscatedHash));
 
       return fromPromise(iota.findMostRecentTransaction(address)).mergeMap(
-        transaction => {
+        (transaction: any) => {
           const sideChain = Datamap.sideChainGenerate(dataMapHash);
 
           store.dispatch({

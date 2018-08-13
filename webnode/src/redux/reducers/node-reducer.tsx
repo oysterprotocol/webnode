@@ -1,11 +1,11 @@
 import nodeActions from "../actions/node-actions";
 
-import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config/";
+import { CHUNKS_PER_SECTOR, SECTOR_STATUS } from "../../config";
 
 const initState = {
   ethAddress: null,
   brokerNodes: [],
-  newGenesisHashes: [],
+  newGenesisHashes: [{ genesisHash: "",  sectors: [] }],
   oldGenesisHashes: [],
   id: null,
   lastResetAt: null
@@ -21,7 +21,7 @@ const newGenesisHashGenerator = (genesisHash, numberOfChunks) => {
   return { genesisHash, numberOfChunks, sectors };
 };
 
-export default (state = initState, action) => {
+const nodeReducer = (state = initState, action) => {
   switch (action.type) {
     case nodeActions.NODE_SET_OWNER_ETH_ADDRESS:
       return {
@@ -80,3 +80,5 @@ export default (state = initState, action) => {
       return state;
   }
 };
+
+export default nodeReducer;
