@@ -87,6 +87,8 @@ const prepareTransfers = data => {
   });
 };
 
+global.IotaPico = IotaPico;
+
 export const localPow = data => {
   const trunkTransaction = data.trunkTx;
   const branchTransaction = data.branchTx;
@@ -130,7 +132,8 @@ export const localPow = data => {
 
     function getBundleTrytes(thisTrytes, callback) {
       console.log("uuuuuuuuuuuuuuuu", thisTrytes);
-      let txObject = IotaPico.Transaction.fromTrytes(thisTrytes);
+      const t = new IotaPico.Trytes(thisTrytes);
+      let txObject = IotaPico.Transaction.fromTrytes(t);
       console.log("ppppppppppppppp", txObject);
 
       /*Commenting this out.  We potentially want to be able to search
@@ -147,21 +150,21 @@ export const localPow = data => {
       txObject.attachmentTimestampUpperBound = IotaPico.TryteNumber.fromNumber(
         MAX_TIMESTAMP_VALUE
       );
-      console.log("xxxxxxxxxxxxxx");
-      if (!previousTxHash) {
-        if (txObject.lastIndex !== txObject.currentIndex) {
-          return callback(
-            new Error(
-              "Wrong bundle order. The bundle should be ordered in descending order from currentIndex"
-            )
-          );
-        }
-        txObject.trunkTransaction = trunkTransaction;
-        txObject.branchTransaction = branchTransaction;
-      } else {
-        txObject.trunkTransaction = previousTxHash;
-        txObject.branchTransaction = trunkTransaction;
-      }
+      // console.log("xxxxxxxxxxxxxx");
+      // if (!previousTxHash) {
+      // if (txObject.lastIndex !== txObject.currentIndex) {
+      // return callback(
+      // new Error(
+      // "Wrong bundle order. The bundle should be ordered in descending order from currentIndex"
+      // )
+      // );
+      // }
+      // txObject.trunkTransaction = trunkTransaction;
+      // txObject.branchTransaction = branchTransaction;
+      // } else {
+      // txObject.trunkTransaction = previousTxHash;
+      // txObject.branchTransaction = trunkTransaction;
+      // }
 
       console.log("mmmmmmmmmmmmmm");
       let newTrytes = txObject.toTrytes();
