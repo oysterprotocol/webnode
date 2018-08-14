@@ -38,7 +38,7 @@ const findAllTransactions = address =>
           (a, b) => b.attachmentTimestamp - a.attachmentTimestamp
         );
 
-        console.log("IOTA TRANSACTIONS: ", ordered);
+        // console.log("IOTA TRANSACTIONS: ", ordered);
         resolve(ordered);
       }
     );
@@ -131,10 +131,8 @@ export const localPow = data => {
     }
 
     function getBundleTrytes(thisTrytes, callback) {
-      console.log("uuuuuuuuuuuuuuuu", thisTrytes);
       const t = new IotaPico.Trytes(thisTrytes);
       let txObject = IotaPico.Transaction.fromTrytes(t);
-      console.log("ppppppppppppppp", txObject);
 
       /*Commenting this out.  We potentially want to be able to search
             using tags, at least until mainnet comes out.*/
@@ -150,7 +148,6 @@ export const localPow = data => {
       txObject.attachmentTimestampUpperBound = IotaPico.TryteNumber.fromNumber(
         MAX_TIMESTAMP_VALUE
       );
-      // console.log("xxxxxxxxxxxxxx");
       // if (!previousTxHash) {
       // if (txObject.lastIndex !== txObject.currentIndex) {
       // return callback(
@@ -166,18 +163,17 @@ export const localPow = data => {
       // txObject.branchTransaction = trunkTransaction;
       // }
 
-      console.log("mmmmmmmmmmmmmm");
       let newTrytes = txObject.toTrytes();
-
-      console.log("ffffffffffffffff");
-      const pow = new IotaPico.ProofOfWorkJs();
-      pow
-        .singlePow(newTrytes, minWeightMagnitude)
-        .then(returnedTrytes => {
-          finalBundleTrytes.push(returnedTrytes);
-          callback(null);
-        })
-        .catch(callback);
+      const pow = new IotaPico.ProofOfWorkWebGl();
+      pow.initialize().then(() => {
+        pow
+          .singlePow(newTrytes, minWeightMagnitude)
+          .then(returnedTrytes => {
+            finalBundleTrytes.push(returnedTrytes._trytes);
+            callback(null);
+          })
+          .catch(callback);
+      });
     }
 
     loopTrytes();
