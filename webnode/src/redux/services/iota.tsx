@@ -112,7 +112,6 @@ export const localPow = data => {
       return callback(new Error("Invalid minWeightMagnitude"));
     }
     let finalBundleTrytes: any = [];
-    let previousTxHash;
     let i = 0;
 
     function loopTrytes() {
@@ -148,20 +147,6 @@ export const localPow = data => {
       txObject.attachmentTimestampUpperBound = IotaPico.TryteNumber.fromNumber(
         MAX_TIMESTAMP_VALUE
       );
-      // if (!previousTxHash) {
-      // if (txObject.lastIndex !== txObject.currentIndex) {
-      // return callback(
-      // new Error(
-      // "Wrong bundle order. The bundle should be ordered in descending order from currentIndex"
-      // )
-      // );
-      // }
-      // txObject.trunkTransaction = trunkTransaction;
-      // txObject.branchTransaction = branchTransaction;
-      // } else {
-      // txObject.trunkTransaction = previousTxHash;
-      // txObject.branchTransaction = trunkTransaction;
-      // }
 
       let newTrytes = txObject.toTrytes();
       const pow = new IotaPico.ProofOfWorkWebGl();
