@@ -38,7 +38,6 @@ const findAllTransactions = address =>
           (a, b) => b.attachmentTimestamp - a.attachmentTimestamp
         );
 
-        // console.log("IOTA TRANSACTIONS: ", ordered);
         resolve(ordered);
       }
     );
@@ -86,8 +85,6 @@ const prepareTransfers = data => {
     );
   });
 };
-
-global.IotaPico = IotaPico;
 
 export const localPow = data => {
   const trunkTransaction = data.trunkTx;
