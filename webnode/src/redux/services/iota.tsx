@@ -206,11 +206,7 @@ export const attachToTangle = data => {
         data.minWeight,
         data.trytes,
         (error, attachToTangle) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(attachToTangle);
-          }
+          !!error ? reject(error) : resolve(attachToTangle);
         }
       )
       .then(nonce => {
