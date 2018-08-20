@@ -75,10 +75,8 @@ const prepareTransfers = data => {
       ],
       (error, arrayOfTrytes) => {
         if (error) {
-          console.log("IOTA prepareTransfers error ", error);
           reject(error);
         } else {
-          console.log("IOTA prepareTransfers data ", arrayOfTrytes);
           resolve(arrayOfTrytes);
         }
       }
@@ -127,7 +125,7 @@ export const localPow = data => {
     }
 
     function getBundleTrytes(thisTrytes, callback) {
-      const t = new IotaPico.Trytes(thisTrytes);
+      const t = IotaPico.Trytes.fromString(thisTrytes);
       let txObject = IotaPico.Transaction.fromTrytes(t);
 
       /*Commenting this out.  We potentially want to be able to search
@@ -151,7 +149,7 @@ export const localPow = data => {
         pow
           .singlePow(newTrytes, minWeightMagnitude)
           .then(returnedTrytes => {
-            finalBundleTrytes.push(returnedTrytes._trytes);
+            finalBundleTrytes.push(returnedTrytes.toString());
             callback(null);
           })
           .catch(callback);
@@ -209,9 +207,8 @@ export const attachToTangle = data => {
         data.trytes,
         (error, attachToTangle) => {
           if (error) {
-            console.log("IOTA attachToTangle error ", error);
+            reject(error);
           } else {
-            console.log("IOTA attachToTangle data ", attachToTangle);
             resolve(attachToTangle);
           }
         }
