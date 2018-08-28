@@ -1,13 +1,19 @@
 import * as IOTA from "iota.lib.js";
 import { IOTA_API_PROVIDER, IOTA_ADDRESS_LENGTH } from "../../config";
+import * as curl from "curl.lib.js";
 import * as subMinutes from "date-fns/sub_minutes";
-import * as IotaPico from "@iota-pico/lib-browser";
 
 const iota = new IOTA();
 
 const iotaProvider = new IOTA({
   provider: IOTA_API_PROVIDER
 });
+
+try {
+  curl.init();
+} catch(e) {
+  console.log("ERROR INITIALIZING CURL: ", e);
+}
 
 const MAX_TIMESTAMP_VALUE = (Math.pow(3, 27) - 1) / 2;
 
@@ -38,6 +44,7 @@ const findAllTransactions = address =>
           (a, b) => b.attachmentTimestamp - a.attachmentTimestamp
         );
 
+        console.log("IOTA TRANSACTIONS: ", ordered);
         resolve(ordered);
       }
     );
@@ -75,8 +82,10 @@ const prepareTransfers = data => {
       ],
       (error, arrayOfTrytes) => {
         if (error) {
+          console.log("IOTA prepareTransfers error ", error);
           reject(error);
         } else {
+          console.log("IOTA prepareTransfers data ", arrayOfTrytes);
           resolve(arrayOfTrytes);
         }
       }
@@ -107,6 +116,7 @@ export const localPow = data => {
       return callback(new Error("Invalid minWeightMagnitude"));
     }
     let finalBundleTrytes: any = [];
+    let previousTxHash;
     let i = 0;
 
     function loopTrytes() {
@@ -125,35 +135,42 @@ export const localPow = data => {
     }
 
     function getBundleTrytes(thisTrytes, callback) {
-      const t = IotaPico.Trytes.fromString(thisTrytes);
-      let txObject = IotaPico.Transaction.fromTrytes(t);
+      let txObject = iota.utils.transactionObject(thisTrytes);
 
       /*Commenting this out.  We potentially want to be able to search
             using tags, at least until mainnet comes out.*/
 
       //txObject.tag = txObject.obsoleteTag;
 
-      txObject.attachmentTimestamp = IotaPico.TryteNumber.fromNumber(
-        Date.now()
-      );
-      txObject.attachmentTimestampLowerBound = IotaPico.TryteNumber.fromNumber(
-        0
-      );
-      txObject.attachmentTimestampUpperBound = IotaPico.TryteNumber.fromNumber(
-        MAX_TIMESTAMP_VALUE
-      );
-
-      let newTrytes = txObject.toTrytes();
-      const pow = new IotaPico.ProofOfWorkWebGl();
-      pow.initialize().then(() => {
-        pow
-          .singlePow(newTrytes, minWeightMagnitude)
-          .then(returnedTrytes => {
-            finalBundleTrytes.push(returnedTrytes.toString());
-            callback(null);
-          })
-          .catch(callback);
-      });
+      txObject.attachmentTimestamp = Date.now();
+      txObject.attachmentTimestampLowerBound = 0;
+      txObject.attachmentTimestampUpperBound = MAX_TIMESTAMP_VALUE;
+      if (!previousTxHash) {
+        if (txObject.lastIndex !== txObject.currentIndex) {
+          return callback(
+            new Error(
+              "Wrong bundle order. The bundle should be ordered in descending order from currentIndex"
+            )
+          );
+        }
+        txObject.trunkTransaction = trunkTransaction;
+        txObject.branchTransaction = branchTransaction;
+      } else {
+        txObject.trunkTransaction = previousTxHash;
+        txObject.branchTransaction = trunkTransaction;
+      }
+      let newTrytes = iota.utils.transactionTrytes(txObject);
+      curl
+        .pow({ trytes: newTrytes, minWeight: minWeightMagnitude })
+        .then(nonce => {
+          let returnedTrytes = newTrytes.substr(0, 2673 - 81).concat(nonce);
+          let newTxObject = iota.utils.transactionObject(returnedTrytes);
+          let txHash = newTxObject.hash;
+          previousTxHash = txHash;
+          finalBundleTrytes.push(returnedTrytes);
+          callback(null);
+        })
+        .catch(callback);
     }
 
     loopTrytes();
@@ -206,7 +223,12 @@ export const attachToTangle = data => {
         data.minWeight,
         data.trytes,
         (error, attachToTangle) => {
-          !!error ? reject(error) : resolve(attachToTangle);
+          if (error) {
+            console.log("IOTA attachToTangle error ", error);
+          } else {
+            console.log("IOTA attachToTangle data ", attachToTangle);
+            resolve(attachToTangle);
+          }
         }
       )
       .then(nonce => {
