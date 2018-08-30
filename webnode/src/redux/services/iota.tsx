@@ -11,7 +11,7 @@ const iotaProvider = new IOTA({
 
 try {
   curl.init();
-} catch(e) {
+} catch (e) {
   console.log("ERROR INITIALIZING CURL: ", e);
 }
 
@@ -44,7 +44,6 @@ const findAllTransactions = address =>
           (a, b) => b.attachmentTimestamp - a.attachmentTimestamp
         );
 
-        console.log("IOTA TRANSACTIONS: ", ordered);
         resolve(ordered);
       }
     );
@@ -81,13 +80,7 @@ const prepareTransfers = data => {
         }
       ],
       (error, arrayOfTrytes) => {
-        if (error) {
-          console.log("IOTA prepareTransfers error ", error);
-          reject(error);
-        } else {
-          console.log("IOTA prepareTransfers data ", arrayOfTrytes);
-          resolve(arrayOfTrytes);
-        }
+        !!error ? reject(error) : resolve(arrayOfTrytes);
       }
     );
   });
@@ -216,30 +209,15 @@ export const broadcastTransactions = trytes => {
 
 export const attachToTangle = data => {
   return new Promise((resolve, reject) => {
-    iota.api
-      .attachToTangle(
-        data.trunkTransaction,
-        data.branchTransaction,
-        data.minWeight,
-        data.trytes,
-        (error, attachToTangle) => {
-          if (error) {
-            console.log("IOTA attachToTangle error ", error);
-          } else {
-            console.log("IOTA attachToTangle data ", attachToTangle);
-            resolve(attachToTangle);
-          }
-        }
-      )
-      .then(nonce => {
-        console.log(
-          "attachToTangle nonce ",
-          data.tryte.substr(0, 2187 - 81).concat(nonce)
-        );
-      })
-      .catch(error => {
-        console.log("attachToTangle error ", error);
-      });
+    iota.api.attachToTangle(
+      data.trunkTransaction,
+      data.branchTransaction,
+      data.minWeight,
+      data.trytes,
+      (error, attachToTangle) => {
+        error ? reject(error) : resolve(attachToTangle);
+      }
+    );
   });
 };
 
