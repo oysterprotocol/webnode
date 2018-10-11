@@ -39,25 +39,23 @@ const DenyButton = styled(Button)`
   }
 `;
 
-const DesktopContainer = styled.div`
-  list-style-type: none;
+const Container = styled.div`
   margin-right: 0;
   min-width: 200px;
-  width: 15%;
   @media (max-width: 1200px) {
     display: none;
   }
 `;
 
-const MobileContainer = styled.div`
+const DesktopContainer = styled(Container)`
+  list-style-type: none;
+  width: 15%;
+`;
+
+const MobileContainer = styled(Container)`
   display: flex;
   flex-direction: row;
-  margin-right: 0;
-  min-width: 200px;
   width: 90%;
-  @media (min-width: 1201px) {
-    display: none;
-  }
 `;
 
 interface ButtonGroupProps {

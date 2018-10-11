@@ -23,23 +23,22 @@ const Link = styled.a`
   font-weight: 600;
 `;
 
-const DesktopText = styled.div`
+const Text = styled.div`
   color: #778291;
-  font-size: 16px;
   font-family: Open Sans;
   text-align: justify;
   line-height: 1.5;
+`;
+
+const DesktopText = styled(Text)`
+  font-size: 16px;
   @media (max-width: 1200px) {
     display: none;
   }
 `;
 
-const MobileText = styled.div`
-  color: #778291;
+const MobileText = styled(Text)`
   font-size: 12px;
-  font-family: Open Sans;
-  text-align: justify;
-  line-height: 1.5;
   @media (min-width: 1201px) {
     display: none;
   }

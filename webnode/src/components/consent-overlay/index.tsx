@@ -13,6 +13,11 @@ WebFont.load({
 });
 
 const Container = styled.div`
+  align-items: center;
+  height: 300px;
+`;
+
+const OuterContainer = styled(Container)`
   font-family: Poppins;
   overflow: hidden;
   bottom: 0;
@@ -20,8 +25,6 @@ const Container = styled.div`
   right: 0;
   position: fixed;
   background-color: #ffffff;
-  text-align: center;
-  height: 300px;
   @media (max-width: 1200px) {
     height: 200px;
   }
@@ -34,12 +37,10 @@ const BlueBar = styled.div`
   border-bottom: solid 6px #088ffc;
 `;
 
-const Inner = styled.div`
+const InnerContainer = styled(Container)`
   flex-direction: row;
   display: flex;
   justify-content: space-around;
-  align-items: center;
-  height: 300px;
   @media (max-width: 1200px) {
     flex-direction: column;
     height: 200px;
@@ -56,14 +57,14 @@ class ConsentOverlay extends React.Component<ConsentOverlayProps> {
   render() {
     const { denyConsent, giveConsent } = this.props;
     return (
-      <Container>
+      <OuterContainer>
         <BlueBar />
-        <Inner>
+        <InnerContainer>
           <LogoGroup />
           <MiddleGroup />
           <ButtonGroup giveConsent={giveConsent} denyConsent={denyConsent} />
-        </Inner>
-      </Container>
+        </InnerContainer>
+      </OuterContainer>
     );
   }
 }
