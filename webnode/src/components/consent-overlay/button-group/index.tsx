@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import {Container, Flexbox } from "../../generic";
 
 const Button = styled.button`
   border: none;
@@ -39,23 +40,17 @@ const DenyButton = styled(Button)`
   }
 `;
 
-const Container = styled.div`
-  margin-right: 0;
-  min-width: 200px;
+const DesktopContainer = styled(Container)`
+  list-style-type: none;
   @media (max-width: 1200px) {
     display: none;
   }
 `;
 
-const DesktopContainer = styled(Container)`
-  list-style-type: none;
-  width: 15%;
-`;
-
-const MobileContainer = styled(Container)`
-  display: flex;
-  flex-direction: row;
-  width: 90%;
+const MobileContainer = styled(Flexbox)`
+  @media (min-width: 1201px) {
+    display: none;
+  }
 `;
 
 interface ButtonGroupProps {
@@ -68,7 +63,7 @@ class ButtonGroup extends React.Component<ButtonGroupProps> {
     const { giveConsent, denyConsent } = this.props;
     return (
       <div>
-        <DesktopContainer>
+        <DesktopContainer width="15%" minWidth="200px">
           <li>
             {" "}
             <ContinueButton onClick={giveConsent}>
@@ -80,7 +75,7 @@ class ButtonGroup extends React.Component<ButtonGroupProps> {
             <DenyButton onClick={denyConsent}>Deny Consent</DenyButton>
           </li>
         </DesktopContainer>
-        <MobileContainer>
+        <MobileContainer flex-direction="row" width="90%" minWidth="200px">
           <ContinueButton onClick={giveConsent}>
             Continue Ad-Free
           </ContinueButton>

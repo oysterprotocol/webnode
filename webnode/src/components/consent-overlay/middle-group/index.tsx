@@ -28,17 +28,16 @@ const Text = styled.div`
   font-family: Open Sans;
   text-align: justify;
   line-height: 1.5;
+  font-size: ${ (props: any) => props.fontSize || '16px' };
 `;
 
 const DesktopText = styled(Text)`
-  font-size: 16px;
   @media (max-width: 1200px) {
     display: none;
   }
 `;
 
 const MobileText = styled(Text)`
-  font-size: 12px;
   @media (min-width: 1201px) {
     display: none;
   }
@@ -70,7 +69,7 @@ class MiddleGroup extends React.Component {
             </Link>
           </b>
         </DesktopText>
-        <MobileText>
+        <MobileText fontSize="12px">
           This website is using the Oyster protocol to generate revenue. By
           using a small portion of your unused device resources, this website
           generates revenue without the use of intrusive ads. Choosing to deny
