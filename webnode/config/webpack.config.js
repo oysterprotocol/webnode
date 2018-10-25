@@ -31,6 +31,12 @@ const publicUrl = publicPath.slice(0, -1);
 const env = getClientEnvironment(publicUrl);
 
 const common = {
+  resolve: {
+    alias: {
+      "react": "preact-compat",
+      "react-dom": "preact-compat"
+    }
+  },
   module: {
     strictExportPresence: true,
     rules: [
