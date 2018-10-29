@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const Button = styled.button`
-  background-color: ${ (props : any) => props.backgroundColor || 'rgba(8, 143, 252' };
+  background-color: ${ (props : any) => props.backgroundColor || 'rgba(8, 143, 252)' };
   color: ${ (props : any) => props.color || 'white' };
   border: ${ (props : any) => props.border || 'none' };
   border-radius: ${ (props : any) => props.borderRadius || '12px' };

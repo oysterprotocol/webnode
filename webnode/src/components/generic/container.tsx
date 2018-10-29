@@ -14,6 +14,16 @@ const Container = styled.div`
   min-width: ${ (props : any) => props.minWidth || 'auto' };
   max-width: ${ (props : any) => props.maxWidth || 'auto' };
   list-style-type: ${ (props : any) => props.listStyleType || 'auto' };
+  align-items: ${ (props : any) => props.alignItems || 'auto' };
+  top: ${ (props : any) => props.top || 'auto' };
+  left: ${ (props : any) => props.left || 'auto' };
+  right: ${ (props : any) => props.right || 'auto' };
+  bottom: ${ (props : any) => props.bottom || 'auto' };
+  overflow: ${ (props : any) => props.overflow || 'none' };
+  border-bottom: ${ (props : any) => props.borderBottom || 'auto' };
+  font-family: ${ (props : any) => props.fontFamily || 'auto' };
+  position: ${ (props : any) => props.position || 'static' };
+  background-color: ${ (props : any) => props.backgroundColor || '#ffffff' };
 `;
 
 export default Container;
