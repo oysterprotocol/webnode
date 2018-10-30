@@ -3,34 +3,33 @@ import styled from "styled-components";
 
 import { ASSET_URL } from "../../../config";
 import LogoImg from "../../../assets/images/oyster-logo-with-dot.svg";
+import { Flexbox, Text, Image } from "../../generic";
 
-const Container = styled.div`
-  width: 20%;
-  flex-direction: column;
-  justify-content: space-around;
+const LogoGroupContainer = styled(Flexbox)`
   @media (max-width: 1200px) {
     display: none;
   }
 `;
 
-const Logo = styled.img`
-  height: 100px;
-`;
-
-const Text = styled.div`
-  font: 600 32px Poppins;
-  padding-top: 25px;
-  line-height: 1.25;
-  color: #088ffc;
-`;
-
 class LogoGroup extends React.Component {
   render() {
     return (
-      <Container>
-        <Logo src={`${ASSET_URL}${LogoImg}`} alt="logo" />
-        <Text>Oyster Protocol in use</Text>
-      </Container>
+      <LogoGroupContainer
+        width="20%"
+        flexDirection="column"
+        justifyContent="space-around"
+      >
+        <Image src={`${ASSET_URL}${LogoImg}`} alt="logo" />
+        <Text
+          color="#088ffc"
+          lineHeight="1.25"
+          paddingTop="25px"
+          fontSize="32px"
+          fontFamily="Poppins"
+        >
+          Oyster Protocol in use
+        </Text>
+      </LogoGroupContainer>
     );
   }
 }

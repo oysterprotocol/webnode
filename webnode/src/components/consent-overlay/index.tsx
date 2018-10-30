@@ -5,6 +5,7 @@ import MiddleGroup from "./middle-group";
 import LogoGroup from "./logo-group";
 import WebFont from "webfontloader";
 import styled from "styled-components";
+import { Container, Flexbox } from "../generic";
 
 WebFont.load({
   google: {
@@ -12,34 +13,16 @@ WebFont.load({
   }
 });
 
-const Container = styled.div`
-  font-family: Poppins;
-  overflow: hidden;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  position: fixed;
-  background-color: #ffffff;
-  text-align: center;
-  height: 300px;
+const OuterContainer = styled(Container)`
   @media (max-width: 1200px) {
     height: 200px;
   }
 `;
 
-const BlueBar = styled.div`
-  top: 0;
-  height: 6px;
-  width: 100%;
-  border-bottom: solid 6px #088ffc;
+const BlueBar = styled(Container)`
 `;
 
-const Inner = styled.div`
-  flex-direction: row;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 300px;
+const InnerContainer = styled(Flexbox)`
   @media (max-width: 1200px) {
     flex-direction: column;
     height: 200px;
@@ -56,14 +39,33 @@ class ConsentOverlay extends React.Component<ConsentOverlayProps> {
   render() {
     const { denyConsent, giveConsent } = this.props;
     return (
-      <Container>
-        <BlueBar />
-        <Inner>
+      <OuterContainer 
+        alignItems="center" 
+        height="300px"
+        fontFamily="Poppins"
+        overflow="hidden"
+        bottom="0"
+        left="0"
+        right="0"
+        position="fixed"
+        background-color="#ffffff"
+      >
+        <BlueBar top="0"
+          height="6px"
+          width="100%"
+          borderBottom="solid 6px #088ffc" 
+        />
+        <InnerContainer
+          alignItems="center"
+          height="300px"
+          flexDirection="row"
+          justifyContent="space-around"
+        >
           <LogoGroup />
           <MiddleGroup />
           <ButtonGroup giveConsent={giveConsent} denyConsent={denyConsent} />
-        </Inner>
-      </Container>
+        </InnerContainer >
+      </OuterContainer>
     );
   }
 }
