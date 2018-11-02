@@ -48,9 +48,10 @@ class ConsentOverlay extends React.Component<ConsentOverlayProps> {
         left="0"
         right="0"
         position="fixed"
-        background-color="#ffffff"
+        backgroundColor="#ffffff"
       >
-        <BlueBar top="0"
+        <BlueBar
+          top="0"
           height="6px"
           width="100%"
           borderBottom="solid 6px #088ffc" 
