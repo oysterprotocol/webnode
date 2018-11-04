@@ -1,7 +1,6 @@
-
 # Webnode
 
-The webnode script runs on oyster-enabled websites, to replace or augment ad revenue.  This script will run in the browsers of visitors to the website.  Files on the tangle expire and must be periodically reattached.  In the process of doing the reattachment, the webnode could find PRL which the brokernode will send to the website owner's ETH address.  To obtain the genesis hashes that the webnode needs to begin a treasure hunt, it will do some PoW for brokernodes to assist with in-progress file uploads.
+The webnode script runs on oyster-enabled websites, to replace or augment ad revenue. This script will run in the browsers of visitors to the website. Files on the tangle expire and must be periodically reattached. In the process of doing the reattachment, the webnode could find PRL which the brokernode will send to the website owner's ETH address. To obtain the genesis hashes that the webnode needs to begin a treasure hunt, it will do some PoW for brokernodes to assist with in-progress file uploads.
 
 ## Getting Started
 
@@ -15,19 +14,18 @@ Clone the repo
 git clone https://github.com/oysterprotocol/webnode.git
 ```
 
-Modify webnode/src/config to point to development brokers, change API\_ROOT\_URL
+Modify webnode/src/config to point to development brokers, change API_ROOT_URL
 
-
-Install dependencies 
+Install dependencies
 
 ```
-yarn
+npm
 ```
 
 Start web server
 
 ```
-yarn start
+npm start
 ```
 
 Navigate to url
@@ -41,19 +39,19 @@ Navigate to url
 Run Once
 
 ```
-yarn test
+npm test
 ```
 
 Run with watcher
 
 ```
-yarn test:watch
+npm test:watch
 ```
 
 Run with code coverage
 
 ```
-yarn test:coverage
+npm test:coverage
 ```
 
 ### Coding style tests
@@ -66,18 +64,16 @@ ES Lint is configured to run on compile, you will see warnings in the console in
 
 ## Built With
 
-* [React](https://reactjs.org/) - The web framework used
-* [Redux](https://redux.js.org/) - State Management
-* [IOTA](https://github.com/iotaledger/iota.lib.js/) - IOTA Core API
-* [Webpack](https://webpack.js.org/) - Build tools
-
+- [React](https://reactjs.org/) - The web framework used
+- [Redux](https://redux.js.org/) - State Management
+- [IOTA](https://github.com/iotaledger/iota.lib.js/) - IOTA Core API
+- [Webpack](https://webpack.js.org/) - Build tools
 
 ## Project Status
 
-* [Travis CI Builds](https://travis-ci.org/oysterprotocol/webnode) - Build Report
-* [E2E Test Dashboard (Cypress)](https://www.cypress.io/) - E2E test results
-* [Code Climate](https://codeclimate.com/github/oysterprotocol/webnode) - Reports code coverage, maintainability, and trends
-
+- [Travis CI Builds](https://travis-ci.org/oysterprotocol/webnode) - Build Report
+- [E2E Test Dashboard (Cypress)](https://www.cypress.io/) - E2E test results
+- [Code Climate](https://codeclimate.com/github/oysterprotocol/webnode) - Reports code coverage, maintainability, and trends
 
 ## Contributing
 
