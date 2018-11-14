@@ -45,13 +45,13 @@ npm test
 Run with watcher
 
 ```
-npm test:watch
+npm run test:watch
 ```
 
 Run with code coverage
 
 ```
-npm test:coverage
+npm run test:coverage
 ```
 
 ### Coding style tests
